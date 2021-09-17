@@ -3,6 +3,7 @@
 | Vinesh Benny | bennyvin | 1007077707 | vinesh.benny@mail.utoronto.ca | vinesh.benny@mail.utoronto.ca | Josuke's Hamon#1772
 | Rohan Dey | deyrohan | 1007105534 | rohan.dey@mail.utoronto.ca | +1 (647) 974-2649 | Blue Viper#9850
 | Tarushi Thapliyal | thapliy5 | 1006862851 | tarushi.thapliyal@mail.utoronto.ca | tarushi.thapliyal@mail.utoronto.ca | skyy#0087
+| Ali Orozgani | orozgani | 1007114864 | aliarmanorozgani@gmail.com | +1 (647) 514-4722 | YaySushi#1650
 | placeholder | placeholderUTORID | placeholderID | placeholderEmail | placeholderContact | placeholderUsername
 
 
