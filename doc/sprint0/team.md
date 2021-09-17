@@ -2,3 +2,6 @@
 |-----------|--------|------------|-------|---------------------|------------------
 | Vinesh Benny | bennyvin | 1007077707 | vinesh.benny@mail.utoronto.ca | vinesh.benny@mail.utoronto.ca | Josuke's Hamon#1772
 | placeholder | placeholderUTORID | placeholderID | placeholderEmail | placeholderContact | placeholderUsername
+
+
+---**Discord Chat/Server Invite :** [https://discord.gg/2s7ywGws]
