@@ -6,7 +6,7 @@ Pawsup is an app for pet-owners that need pet-sitters and pet-sitters who are wi
 
 Download the app from the google play store.
 
-# Contribution:
+# Contribution
 - Do you use git flow? Yes
 - What do you name your branches? Main branch, Develop branch, Feature branches
 - Do you use github issues or another ticketing website? Github issues
