@@ -5,7 +5,7 @@ Competition: Rover, Inc. (https://www.rover.com/ca) and PetBacker, Inc. (https:/
 # Similarities and Differences between Rover, Inc., PetBacker, Inc. and Pawsup, Inc.
 
 | Simiilarities to Rover, Inc. and PetBacker, Inc. | Pawsup, Inc. Differences |
-| ----------------------- |:------------------------|
+| :----------------------- |:------------------------|
 | Additional services such as bathing, grooming, first-aid/CPR | Larger variety of eligible pets (not just dogs and cats) |
 | Booking operation to book a sitter to take care of your pet | Integrated store to purchase related goods |
 | Services for dogs and cats | Larger variety of amenities that pet-sitters can offer |
