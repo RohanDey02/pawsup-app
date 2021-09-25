@@ -1,6 +1,6 @@
 # Objectives:
-Develop an application where pet owners can view listings posted by Pawsup-approved pet-sitters and book for their pets to be supervised 
-by aforementioned sitters for a wide variety of times(ranging from hours to months). Also, provide pet sitters an option to reject incompatible clients.
+  Develop an application where pet owners can view listings posted by Pawsup-approved pet-sitters and book for their pets to be supervised 
+  by aforementioned sitters for a wide variety of times(ranging from hours to months). Also, provide pet sitters an option to reject incompatible clients.
 
 # Key Users:
 - Ali is a 2nd year student studying Medicine.
@@ -36,7 +36,7 @@ by aforementioned sitters for a wide variety of times(ranging from hours to mont
   that she has final say on if pet sitters are deemed valid to be responsible caretakers on
   her app.
   
-#Key Principles:
+# Key Principles:
 - Ease of use for Pet owner and pet sitter over simple code.
 - Prevention of problems rather than correcting them later
 - Compatibility between pet owner's needs and pet sitter's services rather than abundance of possible choices
