@@ -1,43 +1,36 @@
-// How to send test data to MongoDB
-// 1) Run "node server.js" in backend-database folder
-// 2) On Postman, POST/Do Command on http://localhost:8080/api/users in JSON format
-// 3) You're good to go!
+/*
+  How to send test data to MongoDB
+  1) Run "node server.js" in backend-database folder
+  2) On Postman, POST/Do Command on http://localhost:8080/users in JSON format
+  3) You're good to go!
 
-const express = require("express");
-const bodyParser = require("body-parser");
+  The server is hosted on Heroku via: pawsupdev@gmail.com
+  Heroku Link: https://protected-shelf-96328.herokuapp.com/users
+
+  On Heroku, everything is already running. You can test this with Postman with your command on:
+    - https://protected-shelf-96328.herokuapp.com/users/signin
+    - https://protected-shelf-96328.herokuapp.com/users/signup
+  Then you're good to go!
+*/
+
+// MongoDB
+require("./config/db");
+
+const app = require("express")();
+const port = process.env.PORT || 8080;
+
+//cors
 const cors = require("cors");
+app.use(cors());
 
-const app = express();
+const UserRouter = require("./api/User");
 
-// parse requests of content-type - application/json
-app.use(express.json());
+// For accepting post form data
+const bodyParser = require("express").json;
+app.use(bodyParser());
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use("/user", UserRouter);
 
-const db = require("./app/models");
-db.mongoose
-    .connect(db.url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => {
-        console.log("Connected to the database!");
-    })
-    .catch(err => {
-        console.log("Cannot connect to the database!", err);
-        process.exit();
-    });
-
-// simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Pawsup application." });
-});
-
-require("./app/routes/user.routes")(app);
-
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

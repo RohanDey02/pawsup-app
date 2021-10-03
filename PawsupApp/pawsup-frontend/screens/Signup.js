@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Formik } from "formik";
 
 // Icons
-import { Octicons, Ionicons, Fontisto } from "@expo/vector-icons"
+import { Octicons, Ionicons } from "@expo/vector-icons"
 
 // Datetimepicker
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -13,9 +13,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     StyledContainer,
     InnerContainer,
-    PageLogo,
     PageTitle,
-    SubTitle,
     StyledFormArea,
     LeftIcon,
     RightIcon,
@@ -23,7 +21,6 @@ import {
     StyledTextInput,
     StyledButton,
     MsgBox,
-    Line,
     ExtraView,
     ExtraText,
     TextLink,
@@ -31,15 +28,18 @@ import {
     Colours,
     ButtonText
 } from './../components/styles';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 // Colours
-const { brand, darkLight } = Colours;
+const { brand, darkLight, primary } = Colours;
 
 // Keyboard Avoiding Wrapper
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
-const Signup = ({navigation}) => {
+// API Client
+import axios from 'axios';
+
+const Signup = ({ navigation }) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [show, setShow] = useState(false);
     const [date, setDate] = useState(new Date(2000, 0, 1));
@@ -55,50 +55,89 @@ const Signup = ({navigation}) => {
         setDate(currentDate);
         setDob(currentDate);
     };
-    
+
+    /*
+     * Makes DatePicker visible when called
+    */
     const showDatePicker = () => {
         setShow('date');
     };
 
-    
+    /*
+     * Handles pushing the signup data to the server which will push to the database. 
+    */
+    const handleSignup = (credentials, setSubmitting) => {
+        handleMessage(null);
+        const url = "https://protected-shelf-96328.herokuapp.com/user/signup";
+
+        axios
+            .post(url, credentials)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    navigation.navigate('Welcome', { ...data });
+                }
+                setSubmitting(false);
+            })
+            .catch((error) => {
+                setSubmitting(false);
+                handleMessage('An error occurred. Check your network and try again');
+            });
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
+    }
+
     return (
         <KeyboardAvoidingWrapper>
             <StyledContainer>
                 <StatusBar style="dark" />
                 <InnerContainer>
-                    {/* <PageLogo resizeMode="cover" source={require('./../assets/WallpapersAndLogo/PawsupLogo.png')} /> */}
                     <PageTitle>Pawsup Signup</PageTitle>
 
                     {show && (
                         <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode="date"
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                        style={{
-                            backgroundColor: 'yellow',
-                        }}
+                            testID="dateTimePicker"
+                            value={date}
+                            mode="date"
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChange}
+                            style={{
+                                backgroundColor: 'yellow',
+                            }}
                         />
                     )}
 
                     <Formik
-                        initialValues={{ fullName: '', password: '', email: '', dateOfBirth: '', accountType: '', petType: '', phoneNumber: '' }}
-                        onSubmit={(values) => {
-                            console.log(values);
+                        initialValues={{ email: '', password: '', fullname: '', dateofbirth: '', phonenumber: '', accounttype: '', pettype: '' }}
+                        onSubmit={(values, { setSubmitting }) => {
+                            values = { ...values, dateofbirth: dob };
+                            if (values.email == '' || values.password == '' || values.fullname == '' || values.dateofbirth == '' || values.phonenumber == '' || values.accounttype == '' || values.pettype == '') {
+                                handleMessage('Fill out all fields!');
+                                setSubmitting(false);
+                            } else {
+                                handleSignup(values, setSubmitting);
+                            }
                         }}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values }) => (
+                        {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
                             <StyledFormArea>
                                 <MyTextInput
-                                    label="Full Name"
-                                    placeholder="Full Name"
+                                    label="Email Address"
+                                    placeholder="Email Address"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('name')}
-                                    onBlur={handleBlur('name')}
-                                    value={values.name}
-                                    icon="person"
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                    keyboardType="email-address"
+                                    icon="mail"
                                 />
 
                                 <MyTextInput
@@ -116,22 +155,21 @@ const Signup = ({navigation}) => {
                                 />
 
                                 <MyTextInput
-                                    label="Email Address"
-                                    placeholder="Email Address"
+                                    label="Full Name"
+                                    placeholder="Full Name"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
-                                    keyboardType="email-address"
-                                    icon="mail"
+                                    onChangeText={handleChange('fullname')}
+                                    onBlur={handleBlur('fullname')}
+                                    value={values.fullname}
+                                    icon="person"
                                 />
 
                                 <MyTextInput
                                     label="Date of Birth"
                                     placeholder="YYYY/MM/DD"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('dateOfBirth')}
-                                    onBlur={handleBlur('dateOfBirth')}
+                                    onChangeText={handleChange('dateofbirth')}
+                                    onBlur={handleBlur('dateofbirth')}
                                     value={dob ? dob.toDateString() : ''}
                                     icon="calendar"
                                     editable={false}
@@ -140,13 +178,23 @@ const Signup = ({navigation}) => {
                                 />
 
                                 <MyTextInput
+                                    label="Phone Number"
+                                    icon="person"
+                                    placeholder="Phone Number"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={handleChange('phonenumber')}
+                                    onBlur={handleBlur('phonenumber')}
+                                    value={values.phonenumber}
+                                />
+
+                                <MyTextInput
                                     label="Account Type"
                                     icon="person"
                                     placeholder="Petowner/Petsitter"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
+                                    onChangeText={handleChange('accounttype')}
+                                    onBlur={handleBlur('accounttype')}
+                                    value={values.accounttype}
                                 />
 
                                 <MyTextInput
@@ -154,33 +202,24 @@ const Signup = ({navigation}) => {
                                     icon="squirrel"
                                     placeholder="Pet Type"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
-                                />
-
-                                <MyTextInput
-                                    label="Phone Number"
-                                    icon="person"
-                                    placeholder="Phone Number"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
+                                    onChangeText={handleChange('pettype')}
+                                    onBlur={handleBlur('pettype')}
+                                    value={values.pettype}
                                 />
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
 
-                                {/* {!isSubmitting && (
+                                {!isSubmitting && (
                                     <StyledButton onPress={handleSubmit}>
-                                        <ButtonText>Login</ButtonText>
+                                        <ButtonText>Signup</ButtonText>
                                     </StyledButton>
                                 )}
+
                                 {isSubmitting && (
                                     <StyledButton disabled={true}>
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>
-                                )} */}
+                                )}
 
                                 <ExtraView>
                                     <ExtraText>Already have an account? </ExtraText>
@@ -197,6 +236,7 @@ const Signup = ({navigation}) => {
     );
 };
 
+// Style of Icons and DatePicker
 const MyTextInput = ({ label, icon, isPassword, hidePassword, setHidePassword, isDate, showDatePicker, ...props }) => {
     return (
         <View>

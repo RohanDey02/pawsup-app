@@ -39,6 +39,7 @@ const RootStack = () => {
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
+                <Stack.Screen name="Welcome" component={Welcome} />
                 {/* {storedCredentials ? (
                 <Stack.Screen
                     options={{

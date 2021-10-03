@@ -28,36 +28,73 @@ import {
     Colours,
     ButtonText
 } from './../components/styles';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 
 // Colours
-const { brand, darkLight } = Colours;
+const { brand, darkLight, primary } = Colours;
 
 // Keyboard Avoiding Wrapper
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
-const Login = ({navigation}) => {
+// API Client
+import axios from 'axios';
+
+const Login = ({ navigation }) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+
+    /*
+     * Handles querying the database via axios and server to attempt to signin. 
+    */
+    const handleLogin = (credentials, setSubmitting) => {
+        handleMessage(null);
+        const url = "https://protected-shelf-96328.herokuapp.com/user/signin";
+
+        axios
+            .post(url, credentials)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    navigation.navigate('Welcome', { ...data[0] });
+                }
+                setSubmitting(false);
+            })
+            .catch((error) => {
+                setSubmitting(false);
+                handleMessage('An error occurred. Check your network and try again');
+            });
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
+    }
 
     return (
         <KeyboardAvoidingWrapper>
             <StyledContainer>
                 <StatusBar style="dark" />
                 <InnerContainer>
-                    {/* <PageLogo resizeMode="cover" source={require('./../assets/WallpapersAndLogo/PawsupLogo.png')} /> */}
                     <PageTitle>Pawsup</PageTitle>
                     <SubTitle>Account Login</SubTitle>
 
                     <Formik
                         initialValues={{ email: '', password: '' }}
-                        onSubmit={(values) => {
-                            console.log(values);
-                            navigation.navigate("Welcome");
+                        onSubmit={(values, { setSubmitting }) => {
+                            if (values.email == '' || values.password == '') {
+                                handleMessage('Fill out all fields!');
+                                setSubmitting(false);
+                            } else {
+                                handleLogin(values, setSubmitting);
+                            }
                         }}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values }) => (
+                        {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
                             <StyledFormArea>
                                 <MyTextInput
                                     label="Email Address"
@@ -86,16 +123,17 @@ const Login = ({navigation}) => {
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
 
-                                {/* {!isSubmitting && (
+                                {!isSubmitting && (
                                     <StyledButton onPress={handleSubmit}>
                                         <ButtonText>Login</ButtonText>
                                     </StyledButton>
                                 )}
+
                                 {isSubmitting && (
                                     <StyledButton disabled={true}>
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>
-                                )} */}
+                                )}
 
                                 <ExtraView>
                                     <ExtraText>Don't have an account? </ExtraText>
