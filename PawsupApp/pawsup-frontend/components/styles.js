@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Image, View, Text, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';//don't commit to main
+import { Image, View, Text, TextInput, Touchable, TouchableOpacity,Dimensions,StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -185,3 +185,17 @@ export const TextLinkContent = styled.Text`
   color: ${brand};
   font-size: 15px;
 `;
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: "center",
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  }
+});
