@@ -1,18 +1,18 @@
 import styled from 'styled-components/native';//don't commit to main
-import { Image, View, Text, TextInput, Touchable, TouchableOpacity,Dimensions,StyleSheet } from 'react-native';
+import { Image, View, Text, TextInput, Touchable, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
 
 // Colours
 export const Colours = {
-    primary: "#ffffff",
-    secondary: "#E5E7EB",
-    tertiary: "#1F2937",
-    darkLight: "#9CA3AF",
-    brand: "#6D28D9",
-    green: "#10B981",
-    red: "#EF4444",
+  primary: "#ffffff",
+  secondary: "#E5E7EB",
+  tertiary: "#1F2937",
+  darkLight: "#9CA3AF",
+  brand: "#6D28D9",
+  green: "#10B981",
+  red: "#EF4444",
 };
 
 const { primary, secondary, tertiary, darkLight, brand, green, red } = Colours;
@@ -64,8 +64,8 @@ export const PageTitle = styled.Text`
   color: ${brand};
   padding: 10px;
   ${(props) =>
-        props.welcome &&
-        `
+    props.welcome &&
+    `
     font-size: 35px;
   `}
 `;
@@ -77,8 +77,8 @@ export const SubTitle = styled.Text`
   font-weight: bold;
   color: ${tertiary};
   ${(props) =>
-        props.welcome &&
-        `
+    props.welcome &&
+    `
     margin-bottom: 5px;
     font-weight: normal;
   `}
@@ -126,8 +126,8 @@ export const StyledButton = styled.TouchableOpacity`
   margin-vertical: 5px;
   height: 60px;
   ${(props) =>
-        props.google == true &&
-        `
+    props.google == true &&
+    `
     background-color: ${green};
     flex-direction: row;
     justify-content: center;
@@ -138,8 +138,8 @@ export const ButtonText = styled.Text`
   color: ${primary};
   font-size: 16px;
   ${(props) =>
-        props.google == true &&
-        `
+    props.google == true &&
+    `
     color: ${primary};
     padding: 25px;
   `}
