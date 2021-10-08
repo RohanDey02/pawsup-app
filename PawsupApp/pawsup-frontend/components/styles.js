@@ -1,18 +1,18 @@
-import styled from 'styled-components';
-import { Image, View, Text, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';
+import { Image, View, Text, TextInput, Touchable, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
 
 // Colours
 export const Colours = {
-    primary: "#ffffff",
-    secondary: "#E5E7EB",
-    tertiary: "#1F2937",
-    darkLight: "#9CA3AF",
-    brand: "#6D28D9",
-    green: "#10B981",
-    red: "#EF4444",
+	primary: "#ffffff",
+	secondary: "#E5E7EB",
+	tertiary: "#1F2937",
+	darkLight: "#9CA3AF",
+	brand: "#6D28D9",
+	green: "#10B981",
+	red: "#EF4444",
 };
 
 const { primary, secondary, tertiary, darkLight, brand, green, red } = Colours;
@@ -21,6 +21,11 @@ export const StyledContainer = styled.View`
   flex: 1;
   padding: 25px;
   padding-top: ${StatusBarHeight + 30}px;
+  background-color: ${primary};
+`;
+
+export const StyledContainer2 = styled.View`
+  flex: 1;
   background-color: ${primary};
 `;
 
@@ -64,9 +69,9 @@ export const PageTitle = styled.Text`
   color: ${brand};
   padding: 10px;
   ${(props) =>
-        props.welcome &&
-        `
-    font-size: 35px;
+		props.welcome &&
+		`
+	font-size: 35px;
   `}
 `;
 
@@ -77,10 +82,10 @@ export const SubTitle = styled.Text`
   font-weight: bold;
   color: ${tertiary};
   ${(props) =>
-        props.welcome &&
-        `
-    margin-bottom: 5px;
-    font-weight: normal;
+		props.welcome &&
+		`
+	margin-bottom: 5px;
+	font-weight: normal;
   `}
 `;
 
@@ -126,11 +131,11 @@ export const StyledButton = styled.TouchableOpacity`
   margin-vertical: 5px;
   height: 60px;
   ${(props) =>
-        props.google == true &&
-        `
-    background-color: ${green};
-    flex-direction: row;
-    justify-content: center;
+		props.google == true &&
+		`
+	background-color: ${green};
+	flex-direction: row;
+	justify-content: center;
   `}
 `;
 
@@ -138,10 +143,10 @@ export const ButtonText = styled.Text`
   color: ${primary};
   font-size: 16px;
   ${(props) =>
-        props.google == true &&
-        `
-    color: ${primary};
-    padding: 25px;
+		props.google == true &&
+		`
+	color: ${primary};
+	padding: 25px;
   `}
 `;
 
@@ -185,3 +190,18 @@ export const TextLinkContent = styled.Text`
   color: ${brand};
   font-size: 15px;
 `;
+
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+	flex: 1,
+  },
+  image: {
+	width: Dimensions.get('window').width,
+	height: Dimensions.get('window').height,
+	flex: 1,
+	justifyContent: "center",
+	position: 'absolute',
+	left: 0,
+	top: 0,
+  }
+});
