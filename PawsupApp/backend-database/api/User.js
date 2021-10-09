@@ -178,6 +178,7 @@ router.put('/update', (req, res) => {
     } else {
         var conditions = { email: email };
 
+        // Updates user's password and/or found by email
         User.updateOne(conditions, req.body).then(doc => {
             if (!doc) {
                 res.json({
@@ -185,10 +186,17 @@ router.put('/update', (req, res) => {
                     message: "Error could not find user"
                 })
             } else {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Update Successful"
-                })
+                User.find(conditions).then(data =>
+                    res.json({
+                            status: "SUCCESS",
+                            message: "Update Successful",
+                            data: data
+                        })
+                    )
+                // res.json({
+                //     status: "SUCCESS",
+                //     message: "Update Successful"
+                // })
             }
         }).catch(err => {
             console.log(err);
