@@ -13,6 +13,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     StyledContainer,
     InnerContainer,
+    BackgroundStyle,
+    StyledContainer2,
     PageTitle,
     StyledFormArea,
     LeftIcon,
@@ -28,7 +30,7 @@ import {
     Colours,
     ButtonText
 } from './../components/styles';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 
 // Colours
 const { brand, darkLight, primary } = Colours;
