@@ -11,52 +11,34 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Screens
 import Login from './../screens/Login';
 import Signup from './../screens/Signup';
-import Welcome from './../screens/Welcome';
+import AdminMain from './../screens/AdminMain';
+import PetOwnerMain from './../screens/PetOwnerMain';
+import PetSitterMain from './../screens/PetSitterMain';
 
 const Stack = createStackNavigator();
 
-// Credentials Context
-import { CredentialsContext } from './../components/CredentialsContext';
-
 const RootStack = () => {
     return (
-        // <CredentialsContext.Consumer>
-        // {({ storedCredentials }) => (
-            <NavigationContainer style={{ backgroundColor: 'red' }}>
+        <NavigationContainer style={{ backgroundColor: 'red' }}>
             <Stack.Navigator
                 screenOptions={{
-                headerStyle: {
-                    backgroundColor: 'transparent',
-                },
-                headerTintColor: tertiary,
-                headerTransparent: true,
-                headerTitle: '',
-                headerLeftContainerStyle: {
-                    paddingLeft: 20,
-                },
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
                 }}
                 initialRouteName="Login"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
-                <Stack.Screen name="Welcome" component={Welcome} />
-                {/* {storedCredentials ? (
-                <Stack.Screen
-                    options={{
-                    headerTintColor: primary,
-                    }}
-                    name="Login"
-                    component={Login}
-                />
-                ) :(
-                <>
-                    <Stack.Screen name="Signup" component={Signup} />
-                </>
-                )} */}
+                <Stack.Screen name="Welcome" component={PetOwnerMain} />
             </Stack.Navigator>
-            </NavigationContainer>
-        // )}
-        // </CredentialsContext.Consumer>
+        </NavigationContainer>
     );
 };
 
