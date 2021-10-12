@@ -14,6 +14,7 @@ import Signup from './../screens/Signup';
 import AdminMain from './../screens/AdminMain';
 import PetOwnerMain from './../screens/PetOwnerMain';
 import PetSitterMain from './../screens/PetSitterMain';
+import Services from './../screens/Services';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +37,10 @@ const RootStack = () => {
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
-                <Stack.Screen name="Welcome" component={PetOwnerMain} />
+                <Stack.Screen name="PetOwnerMain" component={PetOwnerMain} />
+                <Stack.Screen name="Services" component={Services} />
+                <Stack.Screen name="AdminMain" component={AdminMain} />
+                <Stack.Screen name="PetSitterMain" component={PetSitterMain} />
             </Stack.Navigator>
         </NavigationContainer>
     );

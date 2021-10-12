@@ -16,8 +16,6 @@ import {
     StyledContainer,
     InnerContainer3,
     InnerContainer,
-    BackgroundStyle,
-    StyledContainer2,
     PageTitle,
     StyledFormArea,
     LeftIcon,
