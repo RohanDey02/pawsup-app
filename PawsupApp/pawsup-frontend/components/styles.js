@@ -31,9 +31,9 @@ export const StyledContainer2 = styled.View`
 
 export const InnerContainer = styled.View`
   width: 100%;
-  
   align-items: center;
 `;
+
 export const InnerContainer3 = styled.View`
   width: 100%;
   padding-top: ${StatusBarHeight + 160}px;
@@ -51,6 +51,21 @@ export const PageLogo = styled.Image`
   height: 200px;
 `;
  
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: "center",
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  }
+});
+
 export const BackgroundStyle = StyleSheet.create({
   container: {
     flex: 1,

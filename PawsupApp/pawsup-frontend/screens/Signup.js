@@ -15,6 +15,9 @@ import {
     StyledContainer2,
     StyledContainer,
     InnerContainer3,
+    InnerContainer,
+    BackgroundStyle,
+    StyledContainer2,
     PageTitle,
     StyledFormArea,
     LeftIcon,
@@ -30,6 +33,7 @@ import {
     Colours,
     ButtonText
 } from './../components/styles';
+
 import { View, StyleSheet,TouchableOpacity, ActivityIndicator ,ImageBackground} from 'react-native';
 
 // Colours
