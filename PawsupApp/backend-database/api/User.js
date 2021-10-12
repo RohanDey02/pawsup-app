@@ -162,4 +162,50 @@ router.post('/signin', (req, res) => {
     }
 });
 
+// Update
+router.put('/update', (req, res) => {
+    let { email, password, pettype } = req.body;
+
+    email = email.trim();
+    password = password.trim();
+    pettype = pettype.trim();
+
+    if (email == "" || password == "" || pettype == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var conditions = { email: email };
+
+        // Updates user's password and/or found by email
+        User.updateOne(conditions, req.body).then(doc => {
+            if (!doc) {
+                res.json({
+                    status: "FAILED",
+                    message: "Error could not find user"
+                })
+            } else {
+                User.find(conditions).then(data =>
+                    res.json({
+                            status: "SUCCESS",
+                            message: "Update Successful",
+                            data: data
+                        })
+                    )
+                // res.json({
+                //     status: "SUCCESS",
+                //     message: "Update Successful"
+                // })
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Checking for Existing User"
+            })
+        })
+    }
+});
+
 module.exports = router;
