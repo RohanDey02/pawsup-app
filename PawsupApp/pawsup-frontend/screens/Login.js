@@ -8,11 +8,9 @@ import { Formik } from "formik";
 import { Octicons, Ionicons, Fontisto } from "@expo/vector-icons"
 
 import {
-    StyledContainer,
+    BackgroundStyle,
+    StyledContainer2,
     InnerContainer,
-    PageLogo,
-    PageTitle,
-    SubTitle,
     StyledFormArea,
     LeftIcon,
     RightIcon,
@@ -20,15 +18,14 @@ import {
     StyledTextInput,
     StyledButton,
     MsgBox,
-    Line,
     ExtraView,
     ExtraText,
     TextLink,
     TextLinkContent,
     Colours,
-    ButtonText
+    ButtonText,
 } from './../components/styles';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, ImageBackground } from 'react-native';
 
 // Colours
 const { brand, darkLight, primary } = Colours;
@@ -76,13 +73,12 @@ const Login = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingWrapper>
-            <StyledContainer>
-                <StatusBar style="dark" />
-                <InnerContainer>
-                    <PageTitle>Pawsup</PageTitle>
-                    <SubTitle>Account Login</SubTitle>
-
+        <StyledContainer2>
+            <ImageBackground
+                source={require('./../assets/PawsupMainPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
+            <StatusBar style="dark" />
+            <InnerContainer>
+                
                     <Formik
                         initialValues={{ email: '', password: '' }}
                         onSubmit={(values, { setSubmitting }) => {
@@ -144,9 +140,9 @@ const Login = ({ navigation }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-                </InnerContainer>
-            </StyledContainer>
-        </KeyboardAvoidingWrapper>
+            </InnerContainer>
+        </ImageBackground>
+    </StyledContainer2>
     );
 };
 
