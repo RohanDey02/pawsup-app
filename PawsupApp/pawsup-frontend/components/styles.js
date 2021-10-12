@@ -225,3 +225,18 @@ export const TextLinkContent = styled.Text`
   color: ${brand};
   font-size: 15px;
 `;
+
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+	flex: 1,
+  },
+  image: {
+	width: Dimensions.get('window').width,
+	height: Dimensions.get('window').height,
+	flex: 1,
+	justifyContent: "center",
+	position: 'absolute',
+	left: 0,
+	top: 0,
+  }
+});
