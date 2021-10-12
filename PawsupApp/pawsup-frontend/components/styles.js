@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Image, View, Text, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';
+import { Image, View, Text, TextInput, Touchable, TouchableOpacity, ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -8,9 +8,9 @@ const StatusBarHeight = Constants.statusBarHeight;
 export const Colours = {
     primary: "#ffffff",
     secondary: "#E5E7EB",
-    tertiary: "#1F2937",
+    tertiary: "#1f2937",
     darkLight: "#9CA3AF",
-    brand: "#6D28D9",
+    brand: "#33d1ec",
     green: "#10B981",
     red: "#EF4444",
 };
@@ -24,9 +24,13 @@ export const StyledContainer = styled.View`
   background-color: ${primary};
 `;
 
+export const StyledContainer2 = styled.View`
+  flex: 1;
+  background-color: ${primary};
+`;
+
 export const InnerContainer = styled.View`
   width: 100%;
-  flex: 1;
   align-items: center;
 `;
 
@@ -40,6 +44,21 @@ export const PageLogo = styled.Image`
   width: 250px;
   height: 200px;
 `;
+
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: "center",
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  }
+});
 
 export const Avatar = styled.Image`
   width: 100px;
