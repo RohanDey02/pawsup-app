@@ -11,7 +11,10 @@ import { Octicons, Ionicons } from "@expo/vector-icons"
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
+    BackgroundStyle,
+    StyledContainer2,
     StyledContainer,
+    InnerContainer3,
     InnerContainer,
     BackgroundStyle,
     StyledContainer2,
@@ -30,7 +33,8 @@ import {
     Colours,
     ButtonText
 } from './../components/styles';
-import { View, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
+
+import { View, StyleSheet,TouchableOpacity, ActivityIndicator ,ImageBackground} from 'react-native';
 
 // Colours
 const { brand, darkLight, primary } = Colours;
@@ -98,10 +102,14 @@ const Signup = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+        <StyledContainer>
+            
+                <ImageBackground
+                source={require('./../assets/WallpapersAndLogo/PawsupMainPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
+                </ImageBackground>
                 <StatusBar style="dark" />
-                <InnerContainer>
-                    <PageTitle>Pawsup Signup</PageTitle>
+                <InnerContainer3>
+                     
 
                     {show && (
                         <DateTimePicker
@@ -118,7 +126,7 @@ const Signup = ({ navigation }) => {
                     )}
 
                     <Formik
-                        initialValues={{ email: '', password: '', fullname: '', dateofbirth: '', phonenumber: '', accounttype: '', pettype: '' }}
+                        initialValues={{ email: '', password: '', fullname: '', dateofbirth: '', phonenumber: '', accounttype: '', pettype: 'null' }}
                         onSubmit={(values, { setSubmitting }) => {
                             values = { ...values, dateofbirth: dob };
                             if (values.email == '' || values.password == '' || values.fullname == '' || values.dateofbirth == '' || values.phonenumber == '' || values.accounttype == '' || values.pettype == '') {
@@ -181,7 +189,7 @@ const Signup = ({ navigation }) => {
 
                                 <MyTextInput
                                     label="Phone Number"
-                                    icon="person"
+                                    icon="megaphone"
                                     placeholder="Phone Number"
                                     placeholderTextColor={darkLight}
                                     onChangeText={handleChange('phonenumber')}
@@ -199,15 +207,6 @@ const Signup = ({ navigation }) => {
                                     value={values.accounttype}
                                 />
 
-                                <MyTextInput
-                                    label="Pet Type"
-                                    icon="squirrel"
-                                    placeholder="Pet Type"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('pettype')}
-                                    onBlur={handleBlur('pettype')}
-                                    value={values.pettype}
-                                />
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
 
@@ -232,9 +231,10 @@ const Signup = ({ navigation }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-                </InnerContainer>
+                </InnerContainer3>
+                
             </StyledContainer>
-        </KeyboardAvoidingWrapper>
+            </KeyboardAvoidingWrapper>
     );
 };
 

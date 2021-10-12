@@ -34,6 +34,12 @@ export const InnerContainer = styled.View`
   align-items: center;
 `;
 
+export const InnerContainer3 = styled.View`
+  width: 100%;
+  padding-top: ${StatusBarHeight + 160}px;
+  align-items: center;
+`;
+
 export const WelcomeContainer = styled(InnerContainer)`
   padding: 25px;
   padding-top: 10px;
@@ -44,6 +50,21 @@ export const PageLogo = styled.Image`
   width: 250px;
   height: 200px;
 `;
+ 
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: "center",
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  }
+});
 
 export const BackgroundStyle = StyleSheet.create({
   container: {
