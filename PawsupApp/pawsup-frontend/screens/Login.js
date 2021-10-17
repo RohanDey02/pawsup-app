@@ -53,11 +53,15 @@ const Login = ({ navigation }) => {
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-
+                console.log(data[0]['accounttype']);
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data[0] });
+                    if (data[0]['accounttype'] == 'Petsitter') {
+                        navigation.navigate('PetSitterMain', { ...data[0] });
+                    } else if (data[0]['accounttype'] == 'Petowner') {
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
+                    }
                 }
                 setSubmitting(false);
             })

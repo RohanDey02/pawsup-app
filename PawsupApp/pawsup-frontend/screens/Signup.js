@@ -83,7 +83,7 @@ const Signup = ({ navigation }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data });
+                    navigation.navigate('Login');
                 }
                 setSubmitting(false);
             })
