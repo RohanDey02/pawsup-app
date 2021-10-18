@@ -82,6 +82,8 @@ const Signup = ({ navigation }) => {
                 } else {
                     if(data[0].accounttype == 'Petowner'){
                         navigation.navigate('PetOwnerMain', { ...data[0] });
+                    } else if(data[0].accounttype == 'Petsitter'){
+                        navigation.navigate('PetSitterMain', { ...data[0] });
                     }
                 }
                 setSubmitting(false);
