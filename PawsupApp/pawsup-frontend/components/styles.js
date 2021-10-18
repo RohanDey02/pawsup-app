@@ -101,12 +101,6 @@ export const SubTitle = styled.Text`
   letter-spacing: 1px;
   font-weight: bold;
   color: ${tertiary};
-  ${(props) =>
-        props.welcome &&
-        `
-    margin-bottom: 5px;
-    font-weight: normal;
-  `}
 `;
 
 export const StyledTextInput = styled.TextInput`
@@ -150,24 +144,27 @@ export const StyledButton = styled.TouchableOpacity`
   border-radius: 5px;
   margin-vertical: 5px;
   height: 60px;
-  ${(props) =>
-        props.google == true &&
-        `
-    background-color: ${green};
-    flex-direction: row;
-    justify-content: center;
-  `}
+`;
+
+export const StyledButtonMainPage = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${red};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 10px;
+  width: 310px;
+  height: 86px;
+`;
+
+export const ButtonTextMain = styled.Text`
+  color: ${primary};
+  font-size: 24px;
 `;
 
 export const ButtonText = styled.Text`
   color: ${primary};
   font-size: 16px;
-  ${(props) =>
-        props.google == true &&
-        `
-    color: ${primary};
-    padding: 25px;
-  `}
 `;
 
 export const MsgBox = styled.Text`
