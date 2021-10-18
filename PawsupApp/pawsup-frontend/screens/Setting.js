@@ -104,7 +104,7 @@ const Setting = ({ navigation ,route}) => {
         
         <StyledContainer>
                 <ImageBackground
-                source={require('./../assets/ServicesPage.png')} 
+                source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} 
                 resizeMode="cover" 
                 style={BackgroundStyle.image}>
                 </ImageBackground>

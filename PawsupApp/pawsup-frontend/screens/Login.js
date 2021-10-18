@@ -30,9 +30,6 @@ import { View, ActivityIndicator, ImageBackground } from 'react-native';
 // Colours
 const { brand, darkLight, primary } = Colours;
 
-// Keyboard Avoiding Wrapper
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-
 // API Client
 import axios from 'axios';
 
@@ -57,7 +54,9 @@ const Login = ({ navigation }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data[0] });
+                    if(data[0].accounttype == 'Petowner'){
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
+                    }
                 }
                 setSubmitting(false);
             })
