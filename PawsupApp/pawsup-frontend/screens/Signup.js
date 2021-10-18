@@ -12,11 +12,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
     BackgroundStyle,
-    StyledContainer2,
     StyledContainer,
     InnerContainer3,
-    InnerContainer,
-    PageTitle,
     StyledFormArea,
     LeftIcon,
     RightIcon,
@@ -32,7 +29,7 @@ import {
     ButtonText
 } from './../components/styles';
 
-import { View, StyleSheet,TouchableOpacity, ActivityIndicator ,ImageBackground} from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ImageBackground} from 'react-native';
 
 // Colours
 const { brand, darkLight, primary } = Colours;
@@ -83,7 +80,9 @@ const Signup = ({ navigation }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data });
+                    if(data[0].accounttype == 'Petowner'){
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
+                    }
                 }
                 setSubmitting(false);
             })

@@ -53,7 +53,7 @@ router.post('/signup', (req, res) => {
             status: "FAILED",
             message: "Invalid phone number entered",
         });
-    } else if (!/^Pet[owner|sitter]$/.test(accounttype)) {
+    } else if (!(/^(Petowner|Petsitter)$/.test(accounttype))) {
         res.json({
             status: "FAILED",
             message: "Invalid account type entered",
