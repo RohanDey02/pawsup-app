@@ -80,10 +80,10 @@ const Signup = ({ navigation }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    if(data[0].accounttype == 'Petowner'){
-                        navigation.navigate('PetOwnerMain', { ...data[0] });
-                    } else if(data[0].accounttype == 'Petsitter'){
-                        navigation.navigate('PetSitterMain', { ...data[0] });
+                    if(data.accounttype == 'Petowner'){
+                        navigation.navigate('PetOwnerMain', { ...data });
+                    } else if(data.accounttype == 'Petsitter'){
+                        navigation.navigate('PetSitterMain', { ...data });
                     }
                 }
                 setSubmitting(false);
