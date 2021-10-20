@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions } from 'react-native';
+import { SafeAreaView, TouchableOpacity, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, Button } from 'react-native';
 import Entry from '../components/Entry';
 
 import {
@@ -25,13 +25,13 @@ import {
 
 const BG_IMG = 'pawpus.finestudiotest.com/include/pic/backend/21070708564800.png';
 const CAT_IMG = 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png';
-const FILTER_IMG = 'https://www.fortiguard.com/static/images/icons/filter.png?v=4239';
+const FILTER_IMG = require('./../assets/icons/filter.png');
 
 // some data i guess?
 const DATA = [
 	{
 		id: 'bd7acbea-c1b1-c-aed5-3ad53abb28ba',
-		name: 'Ali Orozgani',
+		name: 'qAli Orozgani',
 		gender: 'Male',
 		image: CAT_IMG, 
 		email: 'alio@gmail.com',
@@ -112,7 +112,7 @@ const DATA = [
 	},
 ];
 
-const WIDTH = Dimensions.get("window").width - 20;
+const WIDTH = Dimensions.get("window").width;
 const SPACING = 20;
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -139,15 +139,37 @@ const Services = () => {
 			</ImageBackground>
 
 			<StatusBar style="light" />
-			<PageTitle>Available Services</PageTitle>
+			<PageTitle style={{color: 'black', marginTop: 10}}>Available Services</PageTitle>
+
+			<SafeAreaView style={{marginTop: 20}}>
+				<View style={{flexDirection: 'row'}}>
+					<TouchableOpacity style={styles.filterButtonStyle}>
+						<Image
+							source={FILTER_IMG}
+							style={styles.buttonImageIconStyle}
+						/>
+						<Text style={styles.buttonTextStyle}>
+							SORT & FILTER
+						</Text>
+					</TouchableOpacity>
+			{/*
+					<TouchableOpacity style={styles.filterButtonStyle}>
+					<Image
+						source={FILTER_IMG}
+						style={styles.buttonImageIconStyle}
+					/>
+					<Text style={styles.buttonTextStyle}>
+						Filter
+					</Text>
+				</TouchableOpacity>
+			*/}
+				</View>
+			</SafeAreaView>
 
 			<SafeAreaView style={styles.container}>
 				<FlatList
 					data={DATA}
-					style={{
-						margin:5,
-						flex: 1
-					}}
+					style={{ flex: 1 }}
 					contentContainerStyle={{
 						padding: SPACING
 					}}
@@ -172,7 +194,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 5,
 		flex: 1,
-		marginTop: StatusBar.currentHeight ?  StatusBar.currentHeight : 0,
 	},
 	item: {
 		backgroundColor: '#f9c2ff',
@@ -186,7 +207,30 @@ const styles = StyleSheet.create({
 	bgimg: {
 		flex: 1,
 		justifyContent: "center"
-	}
+	},
+	filterButtonStyle: {
+		marginLeft: 25,
+		flexDirection: 'row',
+		backgroundColor: 'rgba(255, 255, 255, 0.7)',
+		borderWidth: 2,
+		borderColor: '#000',
+		width: WIDTH / 2 - 40,
+		height: 30,					 /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+		borderRadius: 10,
+	},
+	buttonImageIconStyle: {
+		width: 35,					/* THIS IS A FIXED VALUE. CHANGE LATER??? */
+    	height: '100%',
+    	resizeMode: 'contain',
+	},
+	buttonTextStyle: {
+		fontSize: 15,
+		alignSelf: 'center',
+		marginLeft: 5,
+		color: '#000',
+		flex: 1,
+	},
+
 });
 
 export default Services;
