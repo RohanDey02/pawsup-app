@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
     */
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/user/signin";
+        const url = "https://protected-shelf-96328.herokuapp.com/api/signin";
 
         axios
             .post(url, credentials)
