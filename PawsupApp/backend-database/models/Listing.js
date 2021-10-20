@@ -8,6 +8,7 @@ const Schema = mongoose.Schema;
 
 const BookedSchema = new Schema({
     reason: String,
+	cost: Number,
     startdate: String,
     enddate: String
 });
@@ -16,7 +17,9 @@ const ListingSchema = new Schema({
     listingowner: String,
     title: String,
     description: String,
+	location: String,
     features: String,
+	price: Number,
     bookings: [BookedSchema]
 });
 
