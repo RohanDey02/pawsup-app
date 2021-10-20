@@ -12,19 +12,22 @@ const Listing = require('./../models/Listing');
 // Password Encrypter
 const bcrypt = require('bcrypt');
 
+// USER:
+
 // Signup
 router.post('/signup', (req, res) => {
-    let { email, password, fullname, dateofbirth, phonenumber, accounttype, pettype } = req.body;
+    let { email, password, fullname, dateofbirth, location, phonenumber, accounttype, pettype } = req.body;
 
     email = email.trim();
     password = password.trim();
     fullname = fullname.trim();
     dateofbirth = dateofbirth.trim();
+    location = location.trim();
     phonenumber = phonenumber.trim();
     accounttype = accounttype.trim();
     pettype = pettype.trim();
 
-    if (email == "" || password == "" || fullname == "" || dateofbirth == "" || phonenumber == "" || accounttype == "" || pettype == "") {
+    if (email == "" || password == "" || fullname == "" || dateofbirth == "" || location == "" || phonenumber == "" || accounttype == "" || pettype == "") {
         res.json({
             status: "FAILED",
             message: "Empty fields!"
@@ -48,6 +51,11 @@ router.post('/signup', (req, res) => {
         res.json({
             status: "FAILED",
             message: "Invalid date of birth entered",
+        });
+    } else if (!/^(\d{1,}[a-zA-z]{0,1})+(\s)+[0-9A-Za-z\s]+[A-z]+[a-z]+(\,\s)+[A-Z]+[a-z\s]+(\,\s)+[A-Za-z]{2,}(\,\s)+[A-Z][\d][A-Z][\d][A-Z][\d]*$/.test(location)) {
+        res.json({
+            status: "FAILED",
+            message: "Invalid location entered",
         });
     } else if (!/^[\d]{10}$/.test(phonenumber)) {
         res.json({
@@ -75,6 +83,8 @@ router.post('/signup', (req, res) => {
                 })
             } else {
                 // Create user
+                var dob = dateofbirth.substring(0,10);
+                dateofbirth = dob;
 
                 // Password Handler
                 const saltRounds = 10;
@@ -84,6 +94,7 @@ router.post('/signup', (req, res) => {
                         password,
                         fullname,
                         dateofbirth,
+                        location,
                         phonenumber,
                         accounttype,
                         pettype
@@ -205,10 +216,13 @@ router.put('/update', (req, res) => {
     }
 });
 
+// LISTING:
+
 // Create Listing
 router.post('/createListing', (req, res) => {
     let { listingowner } = req.body;
     var emptyString = "Not Filled Out Yet";
+    var emptyNumber = -1;
     var emptyArray = [];
 
     listingowner = listingowner.trim();
@@ -239,7 +253,9 @@ router.post('/createListing', (req, res) => {
                     listingowner: listingowner,
                     title: emptyString,
                     description: emptyString,
+                    location: emptyString,
                     features: emptyString,
+                    price: emptyNumber,
                     bookings: emptyArray
                 });
 
@@ -299,14 +315,15 @@ router.get('/getListing', (req, res) => {
 
 // Modify Listing
 router.put('/modifyListing', (req, res) => {
-    let { listingowner, title, description, features } = req.body;
+    let { listingowner, title, description, location, features, price } = req.body;
 
     listingowner = listingowner.trim();
     title = title.trim();
     description = description.trim();
+    location = location.trim();
     features = features.trim();
 
-    if (listingowner == "" || title == "" || description == "" || features == "") {
+    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || price < 0) {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
@@ -353,7 +370,7 @@ router.put('/modifyListing', (req, res) => {
 
 // Make Booking
 router.put('/makeBooking', (req, res) => {
-    let { listingowner, reason, startdate, enddate } = req.body;
+    let { listingowner, reason, cost, startdate, enddate } = req.body;
 
     listingowner = listingowner.trim();
     reason = reason.trim();
@@ -366,9 +383,9 @@ router.put('/makeBooking', (req, res) => {
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
-    var booking = { reason: reason, startdate: startdate, enddate: enddate };
+    var booking = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
-    if (listingowner == "" || reason == "" || startdate == "" || enddate == "") {
+    if (listingowner == "" || reason == "" || cost < 0 || startdate == "" || enddate == "") {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Fields!"

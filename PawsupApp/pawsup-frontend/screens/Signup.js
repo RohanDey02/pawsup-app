@@ -81,9 +81,9 @@ const Signup = ({ navigation }) => {
                     handleMessage(message, status);
                 } else {
                     if(data.accounttype == 'Petowner'){
-                        navigation.navigate('PetOwnerMain', { ...data });
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
                     } else if(data.accounttype == 'Petsitter'){
-                        navigation.navigate('PetSitterMain', { ...data });
+                        navigation.navigate('PetSitterMain', { ...data[0] });
                     }
                 }
                 setSubmitting(false);
@@ -125,7 +125,7 @@ const Signup = ({ navigation }) => {
                     )}
 
                     <Formik
-                        initialValues={{ email: '', password: '', fullname: '', dateofbirth: '', phonenumber: '', accounttype: '', pettype: 'null' }}
+                        initialValues={{ email: '', password: '', fullname: '', dateofbirth: '', location: '', phonenumber: '', accounttype: '', pettype: 'null' }}
                         onSubmit={(values, { setSubmitting }) => {
                             values = { ...values, dateofbirth: dob };
                             if (values.email == '' || values.password == '' || values.fullname == '' || values.dateofbirth == '' || values.phonenumber == '' || values.accounttype == '' || values.pettype == '') {
@@ -184,6 +184,16 @@ const Signup = ({ navigation }) => {
                                     editable={false}
                                     isDate={true}
                                     showDatePicker={showDatePicker}
+                                />
+
+                                <MyTextInput
+                                    label="Location"
+                                    icon="location"
+                                    placeholder="Addr#, Street Name, City, Province, Postal Code"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={handleChange('location')}
+                                    onBlur={handleBlur('location')}
+                                    value={values.location}
                                 />
 
                                 <MyTextInput
