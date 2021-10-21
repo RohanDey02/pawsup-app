@@ -34,9 +34,15 @@ export const InnerContainer = styled.View`
   align-items: center;
 `;
 
+export const InnerContainer2 = styled.View`
+  width: 100%;
+  align-items: center;
+  padding-top: ${StatusBarHeight + 10}px;
+`;
+
 export const InnerContainer3 = styled.View`
   width: 100%;
-  padding-top: ${StatusBarHeight + 160}px;
+  padding-top: ${StatusBarHeight + 180}px;
   align-items: center;
 `;
 
@@ -116,6 +122,19 @@ export const StyledTextInput = styled.TextInput`
   color: ${tertiary};
 `;
 
+export const StyledTextInput1 = styled.TextInput`
+  background-color: ${secondary};
+  padding: 0px;
+  padding-left: 55px;
+  padding-right: 55px;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 100px;
+  margin-vertical: 3px;
+  margin-bottom: 8px;
+  color: ${tertiary};
+`;
+
 export const StyledInputLabel = styled.Text`
   color: ${tertiary};
   font-size: 13px;
@@ -144,6 +163,7 @@ export const StyledButton = styled.TouchableOpacity`
   border-radius: 5px;
   margin-vertical: 5px;
   height: 60px;
+  borderRadius:30px;
 `;
 
 export const StyledButtonMainPage = styled.TouchableOpacity`
@@ -191,9 +211,22 @@ export const ExtraView = styled.View`
   padding: 10px;
 `;
 
+export const ExtraView1 = styled.View`
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+`;
+
 export const ExtraText = styled.Text`
   justify-content: center;
   align-content: center;
+  color: ${tertiary};
+  font-size: 15px;
+`;
+
+export const ExtraText1 = styled.Text`
   color: ${tertiary};
   font-size: 15px;
 `;
