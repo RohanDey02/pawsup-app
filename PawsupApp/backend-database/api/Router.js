@@ -328,6 +328,11 @@ router.put('/modifyListing', (req, res) => {
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
         })
+    } else if (!/^(\d{1,}[a-zA-z]{0,1})+(\s)+[0-9A-Za-z\s]+[A-z]+[a-z]+(\,\s)+[A-Z]+[a-z\s]+(\,\s)+[A-Za-z]{2,}(\,\s)+[A-Z][\d][A-Z][\d][A-Z][\d]*$/.test(location)) {
+        res.json({
+            status: "FAILED",
+            message: "Invalid location entered",
+        });
     } else {
         var query = { listingowner: listingowner };
 
@@ -383,6 +388,12 @@ router.put('/makeBooking', (req, res) => {
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
+    var tempstartdate = startdate.substring(0,10);
+    startdate = tempstartdate;
+
+    var tempenddate = enddate.substring(0,10);
+    enddate = tempenddate;
+
     var booking = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
     if (listingowner == "" || reason == "" || cost < 0 || startdate == "" || enddate == "") {
@@ -406,7 +417,6 @@ router.put('/makeBooking', (req, res) => {
                 
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
-                    console.log(booking);
                     var d1 = booking.startdate.split("/");
                     var d2 = booking.enddate.split("/");
 
