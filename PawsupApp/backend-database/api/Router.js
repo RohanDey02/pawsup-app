@@ -406,7 +406,6 @@ router.put('/makeBooking', (req, res) => {
                 
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
-                    console.log(booking);
                     var d1 = booking.startdate.split("/");
                     var d2 = booking.enddate.split("/");
 
@@ -464,6 +463,101 @@ router.put('/makeBooking', (req, res) => {
                 message: "Error: Checking for Existing Listing #1"
             })
         })
+    }
+});
+
+// Filter Listing By Price
+router.get('/filterPriceListings', (req, res) => {
+    let { minprice, maxprice } = req.body;
+    var listingowners = [];
+
+    if(minprice < 0 || maxprice < 0){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering prices below 0!"
+        })
+    } else{
+        Listing.find({} , (err, listings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                listings.map(listing => {
+                    // Check the listing price to see if it works
+                    if(listing.price >= minprice && listing.price <= maxprice){
+                        listingowners.push(listing.listingowner);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listing Owners With Suitable Price Found Successfully",
+                    data: listingowners
+                })
+            }
+        })  
+    }
+});
+
+// Filter Listing By Availability
+router.get('/filterAvailabilityListings', (req, res) => {
+    let { startdate, enddate } = req.body;
+    var listingowners = [];
+
+    startdate = startdate.trim();
+    enddate = enddate.trim();
+
+    // Converting to Date Format
+    var s1 = startdate.split("/");
+    var e1 = enddate.split("/");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
+
+    if(enddate1 < startdate1){
+        res.json({
+            status: "FAILED",
+            message: "Error: End Date is before Start Date"
+        })
+    } else{
+        Listing.find({} , (err, listings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                listings.map(listing => {
+                    // Check the listing availability to see if it works
+                    var bool = false;
+                    // Iterate through all of the dates
+                    for(const booking of listing.bookings) {
+                        var d1 = booking.startdate.split("/");
+                        var d2 = booking.enddate.split("/");
+
+                        var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+                        var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+
+                        // Check for overlapping
+                        if((startdate1 >= from && startdate1 <= to) || (enddate1 >= from && enddate1 <= to) || (from >= startdate1 && from <= enddate1) || (to >= startdate1 && to <= enddate1)){
+                            bool = true;
+                            break;
+                        }
+                    }
+
+                    if(bool == false){
+                        listingowners.push(listing.listingowner);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listing Owners With Suitable Availability Found Successfully",
+                    data: listingowners
+                })
+            }
+        })  
     }
 });
 
