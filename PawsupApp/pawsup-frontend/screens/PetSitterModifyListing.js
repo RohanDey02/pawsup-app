@@ -25,7 +25,7 @@ import {
     Colours,
     ButtonText,
 } from '../components/styles';
-import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity } from 'react-native';
+import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
@@ -79,10 +79,7 @@ const PetSitterModifyListing = ({ navigation, route }) => {
         handleMessage(null);
         const url = "https://protected-shelf-96328.herokuapp.com/api/modifyListing";
         var modifyValues={ listingowner: credentials.listingowner, title: credentials.title, description: credentials.description, location: credentials.location, features: credentials.features,  price: credentials.price};
-        var blockValues={ listingowner: credentials.listingowner, reason: credentials.reason, startdate: credentials.startDate, enddate: credentials.endDate};
-        console.log(route.params);
-        console.log(email);
-        console.log(modifyValues);
+        var blockValues={ listingowner: credentials.listingowner, reason: credentials.reason, startdate: startDate, enddate: endDate};
         axios
             .put(url, modifyValues)
             .then((response) => {
@@ -90,14 +87,16 @@ const PetSitterModifyListing = ({ navigation, route }) => {
                 const { status, message, data } = result;
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
+                    setSubmitting(false);
                 } else {
                     if (credentials.booked) {
                         handleBlock(blockValues, setSubmitting);
                     }
-                    navigation.navigate('PetSitterMain', { ...route });
-                    //should go to view listing page for pet sitter
+                    setSubmitting(false);
+                    Alert.alert('SUCCESS', 'Your changes have been saved.', [
+                        {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', { ...route })}
+                    ]);
                 }
-                setSubmitting(false);
             })
             .catch((error) => {
                 setSubmitting(false);
