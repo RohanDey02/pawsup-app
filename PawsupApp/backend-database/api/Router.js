@@ -394,7 +394,7 @@ router.put('/makeBooking', (req, res) => {
     var tempenddate = enddate.substring(0,10);
     enddate = tempenddate;
 
-    var booking = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
+    var book = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
     if (listingowner == "" || reason == "" || cost < 0 || startdate == "" || enddate == "") {
         res.json({
@@ -431,7 +431,7 @@ router.put('/makeBooking', (req, res) => {
                 }
                 
                 if(bool == false){
-                    info[0].bookings.push(booking);
+                    info[0].bookings.push(book);
 
                     // Updates listing's information
                     Listing.updateOne(query, info[0]).then(doc => {
