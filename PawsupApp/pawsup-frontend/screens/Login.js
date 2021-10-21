@@ -30,9 +30,6 @@ import { View, ActivityIndicator, ImageBackground } from 'react-native';
 // Colours
 const { brand, darkLight, primary } = Colours;
 
-// Keyboard Avoiding Wrapper
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-
 // API Client
 import axios from 'axios';
 
@@ -46,18 +43,24 @@ const Login = ({ navigation }) => {
     */
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/user/signin";
+        const url = "https://protected-shelf-96328.herokuapp.com/api/signin";
 
         axios
             .post(url, credentials)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-
+                
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data[0] });
+                    if(data[0].accounttype == 'Petowner'){
+                        navigation.navigate('PetOwnerMain', { ...data });
+                    } else if(data[0].accounttype == 'Petsitter'){
+                        navigation.navigate('PetSitterMain', { ...data });
+                    } else if(data[0].accounttype == 'Admin'){
+                        navigation.navigate('AdminMain', { ...data });
+                    }
                 }
                 setSubmitting(false);
             })
