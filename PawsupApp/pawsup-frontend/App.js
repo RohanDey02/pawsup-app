@@ -1,8 +1,8 @@
 import React from 'react';
 
 // React Navigation Stack
-import RootStack from './navigators/RootStack'
+import DL from './screens/DetailedListing'
 
 export default function App() {
-  return <RootStack/>;
+  return <DL/>;
 }
