@@ -467,4 +467,107 @@ router.put('/makeBooking', (req, res) => {
     }
 });
 
+function getDifferenceInDays(date1, date2) {
+    const diffInMs = date2 - date1;
+    return diffInMs / (1000 * 60 * 60 * 24);
+}
+
+// Cancelling Booking
+router.put('/cancelBooking', (req, res) => {
+    // Listingowner, startdate and enddate gets passed in to find owner and exact appointment
+    let { listingowner, startdate, enddate } = req.body;
+
+    listingowner = listingowner.trim();
+    startdate = startdate.trim();
+    enddate = enddate.trim();
+
+    // Converting to Date Format
+    var s1 = startdate.split("/");
+    var e1 = enddate.split("/");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
+    
+    if (listingowner == "" || startdate == "" || enddate == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Listing Fields!"
+        })
+    } else if (enddate1 < startdate1) {
+        res.json({
+            status: "FAILED",
+            message: "Error: End Date is before Start Date"
+        })
+    } else if (getDifferenceInDays(new Date(), startdate1) < 2) {
+        res.json({
+            status: "FAILED",
+            message: "Error: Start Date is within 2 days of current time"
+        })
+    } else {
+        var query = { listingowner: listingowner };
+
+        // Get Listing Data
+        Listing.find(query).then(info => {
+            if (info.length) {
+                // User exists, now check if date is same as passed
+
+                var bookings = info[0].bookings;
+                var filtered = bookings.filter(function(value, index, arr) {
+                    var d1 = value.startdate.split("/");
+                    var d2 = value.enddate.split("/");
+
+                    var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+                    var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+
+                    console.log(value);
+                    return !((getDifferenceInDays(startdate1, from) == 0) && (getDifferenceInDays(enddate1, to) == 0));
+/*                  Can use bare string comparison as well since data passed in and data stored has 
+                    consistent format, but will convert date and use function to get difference instead.
+                    return !((value.startdate == startdate) && (value.enddate == enddate));
+ */                });
+
+                if (bookings.length != filtered.length) {
+                    info[0].bookings = filtered;
+                    Listing.updateOne(query, info[0]).then(doc => {
+                        if (!doc) {
+                            res.json({
+                                status: "FAILED",
+                                message: "Error: Could Not Find Listing"
+                            })
+                        } else {
+                            Listing.find(query).then(data =>
+                                res.json({
+                                    status: "SUCCESS",
+                                    message: "Listing Booking Removed Successfully",
+                                    data: data
+                                })
+                            )
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        res.json({
+                            status: "FAILED",
+                            message: "Error: Checking for Existing Listing #2"
+                        })
+                    })
+                } else {
+                    res.json({
+                        status: "FAILED",
+                        message: "Error: No appointment matched specified startdate and enddate"
+                    })
+                }
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Invalid Credentials"
+                })
+            }
+        }).catch(err => {
+            res.json({
+                status: "FAILED",
+                message: "Error: Checking for Existing Listing #1"
+            })
+        })
+    }
+});
+
 module.exports = router;
