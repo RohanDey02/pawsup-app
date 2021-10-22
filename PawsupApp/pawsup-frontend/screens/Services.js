@@ -5,6 +5,9 @@ import Entry from '../components/Entry';
 
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
 
+// API Client
+import axios from 'axios';
+
 const CAT_IMG = 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png';
 const FILTER_IMG = require('./../assets/icons/filter.png');
 const SORT_IMG = require('./../assets/icons/sort.png');
@@ -100,22 +103,41 @@ const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
 const tileSize = screenWidth / numColumns;
 
-const Item = ({ title }) => (
-	<View style={styles.item}>
-		<Text style={styles.title}>{title}</Text>
-	</View>
-);
+const Services = ({ navigation, route }) => {
+	//const data = route.params;
+	//const currentUser = data["0"];
 
-const Services = () => {
-	const renderItem = ({ item }) => (
-		<Item title={item.title} />
-	);
 
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
 	const [selectedDistance, setSelectedDistance] = useState();
 	const [displayData, setDisplayData] = useState();
 
+	const handleFilter = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings";
+		console.log(req)
+        axios
+            .get(url, req)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+                console.log(status);
+				console.log(message);
+				console.log(data);
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    //console.log("YAYYYYYY");
+					//console.log(response.data.data);
+                }
+                
+            })
+            .catch((error) => {
+				console.log("ERROR HERE!!!");
+				console.log(error);
+                //handleMessage('An error occurred. Check your network and try again');
+            });
+    }
 	
 	return (
 		<StyledContainer2>
@@ -167,6 +189,15 @@ const Services = () => {
 								onValueChange={
 									(itemValue, itemIndex) => {
 										setSelectedPrice(itemValue);
+										
+										if(itemValue === "a") {
+											handleFilter(
+												{
+													minprice: -1,
+													maxprice: 1000
+												}
+											);
+										}
 
 										const neww = [];
 										for(var i = 0; i < ALL_DATA.length; i++) {
