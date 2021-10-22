@@ -4,7 +4,7 @@ import { View, Image, StyleSheet, Text, Dimensions, TouchableOpacity, } from 're
 const NUMCOLS = 1;
 const WIDTH = Dimensions.get('window').width - 40;
 
-const Entry = ({ item, onPress }) => {
+const Entry2 = ({ item, onPress }) => {
     const { title, desc } = item;
     return (
         <View style={styles.container} >
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
   	},
 });
 
-export default Entry;
+export default Entry2;
