@@ -601,7 +601,7 @@ router.get('/getUser', (req, res) => {
 });
 
 // Get Appointments that petowner booked
-router.get('/getBookedBookings', (req, res) => {
+router.get('/getPetownerBookings', (req, res) => {
     let { petowner } = req.body;
 
     petowner = petowner.trim();
@@ -624,18 +624,11 @@ router.get('/getBookedBookings', (req, res) => {
                     AllBookings.push(listing);
                 } 
             }
-            if (AllBookings.length > 0) {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Bookings Found Successfully",
-                    data: AllBookings
-                })
-            } else {
-                res.json({
-                    status: "FAILURE",
-                    message: "No bookings found for petowner"
-                })
-            }
+            res.json({
+                status: "SUCCESS",
+                message: "Bookings Found Successfully",
+                data: AllBookings
+            })
         }).catch(err => {
             console.log(err);
             res.json({
