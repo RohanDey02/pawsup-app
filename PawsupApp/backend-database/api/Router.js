@@ -570,4 +570,80 @@ router.put('/cancelBooking', (req, res) => {
     }
 });
 
+// Get user info
+router.get('/getUser', (req, res) => {
+    let { email } = req.body;
+
+    email = email.trim();
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Email Field!"
+        })
+    } else {
+        var query = { email: email };
+
+        // Get listing data for bookings
+        User.find(query).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User Found Successfully",
+                data: data
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
+// Get Appointments that petowner booked
+router.get('/getBookedBookings', (req, res) => {
+    let { petowner } = req.body;
+
+    petowner = petowner.trim();
+
+    if (petowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Listing Owner Field!"
+        })
+    } else {
+        var AllBookings = [];
+        // Get listing data for bookings
+        Listing.find().then(data => {
+            for (const listing of data) {
+                filtered = listing.bookings.filter(function(value, index, arr) {
+                    return (value.reason == petowner);
+                })
+                if (filtered.length > 0) {
+                    listing.bookings = filtered;
+                    AllBookings.push(listing);
+                } 
+            }
+            if (AllBookings.length > 0) {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Bookings Found Successfully",
+                    data: AllBookings
+                })
+            } else {
+                res.json({
+                    status: "FAILURE",
+                    message: "No bookings found for petowner"
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding Bookings, Perhaps User has no bookings"
+            })
+        })
+    }
+});
+
 module.exports = router;
