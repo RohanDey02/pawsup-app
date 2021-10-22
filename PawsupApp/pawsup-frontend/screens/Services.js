@@ -10,7 +10,7 @@ const FILTER_IMG = require('./../assets/icons/filter.png');
 const SORT_IMG = require('./../assets/icons/sort.png');
 
 // some data i guess?
-const DATA = [
+const ALL_DATA = [
 	{
 		id: 'bd7acbea-c1b1-c-aed5-3ad53abb28ba',
 		name: 'qAli Orozgani',
@@ -114,6 +114,7 @@ const Services = () => {
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
 	const [selectedDistance, setSelectedDistance] = useState();
+	const [displayData, setDisplayData] = useState();
 
 	
 	return (
@@ -147,7 +148,6 @@ const Services = () => {
 					</View>
 				</SafeAreaView>
 			}
-			
 
 			{ filterVisible &&  
 				<SafeAreaView style={{margin: 15, alignContent: 'center'}}>
@@ -164,14 +164,42 @@ const Services = () => {
 								selectedValue={selectedPrice}
 								mode={'dropdown'}
 								dropdownIconColor={'red'}
-								onValueChange={(itemValue, itemIndex) => setSelectedPrice(itemValue)}
+								onValueChange={
+									(itemValue, itemIndex) => {
+										setSelectedPrice(itemValue);
+
+										const neww = [];
+										for(var i = 0; i < ALL_DATA.length; i++) {
+											if(itemValue === "a") {
+												neww.push(ALL_DATA[i]);
+											}else if(itemValue === "b") {
+												if(ALL_DATA[i].price <= 10)
+													neww.push(ALL_DATA[i]);
+											}else if(itemValue === "c") {
+												if(ALL_DATA[i].price >= 10 && ALL_DATA[i].price <= 20)
+													neww.push(ALL_DATA[i]);
+											}else if(itemValue === "d") {
+												if(ALL_DATA[i].price >= 20 && ALL_DATA[i].price <= 50)
+													neww.push(ALL_DATA[i]);
+											}else if(itemValue === "e") {
+												if(ALL_DATA[i].price >= 50 && ALL_DATA[i].price <= 100)
+													neww.push(ALL_DATA[i]);
+											}else if(itemValue === "f") {
+												if(ALL_DATA[i].price >= 100)
+													neww.push(ALL_DATA[i]);
+											}
+										}
+										//console.log(neww);
+										setDisplayData(neww);
+									}
+								}
 							>
-								<Picker.Item label="Any" value="any" />
-								<Picker.Item label="Under $10" value="0,10" />
-								<Picker.Item label="$10 to $20" value="10,20" />
-								<Picker.Item label="$20 to $50" value="20,50" />
-								<Picker.Item label="$50 to $100" value="50,100" />
-								<Picker.Item label="Over $100" value="100,inf" />
+								<Picker.Item label="Any" value="a" />
+								<Picker.Item label="Under $10" value="b" />
+								<Picker.Item label="$10 to $20" value="c" />
+								<Picker.Item label="$20 to $50" value="d" />
+								<Picker.Item label="$50 to $100" value="e" />
+								<Picker.Item label="Over $100" value="f" />
 							</Picker>
 						</View>
 					</SafeAreaView>
@@ -233,7 +261,7 @@ const Services = () => {
 			{ !filterVisible &&
 				<SafeAreaView style={styles.container}>
 					<FlatList
-						data={DATA}
+						data={displayData}
 						style={{ flex: 1 }}
 						contentContainerStyle={{
 							padding: SPACING
