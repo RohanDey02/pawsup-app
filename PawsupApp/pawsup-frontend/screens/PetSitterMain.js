@@ -26,8 +26,8 @@ const PetSitterMain = ({ navigation, route }) => {
                         />
                     </TouchableHighlight>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Create Your Listing</ButtonTextMain>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('PetSitterModifyListing', data)}>
+                        <ButtonTextMain>Modify Your Listing</ButtonTextMain>
                     </StyledButtonMainPage>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
