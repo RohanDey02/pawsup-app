@@ -154,7 +154,20 @@ export const StyledButtonMainPage = styled.TouchableOpacity`
   border-radius: 5px;
   margin-vertical: 10px;
   width: 310px;
+  alignSelf: 'center';
   height: 86px;
+`;
+
+export const StyledButtonAppointmentPage = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${green};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 10px;
+  alignSelf: center;
+  width: 110px;
+  height: 50px;
 `;
 
 export const ButtonTextMain = styled.Text`
