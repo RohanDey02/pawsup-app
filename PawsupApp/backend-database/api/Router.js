@@ -328,6 +328,11 @@ router.put('/modifyListing', (req, res) => {
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
         })
+    } else if (!/^(\d{1,}[a-zA-z]{0,1})+(\s)+[0-9A-Za-z\s]+[A-z]+[a-z]+(\,\s)+[A-Z]+[a-z\s]+(\,\s)+[A-Za-z]{2,}(\,\s)+[A-Z][\d][A-Z][\d][A-Z][\d]*$/.test(location)) {
+        res.json({
+            status: "FAILED",
+            message: "Invalid location entered",
+        });
     } else {
         var query = { listingowner: listingowner };
 
@@ -383,7 +388,13 @@ router.put('/makeBooking', (req, res) => {
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
-    var booking = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
+    var tempstartdate = startdate.substring(0,10);
+    startdate = tempstartdate;
+
+    var tempenddate = enddate.substring(0,10);
+    enddate = tempenddate;
+
+    var book = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
     if (listingowner == "" || reason == "" || cost < 0 || startdate == "" || enddate == "") {
         res.json({
@@ -406,7 +417,6 @@ router.put('/makeBooking', (req, res) => {
                 
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
-                    console.log(booking);
                     var d1 = booking.startdate.split("/");
                     var d2 = booking.enddate.split("/");
 
@@ -421,7 +431,7 @@ router.put('/makeBooking', (req, res) => {
                 }
                 
                 if(bool == false){
-                    info[0].bookings.push(booking);
+                    info[0].bookings.push(book);
 
                     // Updates listing's information
                     Listing.updateOne(query, info[0]).then(doc => {
@@ -462,6 +472,178 @@ router.put('/makeBooking', (req, res) => {
             res.json({
                 status: "FAILED",
                 message: "Error: Checking for Existing Listing #1"
+            })
+        })
+    }
+});
+
+function getDifferenceInDays(date1, date2) {
+    const diffInMs = date2 - date1;
+    return diffInMs / (1000 * 60 * 60 * 24);
+}
+
+// Cancelling Booking
+router.put('/cancelBooking', (req, res) => {
+    // Listingowner, startdate and enddate gets passed in to find owner and exact appointment
+    let { listingowner, startdate, enddate } = req.body;
+
+    listingowner = listingowner.trim();
+    startdate = startdate.trim();
+    enddate = enddate.trim();
+
+    // Converting to Date Format
+    var s1 = startdate.split("/");
+    var e1 = enddate.split("/");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
+    
+    if (listingowner == "" || startdate == "" || enddate == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Listing Fields!"
+        })
+    } else if (enddate1 < startdate1) {
+        res.json({
+            status: "FAILED",
+            message: "Error: End Date is before Start Date"
+        })
+    } else if (getDifferenceInDays(new Date(), startdate1) < 2) {
+        res.json({
+            status: "FAILED",
+            message: "Error: Start Date is within 2 days of current time"
+        })
+    } else {
+        var query = { listingowner: listingowner };
+
+        // Get Listing Data
+        Listing.find(query).then(info => {
+            if (info.length) {
+                // User exists, now check if date is same as passed
+
+                var bookings = info[0].bookings;
+                var filtered = bookings.filter(function(value, index, arr) {
+                    var d1 = value.startdate.split("/");
+                    var d2 = value.enddate.split("/");
+
+                    var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+                    var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+
+                    console.log(value);
+                    return !((getDifferenceInDays(startdate1, from) == 0) && (getDifferenceInDays(enddate1, to) == 0));
+/*                  Can use bare string comparison as well since data passed in and data stored has 
+                    consistent format, but will convert date and use function to get difference instead.
+                    return !((value.startdate == startdate) && (value.enddate == enddate));
+ */                });
+
+                if (bookings.length != filtered.length) {
+                    info[0].bookings = filtered;
+                    Listing.updateOne(query, info[0]).then(doc => {
+                        if (!doc) {
+                            res.json({
+                                status: "FAILED",
+                                message: "Error: Could Not Find Listing"
+                            })
+                        } else {
+                            Listing.find(query).then(data =>
+                                res.json({
+                                    status: "SUCCESS",
+                                    message: "Listing Booking Removed Successfully",
+                                    data: data
+                                })
+                            )
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        res.json({
+                            status: "FAILED",
+                            message: "Error: Checking for Existing Listing #2"
+                        })
+                    })
+                } else {
+                    res.json({
+                        status: "FAILED",
+                        message: "Error: No appointment matched specified startdate and enddate"
+                    })
+                }
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Invalid Credentials"
+                })
+            }
+        }).catch(err => {
+            res.json({
+                status: "FAILED",
+                message: "Error: Checking for Existing Listing #1"
+            })
+        })
+    }
+});
+
+// Get user info
+router.get('/getUser', (req, res) => {
+    let { email } = req.body;
+
+    email = email.trim();
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Email Field!"
+        })
+    } else {
+        var query = { email: email };
+
+        // Get listing data for bookings
+        User.find(query).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User Found Successfully",
+                data: data
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
+// Get Appointments that petowner booked
+router.get('/getPetownerBookings', (req, res) => {
+    let { petowner } = req.body;
+
+    petowner = petowner.trim();
+
+    if (petowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Listing Owner Field!"
+        })
+    } else {
+        var AllBookings = [];
+        // Get listing data for bookings
+        Listing.find().then(data => {
+            for (const listing of data) {
+                filtered = listing.bookings.filter(function(value, index, arr) {
+                    return (value.reason == petowner);
+                })
+                if (filtered.length > 0) {
+                    listing.bookings = filtered;
+                    AllBookings.push(listing);
+                } 
+            }
+            res.json({
+                status: "SUCCESS",
+                message: "Bookings Found Successfully",
+                data: AllBookings
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding Bookings, Perhaps User has no bookings"
             })
         })
     }
