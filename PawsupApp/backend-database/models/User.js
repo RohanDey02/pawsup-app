@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     password: String,
     fullname: String,
     dateofbirth: String,
-	location: String,
+	  location: String,
     phonenumber: String,
     accounttype: String,
     pettype: String

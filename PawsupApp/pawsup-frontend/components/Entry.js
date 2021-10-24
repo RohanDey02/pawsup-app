@@ -30,7 +30,7 @@ const Entry = ({ item, onPress }) => {
 			</View>
 
 
-			<Text style={{fontSize: 12}}>
+			<Text style={{fontSize: 12, textAlign: 'center',}}>
 				{item.description}
 			</Text>
         </View>
