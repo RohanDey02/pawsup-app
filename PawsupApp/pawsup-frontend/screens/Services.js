@@ -106,12 +106,12 @@ const tileSize = screenWidth / numColumns;
 const Services = ({ navigation, route }) => {
 	//const data = route.params;
 	//const currentUser = data["0"];
-
+	//route.params.additional = "temp";
 
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
 	const [selectedDistance, setSelectedDistance] = useState();
-	const [displayData, setDisplayData] = useState();
+	const [displayData, setDisplayData] = useState(ALL_DATA);
 
 	const handleFilter = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings";
@@ -303,9 +303,18 @@ const Services = ({ navigation, route }) => {
 						}}
 						numColumns={2}
 						renderItem={({item, index}) => {
-							return <View>
-								<Entry item={item} />
-							</View>
+							
+							return <TouchableOpacity
+										onPress={
+											() => {
+												const data = route.params;
+												route.params.additional = item.email;
+												navigation.navigate('DetailedListing', data);
+											}
+										}
+									>
+										<Entry item={item} />
+									</TouchableOpacity>
 						}}
 						keyExtractor={item => item.id}
 					/>

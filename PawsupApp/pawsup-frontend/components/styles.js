@@ -174,7 +174,7 @@ export const StyledButtonMainPage = styled.TouchableOpacity`
   border-radius: 5px;
   margin-vertical: 10px;
   width: 310px;
-  alignSelf: 'center';
+  alignSelf: center;
   height: 86px;
 `;
 

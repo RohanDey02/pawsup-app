@@ -17,6 +17,7 @@ import PetSitterMain from './../screens/PetSitterMain';
 import Services from './../screens/Services';
 import Setting from './../screens/Setting';
 import PetSitterModifyListing from '../screens/PetSitterModifyListing';
+import DetailedListing from '../screens/DetailedListing';
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const RootStack = () => {
                 <Stack.Screen name="PetSitterMain" component={PetSitterMain} />
                 <Stack.Screen name="Settings" component={Setting} />
                 <Stack.Screen name="PetSitterModifyListing" component={PetSitterModifyListing} />
+                <Stack.Screen name="DetailedListing" component={DetailedListing} />
             </Stack.Navigator>
         </NavigationContainer>
     );
