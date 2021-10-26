@@ -176,9 +176,8 @@ router.post('/signin', (req, res) => {
 
 // Get user info
 router.get('/getUser', (req, res) => {
-    let { email } = req.body;
+    let email = req.query.email;
 
-    email = email.trim();
     if (email == "") {
         res.json({
             status: "FAILED",
@@ -314,11 +313,9 @@ router.post('/createListing', (req, res) => {
 
 // Get Listing
 router.get('/getListing', (req, res) => {
-    let { listingowner } = req.body;
+    let listingowner = req.query.listingowner;
 
-    listingowner = listingowner.trim();
-
-    if (listingowner == "") {
+    if (!(listingowner)) {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Owner Field!"
@@ -509,7 +506,8 @@ router.put('/makeBooking', (req, res) => {
 
 // Filter Listing By Price
 router.get('/filterPriceListings', (req, res) => {
-    let { minprice, maxprice } = req.body;
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
     var listingowners = [];
 
     if(minprice < 0 || maxprice < 0){
@@ -544,7 +542,8 @@ router.get('/filterPriceListings', (req, res) => {
 
 // Filter Listing By Availability
 router.get('/filterAvailabilityListings', (req, res) => {
-    let { startdate, enddate } = req.body;
+    let startdate = req.query.startdate;
+    let enddate = req.query.enddate;
     var listingowners = [];
 
     startdate = startdate.trim();
@@ -707,9 +706,7 @@ router.put('/cancelBooking', (req, res) => {
 
 // Get Appointments that petowner booked
 router.get('/getPetownerBookings', (req, res) => {
-    let { petowner } = req.body;
-
-    petowner = petowner.trim();
+    let petowner = req.query.petowner;
 
     if (petowner == "") {
         res.json({
