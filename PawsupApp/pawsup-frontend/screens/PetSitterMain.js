@@ -31,15 +31,11 @@ const PetSitterMain = ({ navigation, route }) => {
                     </StyledButtonMainPage>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Edit Your Listing</ButtonTextMain>
-                    </StyledButtonMainPage>
-
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
                         <ButtonTextMain>Store</ButtonTextMain>
                     </StyledButtonMainPage>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Your Orders</ButtonTextMain>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('UpcomingAppointment', data)}>
+                        <ButtonTextMain>Your Bookings</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>
@@ -49,7 +45,7 @@ const PetSitterMain = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     settingsicon: {
-        top: "-20%",
+        top: "-40%",
         right: "10%",
         width: 50,
         height: 50,

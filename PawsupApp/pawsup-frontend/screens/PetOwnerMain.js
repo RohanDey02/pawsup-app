@@ -34,12 +34,12 @@ const PetOwnerMain = ({ navigation, route }) => {
                         <ButtonTextMain>Store</ButtonTextMain>
                     </StyledButtonMainPage>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Your Orders</ButtonTextMain>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('UpcomingAppointment', data)}>
+                        <ButtonTextMain>Your Appointments</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>
-            </StyledContainer2>
+        </StyledContainer2>
     );
 };
 
