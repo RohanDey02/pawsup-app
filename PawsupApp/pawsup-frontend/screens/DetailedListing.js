@@ -16,7 +16,8 @@ const {
 } = Dimensions.get('window');
 const email='ali@gmail.com';
 
-const DetailedListing = ({ navigation, route }) => {
+const DetailedListing = ({ navigation, route}) => {
+    console.log(route.params.additional);
     //const data = route.params;
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
