@@ -95,6 +95,15 @@ const ALL_DATA = [
 		price: 48.00,
 		description: 'i shall make your pet happy',
 	},
+	{
+		id: 'bd7acbea-c1asdfb1-46c2-aed5-3ad53ab28c',
+		name: 'Ali Orozgani',
+		gender: 'Male',
+		image: CAT_IMG, 
+		email: 'ali@gmail.com',
+		price: 3.00,
+		description: 'i shall make your pet happy',
+	},
 ];
 
 const WIDTH = Dimensions.get("window").width;
@@ -305,16 +314,19 @@ const Services = ({ navigation, route }) => {
 						renderItem={({item, index}) => {
 							
 							return <TouchableOpacity
-										onPress={
-											() => {
-												const data = route.params;
-												route.params.additional = item.email;
-												navigation.navigate('DetailedListing', data);
-											}
-										}
-									>
-										<Entry item={item} />
-									</TouchableOpacity>
+								onPress={
+									() => {
+										var routeParams = route.params;
+
+										navigation.navigate('DetailedListing', {
+											routeParams,
+											listingemail: item.email
+										});
+									}
+								}
+							>
+								<Entry item={item} />
+							</TouchableOpacity>
 						}}
 						keyExtractor={item => item.id}
 					/>
