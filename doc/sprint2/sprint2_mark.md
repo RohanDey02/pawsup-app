@@ -79,9 +79,9 @@
     - 1 mark  = one or more Sprint 1 stories do not have clearly defined or testable acceptance criteria
     - 0 marks = the majority of the Sprint1 stories do not have clearly defined or testable acceptance criteria
 
-    Your Mark: _ 2
+    Your Mark: _ 0 PLSGIB-15 has no description
 
-  User Stories Total Mark: _10_ / 10
+  User Stories Total Mark: _8_ / 10
 
 ---
 ## Tracking on Jira  (max 24 marks) 
@@ -90,7 +90,7 @@
     - 1 = part of the stories missing
     - 0 = no stories on Active Sprint Board
 
-    Your Mark: _ 
+    Your Mark: _ 2
   
   - Did you start all stories for the sprint? (max 2 marks)
     - 2 marks = all stories started or some stories not started, but logical explanation provided as a story comment
@@ -128,7 +128,7 @@
     - 1 mark  = one or more commit messages do not begin with the ticket number of the task followed by a short description of commit changes
     - 0 marks = majority of commit message do not begin with the ticket number of the task followed by a short description of commit changes
   
-    Your Mark: _1 Commit msg : PIN-68: Finishing touch seems confused
+    Your Mark: _1 Commit msg : Too few commits and and ticket only have merge msgs
     
   - Tasks Distribution (max 3 marks)
     - 3 marks = every team member had at least one task assigned and completed
@@ -234,7 +234,7 @@ Tracking on Jira Total Mark: __ 23/ 24
 
 ## Total Mark
 
-_88_ / 89
+_86_ / 89
 
 
 
