@@ -285,6 +285,9 @@ router.post('/createListing', (req, res) => {
                     location: emptyString,
                     features: emptyString,
                     price: emptyNumber,
+                    sumRatings: 1,
+                    numRatings: 1,
+                    rating: 1,
                     bookings: emptyArray
                 });
 
@@ -740,4 +743,46 @@ router.get('/getPetownerBookings', (req, res) => {
         })
     }
 });
+
+router.get('/sortListings', (req, res) => {
+    let sortVal = req.query.sortVal;
+    let order = req.query.order;
+
+    // Rejects if sort item not location or cost, or order not asc or desc
+    if (((sortVal == "location") || (sortVal == "cost") || (sortVal == "rating")) && ((order == "asc") || order == "desc")) {
+        // Sets order to equivalent number value for mongo sorting
+        order = (order == "asc") ? 1 : -1;
+        if (sortVal == "cost") {
+            Listing.find().sort({"price": order}).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by cost",
+                    data: data
+                })
+            })
+        } else if (sortVal == "rating") {
+            Listing.aggregate([{
+                $addFields: { 
+                // Creates temporary field to calculate rating of Listing
+                rating: {
+                    $divide:["$sumRatings", "$numRatings"] 
+                }}}, { $sort: {"rating": order } }
+                ]).then(data => {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "Listings sorted by rating",
+                        data: data
+                    })
+                })
+        }
+        
+    } else {
+        res.json({
+            status: "FAILED",
+            message: "Error: Incorrect sort item!",
+            data: req.query
+        })
+    }
+});
+
 module.exports = router;
