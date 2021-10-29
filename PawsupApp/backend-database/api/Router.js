@@ -769,7 +769,13 @@ router.get('/sortListings', (req, res) => {
                 })
             break;
         case "cost":
-            Listing.find().sort({"price": order}).then(data => {
+            Listing.aggregate([{
+                $addFields: { 
+                // Creates temporary field to calculate rating of Listing
+                rating: {
+                    $divide:["$sumRatings", "$numRatings"] 
+                }}}, { $sort: {"price": order } }
+                ]).then(data => {
                 res.json({
                     status: "SUCCESS",
                     message: "Listings sorted by cost",
@@ -778,7 +784,13 @@ router.get('/sortListings', (req, res) => {
             })
             break;
         case "title":
-            Listing.find().sort({"title": order}).then(data => {
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
                 res.json({
                     status: "SUCCESS",
                     message: "Listings sorted by title",
@@ -787,7 +799,13 @@ router.get('/sortListings', (req, res) => {
             })
             break;
         case "description":
-            Listing.find().sort({"description": order}).then(data => {
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
                 res.json({
                     status: "SUCCESS",
                     message: "Listings sorted by description",
@@ -796,10 +814,16 @@ router.get('/sortListings', (req, res) => {
             })
             break;
         case "features":
-            Listing.find().sort({"features": order}).then(data => {
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
                 res.json({
                     status: "SUCCESS",
-                    message: "Listings sorted by feature",
+                    message: "Listings sorted by features",
                     data: data
                 })
             })
