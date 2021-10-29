@@ -748,19 +748,12 @@ router.get('/sortListings', (req, res) => {
     let sortVal = req.query.sortVal;
     let order = req.query.order;
 
-    // Rejects if sort item not location or cost, or order not asc or desc
-    if (((sortVal == "location") || (sortVal == "cost") || (sortVal == "rating")) && ((order == "asc") || order == "desc")) {
+    // Rejects if sortVal not title, cost, rating, description or feature, or order not asc or desc
+    if (((sortVal == "title") || (sortVal == "cost") || (sortVal == "rating")  || (sortVal == "description")  || (sortVal == "features")) && ((order == "asc") || order == "desc")) {
         // Sets order to equivalent number value for mongo sorting
         order = (order == "asc") ? 1 : -1;
-        if (sortVal == "cost") {
-            Listing.find().sort({"price": order}).then(data => {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Listings sorted by cost",
-                    data: data
-                })
-            })
-        } else if (sortVal == "rating") {
+        switch (sortVal) {
+        case "rating" :
             Listing.aggregate([{
                 $addFields: { 
                 // Creates temporary field to calculate rating of Listing
@@ -774,8 +767,44 @@ router.get('/sortListings', (req, res) => {
                         data: data
                     })
                 })
+            break;
+        case "cost":
+            Listing.find().sort({"price": order}).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by cost",
+                    data: data
+                })
+            })
+            break;
+        case "title":
+            Listing.find().sort({"title": order}).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by title",
+                    data: data
+                })
+            })
+            break;
+        case "description":
+            Listing.find().sort({"description": order}).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by description",
+                    data: data
+                })
+            })
+            break;
+        case "features":
+            Listing.find().sort({"features": order}).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by feature",
+                    data: data
+                })
+            })
+            break;
         }
-        
     } else {
         res.json({
             status: "FAILED",
