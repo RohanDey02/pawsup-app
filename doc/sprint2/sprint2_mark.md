@@ -249,6 +249,6 @@ Tracking on Jira Total Mark: __ 23/ 24
 
 ## Total Mark
 
-__ / 93
+90 / 93
 
 Add a new game looks fully implemented
