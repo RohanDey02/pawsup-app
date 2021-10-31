@@ -285,6 +285,9 @@ router.post('/createListing', (req, res) => {
                     location: emptyString,
                     features: emptyString,
                     price: emptyNumber,
+                    sumRatings: 1,
+                    numRatings: 1,
+                    rating: 1,
                     bookings: emptyArray
                 });
 
@@ -740,4 +743,99 @@ router.get('/getPetownerBookings', (req, res) => {
         })
     }
 });
+
+router.get('/sortListings', (req, res) => {
+    let sortVal = req.query.sortVal;
+    let order = req.query.order;
+
+    // Rejects if sortVal not title, cost, rating, description or feature, or order not asc or desc
+    if (((sortVal == "title") || (sortVal == "cost") || (sortVal == "rating")  || (sortVal == "description")  || (sortVal == "features")) && ((order == "asc") || order == "desc")) {
+        // Sets order to equivalent number value for mongo sorting
+        order = (order == "asc") ? 1 : -1;
+        switch (sortVal) {
+        case "rating" :
+            Listing.aggregate([{
+                $addFields: { 
+                // Creates temporary field to calculate rating of Listing
+                rating: {
+                    $divide:["$sumRatings", "$numRatings"] 
+                }}}, { $sort: {"rating": order } }
+                ]).then(data => {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "Listings sorted by rating",
+                        data: data
+                    })
+                })
+            break;
+        case "cost":
+            Listing.aggregate([{
+                $addFields: { 
+                // Creates temporary field to calculate rating of Listing
+                rating: {
+                    $divide:["$sumRatings", "$numRatings"] 
+                }}}, { $sort: {"price": order } }
+                ]).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by cost",
+                    data: data
+                })
+            })
+            break;
+        case "title":
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by title",
+                    data: data
+                })
+            })
+            break;
+        case "description":
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by description",
+                    data: data
+                })
+            })
+            break;
+        case "features":
+            Listing.aggregate([{
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}, { $sort: {"price": order } }
+            ]).then(data => {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listings sorted by features",
+                    data: data
+                })
+            })
+            break;
+        }
+    } else {
+        res.json({
+            status: "FAILED",
+            message: "Error: Incorrect sort item!",
+            data: req.query
+        })
+    }
+});
+
 module.exports = router;

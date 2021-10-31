@@ -20,6 +20,8 @@ const ListingSchema = new Schema({
 	location: String,
     features: String,
 	price: Number,
+    sumRatings: Number,
+    numRatings: Number,
     bookings: [BookedSchema]
 });
 
