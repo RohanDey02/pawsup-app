@@ -55,11 +55,11 @@ const Login = ({ navigation }) => {
                     handleMessage(message, status);
                 } else {
                     if(data[0].accounttype == 'Petowner'){
-                        navigation.navigate('PetOwnerMain', { ...data });
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
                     } else if(data[0].accounttype == 'Petsitter'){
-                        navigation.navigate('PetSitterMain', { ...data });
+                        navigation.navigate('PetSitterMain', { ...data[0] });
                     } else if(data[0].accounttype == 'Admin'){
-                        navigation.navigate('AdminMain', { ...data });
+                        navigation.navigate('AdminMain', { ...data[0] });
                     }
                 }
                 setSubmitting(false);
