@@ -245,6 +245,46 @@ router.put('/update', (req, res) => {
     }
 });
 
+// Remove User
+router.delete('/deleteUser', (req, res) => {
+    let email = req.query.email;
+
+    email = email.trim();
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var conditions = { email: email };
+
+        // Removes User, if it exists, by its email
+        User.find(conditions).then(data => {
+            User.deleteOne(conditions, req.body).then(doc => {
+                if (doc.deletedCount < 1) {
+                    res.json({
+                        status: "FAILED",
+                        message: "No User Was Deleted"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "User Deleted Successfully",
+                        data: data
+                    })
+                }
+            });
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // LISTING:
 
 // Create Listing
