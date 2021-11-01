@@ -879,7 +879,46 @@ router.get('/filterPriceItemListings', (req, res) => {
     
                 res.json({
                     status: "SUCCESS",
-                    message: "Listing Owners With Suitable Price Found Successfully",
+                    message: "Store Listings With Suitable Price Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })  
+    }
+});
+
+// Filter Store Listings By Pet Type
+router.get('/filterPettypeItemListings', (req, res) => {
+    let pettype = req.query.pettype;
+    pettype = pettype.toLowerCase();
+    var lowercased;
+    var itemlistingnames = [];
+
+    if(pettype == ""){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering Empty Pet Type!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the store listing pet types to see if it works
+                    lowercased = itemListing.pets.map(pet => pet.toLowerCase());
+
+                    if(lowercased.includes(pettype)){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Pet Types Found Successfully",
                     data: itemlistingnames
                 })
             }
