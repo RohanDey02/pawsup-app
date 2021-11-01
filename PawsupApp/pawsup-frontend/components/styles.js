@@ -166,6 +166,18 @@ export const StyledButton = styled.TouchableOpacity`
   borderRadius:30px;
 `;
 
+export const StyledButton1 = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${red};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 5px;
+  height: 60px;
+  borderRadius:30px;
+`;
+
+
 export const StyledButtonMainPage = styled.TouchableOpacity`
   padding: 15px;
   background-color: ${red};
@@ -176,6 +188,7 @@ export const StyledButtonMainPage = styled.TouchableOpacity`
   width: 310px;
   alignSelf: center;
   height: 86px;
+  borderRadius:50px;
 `;
 
 export const StyledButtonAppointmentPage = styled.TouchableOpacity`
