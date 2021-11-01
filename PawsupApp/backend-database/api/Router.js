@@ -8,6 +8,7 @@ const router = express.Router();
 // MongoDB Models
 const User = require('../models/User');
 const Listing = require('./../models/Listing');
+const Item = require('./../models/Item');
 
 // Password Encrypter
 const bcrypt = require('bcrypt');
@@ -518,6 +519,11 @@ router.get('/filterPriceListings', (req, res) => {
             status: "FAILED",
             message: "Error: Entering prices below 0!"
         })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
     } else{
         Listing.find({} , (err, listings) => {
             if(err){
@@ -835,6 +841,49 @@ router.get('/sortListings', (req, res) => {
             message: "Error: Incorrect sort item!",
             data: req.query
         })
+    }
+});
+
+// STORE:
+
+// Filter Store Listings By Price
+router.get('/filterPriceItemListings', (req, res) => {
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
+    var itemlistingnames = [];
+
+    if(minprice < 0 || maxprice < 0){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering prices below 0!"
+        })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the listing price to see if it works
+                    if(itemListing.price >= minprice && itemListing.price <= maxprice){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Listing Owners With Suitable Price Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })  
     }
 });
 
