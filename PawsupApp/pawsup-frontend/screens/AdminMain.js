@@ -26,7 +26,7 @@ const AdminMain = ({ navigation, route }) => {
                         />
                     </TouchableHighlight>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('AdminRemoveUser', data)}>
                         <ButtonTextMain>Manage Users</ButtonTextMain>
                     </StyledButtonMainPage>
 
