@@ -403,7 +403,7 @@ router.put('/modifyListing', (req, res) => {
     }
 });
 
-// Remove User
+// Remove Listing
 router.delete('/deleteListing', (req, res) => {
     let listingowner = req.query.listingowner;
 
