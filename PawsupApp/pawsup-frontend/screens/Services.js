@@ -1,303 +1,329 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
-import { SafeAreaView, TouchableOpacity, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions} from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent} from 'react-native';
 import Entry from '../components/Entry';
-
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
 
-// API Client
-import axios from 'axios';
 
 const CAT_IMG = 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png';
 const FILTER_IMG = require('./../assets/icons/filter.png');
 const SORT_IMG = require('./../assets/icons/sort.png');
-
-// some data i guess?
-const ALL_DATA = [
-	{
-		id: 'bd7acbea-c1b1-c-aed5-3ad53abb28ba',
-		name: 'qAli Orozgani',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'alio@gmail.com',
-		price: 15.99,
-		description: 'hi i am ali and i will pet your dog very well!',
-	},
-	{
-		id: 'b2',
-		name: 'Josh',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'josh@gmail.com',
-		price: 69.99,
-		description: 'give pet pls',
-	},
-	{
-		id: 'b3',
-		name: 'Zozozozozozozozoz',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'ozozozozo@gmail.com',
-		price: 10.99,
-		description: 'hi i am zozo',
-	},
-	{
-		id: 'bd7acbea-c1bad53abb28b',
-		name: 'John',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'john@gmail.com',
-		price: 10.01,
-		description: 'hi i am john',
-	},
-	{
-		id: 'bd7acbea-c1b1-46c2-aed5-3adabb28b',
-		name: 'John2',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'john2@gmail.com',
-		price: 999.9,
-		description: 'hi i am john2',
-	},
-	{
-		id: 'bd7abea-c1b1-46c2-aed5-3ad53abb28b',
-		name: 'John',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'john@gmail.com',
-		price: 0.99,
-		description: 'hi i am john',
-	},
-	{
-		id: '7acbea-c1b1-46c2-aed5-3ad53abb28b',
-		name: 'John3',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'john3@gmail.com',
-		price: 90.90,
-		description: 'hi i am john3',
-	},
-	{
-		id: 'bd7]acbea-c1b1-46c2-aed5-3ad53abb28b',
-		name: 'Sir Oswald',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'jadsf@gmail.com',
-		price: 0.44,
-		description: 'I will provide your my best service.',
-	},
-	{
-		id: 'bd7acbea-c1asdfb1-46c2-aed5-3ad53ab28b',
-		name: 'Ray',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'ray@gmail.com',
-		price: 48.00,
-		description: 'i shall make your pet happy',
-	},
-	{
-		id: 'bd7acbea-c1asdfb1-46c2-aed5-3ad53ab28c',
-		name: 'Ali Orozgani',
-		gender: 'Male',
-		image: CAT_IMG, 
-		email: 'ali@gmail.com',
-		price: 3.00,
-		description: 'i shall make your pet happy',
-	},
-];
-
 const WIDTH = Dimensions.get("window").width;
 const SPACING = 20;
-const screenWidth = Dimensions.get("window").width;
-const numColumns = 2;
-const tileSize = screenWidth / numColumns;
 
 const Services = ({ navigation, route }) => {
 	//const data = route.params;
 	//const currentUser = data["0"];
 	//route.params.additional = "temp";
 
+    var tempData = [
+        {
+            id: 'alio@gmail.com',
+            fullname: 'qAli Orozgani',
+            rating: 5,
+            image: CAT_IMG, 
+            email: 'alio@gmail.com',
+            price: 15.99,
+            description: 'hi i am ali and i will pet your dog very well!',
+        },
+        {
+            id: 'josh@gmail.com',
+            fullname: 'Josh',
+            rating: 5,
+            image: CAT_IMG, 
+            email: 'josh@gmail.com',
+            price: 69.99,
+            description: 'give pet pls',
+        },
+    ];
+
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
 	const [selectedDistance, setSelectedDistance] = useState();
-	const [displayData, setDisplayData] = useState(ALL_DATA);
+	const [displayData, setDisplayData] = useState(tempData);
+    const [showStartDate, setShowStartDate] = useState(false);
+    const [showEndDate, setShowEndDate] = useState(false);
+    const [date, setDate] = useState(new Date(2000, 0, 1));
+    const [startDate, setStartDate] = useState("tap to choose");
+    const [endDate, setEndDate] = useState("tap to choose");
+    var state = {
+        textValue: 'tap to choose'
+    }
 
-	const handleFilter = (req) => {
+
+    const onChangeStartDate = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShowStartDate(false);
+        setDate(currentDate);
+        setStartDate(currentDate);
+        if(endDate != "tap to choose") {
+            var sday = selectedDate.getDate();
+            var smonth = selectedDate.getMonth();
+            var syear = selectedDate.getYear();
+            var eday = endDate.getDate();
+            var emonth = endDate.getMonth();
+            var eyear = endDate.getYear();
+            handleFilterAvailability({ startdate: sday+'/'+smonth+'/'+syear, enddate: eday+'/'+emonth+'/'+eyear });
+        }
+    };
+
+    const onChangeEndDate = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShowEndDate(false);
+        setDate(currentDate);
+        setEndDate(currentDate);
+        if(startDate != "tap to choose") {
+            var eday = selectedDate.getDate();
+            var emonth = selectedDate.getMonth();
+            var eyear = selectedDate.getYear();
+            var sday = startDate.getDate();
+            var smonth = startDate.getMonth();
+            var syear = startDate.getYear();
+            handleFilterAvailability({ startdate: sday+'/'+smonth+'/'+syear, enddate: eday+'/'+emonth+'/'+eyear });
+        }
+    };
+
+    const showDatePicker = (startOrEnd) => {
+        if(startOrEnd === "start") setShowStartDate(true);
+        else setShowEndDate(true);
+    };
+
+    const addToData = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
+        axios.get(url, {params: req}).then((response) => {
+            const result = response.data;
+            const { status, message, data } = result;
+
+            if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            else {
+                tempData.push(
+                    {
+                        id: data[0].email,
+                        fullname: data[0].fullname,
+                        email: data[0].email,
+                        price: data[0].price,
+                        image: CAT_IMG, 
+                        rating: data[0].sumRatings / data[0].numRatings,
+                        description: data[0].description,
+                    });
+                //console.log(data[0]);
+                setDisplayData(tempData);
+            }
+            
+        }).catch((error) => {
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            }
+        );
+    }
+
+    const handleFilterPrice = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings";
-		console.log(req)
+
         axios
-            .get(url, req)
+            .get(url, {params: req})
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-                console.log(status);
-				console.log(message);
-				console.log(data);
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                } else {
-                    //console.log("YAYYYYYY");
-					//console.log(response.data.data);
+                var users_array = [];
+
+                if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+                else {
+                    tempData = [];
+                    setDisplayData(tempData);
+                    users_array = data;
+
+                    for(var i = 0; i < users_array.length; i++) {
+                        addToData({listingowner: users_array[i]});
+                    }
                 }
                 
             })
             .catch((error) => {
-				console.log("ERROR HERE!!!");
-				console.log(error);
-                //handleMessage('An error occurred. Check your network and try again');
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             });
     }
-	
-	return (
-		<StyledContainer2>
-			<ImageBackground
-				source={require('./../assets/WallpapersAndLogo/ServicesPage.png')}
-				resizeMode="cover"
-				style={BackgroundStyle.image}
+
+    const handleFilterAvailability = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings";
+
+        axios
+            .get(url, {params: req})
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+                var users_array = [];
+
+                if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+                else {
+                    tempData = [];
+                    setDisplayData(tempData);
+                    users_array = data;
+                    console.log("RECIEVED:");
+                    for(var i = 0; i < users_array.length; i++) {
+                        addToData({listingowner: users_array[i]});
+                        console.log(users_array[i]);
+                    }
+                }
+                
+            })
+            .catch((error) => {
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            });
+    }
+    
+
+    return (
+        <StyledContainer2>
+            <ImageBackground
+                source={require('./../assets/WallpapersAndLogo/ServicesPage.png')}
+                resizeMode="cover"
+                style={BackgroundStyle.image}
             >
-			</ImageBackground>
+            </ImageBackground>
 
-			<StatusBar style="light" />
-			<PageTitle style={{color: 'black', marginTop: 10}}>Available Services</PageTitle>
-			{!filterVisible && 
-				<SafeAreaView style={{marginTop: 20}}>
-					<View style={{flexDirection: 'row'}}>
-						<TouchableOpacity
-							style={styles.filterButtonStyle}
-							onPress={() => {
-								setFilterVisible(!filterVisible);
-							}}
-							>
-							<Image
-								source={FILTER_IMG}
-								style={styles.buttonImageIconStyle}
-							/>
-							<Text style={styles.buttonTextStyle}>
-								FILTER & SORT
-							</Text>
-						</TouchableOpacity>
-					</View>
-				</SafeAreaView>
-			}
+            <StatusBar style="light" />
+            <PageTitle style={{color: 'black', marginTop: 10}}>Available Services</PageTitle>
+            
+            {(showStartDate || showEndDate) && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    minimumDate={new Date(Date.now())}
+                    onChange={(showStartDate ? onChangeStartDate : onChangeEndDate)}
+                    style={{
+                        backgroundColor: 'yellow',
+                    }}
+                />
+            )}  
+            
+            {!filterVisible && 
+                <SafeAreaView style={{marginTop: 20}}>
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity
+                            style={styles.filterButtonStyle}
+                            onPress={() => {
+                                setFilterVisible(!filterVisible);
+                            }}
+                            >
+                            <Image
+                                source={FILTER_IMG}
+                                style={styles.buttonImageIconStyle}
+                            />
+                            <Text style={styles.buttonTextStyle}>
+                                FILTER & SORT
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
+            }
+            
+            {  /* filter stuff */}
+            { filterVisible &&  
+                <SafeAreaView style={{margin: 15, alignContent: 'center'}}>
 
-			{ filterVisible &&  
-				<SafeAreaView style={{margin: 15, alignContent: 'center'}}>
+                    {/* area for price filter   */}
+                    <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
+                        <View style={{flex: 4}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                                Choose a price range:
+                            </Text>
+                        </View>
+                        <View style={{flex: 3, alignContent: 'center'}}>    
+                            <Picker
+                                selectedValue={selectedPrice}
+                                mode={'dropdown'}
+                                dropdownIconColor={'red'}
+                                onValueChange={
+                                    (itemValue, itemIndex) => {
+                                        setSelectedPrice(itemValue);
+                                        if(itemValue === "a") handleFilterPrice({ minprice: 0, maxprice: 100000 });
+                                        if(itemValue === "b") handleFilterPrice({ minprice: 0, maxprice: 10 });
+                                        if(itemValue === "c") handleFilterPrice({ minprice: 10, maxprice: 20 });
+                                        if(itemValue === "d") handleFilterPrice({ minprice: 20, maxprice: 50 });
+                                        if(itemValue === "e") handleFilterPrice({ minprice: 50, maxprice: 100 });
+                                        if(itemValue === "f") handleFilterPrice({ minprice: 100, maxprice: 100000 });
+                                    }
+                                }
+                            >
+                                <Picker.Item label="Any" value="a" />
+                                <Picker.Item label="Under $10" value="b" />
+                                <Picker.Item label="$10 to $20" value="c" />
+                                <Picker.Item label="$20 to $50" value="d" />
+                                <Picker.Item label="$50 to $100" value="e" />
+                                <Picker.Item label="Over $100" value="f" />
+                            </Picker>
+                        </View>
+                    </SafeAreaView>
 
-					{/*	area for price filter	*/}
-					<SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-						<View style={{flex: 4}}>
-							<Text style={{fontSize: 18, fontWeight: 'bold'}}>
-								Choose a price range:
-							</Text>
-						</View>
-						<View style={{flex: 3, alignContent: 'center'}}>	
-							<Picker
-								selectedValue={selectedPrice}
-								mode={'dropdown'}
-								dropdownIconColor={'red'}
-								onValueChange={
-									(itemValue, itemIndex) => {
-										setSelectedPrice(itemValue);
-										
-										if(itemValue === "a") {
-											handleFilter(
-												{
-													minprice: -1,
-													maxprice: 1000
-												}
-											);
-										}
+                    {/* place for start date filter */}
+                    <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
+                        <View style={{flex: 4}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                                Choose starting date:
+                            </Text>
+                        </View>
+                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
+                            <Text
+                                onPress={() => showDatePicker("start")}
+                                style={{fontSize: 16}}
+                                >
+                                {startDate.toString().split(/(\s+)/).slice(0,7)} 
+                            </Text>
+                        </View>
+                    </SafeAreaView>
 
-										const neww = [];
-										for(var i = 0; i < ALL_DATA.length; i++) {
-											if(itemValue === "a") {
-												neww.push(ALL_DATA[i]);
-											}else if(itemValue === "b") {
-												if(ALL_DATA[i].price <= 10)
-													neww.push(ALL_DATA[i]);
-											}else if(itemValue === "c") {
-												if(ALL_DATA[i].price >= 10 && ALL_DATA[i].price <= 20)
-													neww.push(ALL_DATA[i]);
-											}else if(itemValue === "d") {
-												if(ALL_DATA[i].price >= 20 && ALL_DATA[i].price <= 50)
-													neww.push(ALL_DATA[i]);
-											}else if(itemValue === "e") {
-												if(ALL_DATA[i].price >= 50 && ALL_DATA[i].price <= 100)
-													neww.push(ALL_DATA[i]);
-											}else if(itemValue === "f") {
-												if(ALL_DATA[i].price >= 100)
-													neww.push(ALL_DATA[i]);
-											}
-										}
-										//console.log(neww);
-										setDisplayData(neww);
-									}
-								}
-							>
-								<Picker.Item label="Any" value="a" />
-								<Picker.Item label="Under $10" value="b" />
-								<Picker.Item label="$10 to $20" value="c" />
-								<Picker.Item label="$20 to $50" value="d" />
-								<Picker.Item label="$50 to $100" value="e" />
-								<Picker.Item label="Over $100" value="f" />
-							</Picker>
-						</View>
-					</SafeAreaView>
+                    {/* place for end date filter */}
+                    <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
+                        <View style={{flex: 4}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                                Choose starting date:
+                            </Text>
+                        </View>
+                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
+                            <Text
+                                onPress={() => showDatePicker("end")}
+                                style={{fontSize: 16}}
+                                >
+                                {endDate.toString().split(/(\s+)/).slice(0,7)} 
+                            </Text>
+                        </View>
+                    </SafeAreaView>
 
-					{/* place for distance filter */}
-					<SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-						<View style={{flex: 4}}>
-							<Text style={{fontSize: 18, fontWeight: 'bold'}}>
-								Choose a distance range:
-							</Text>
-						</View>
-						<View style={{flex: 3, alignContent: 'center'}}>	
-							<Picker
-								selectedValue={selectedDistance}
-								mode={'dropdown'}
-								dropdownIconColor={'red'}
-								onValueChange={(itemValue, itemIndex) => setSelectedDistance(itemValue)}
-							>
-								<Picker.Item label="Any" value="any" />
-								<Picker.Item label="Under 1km" value="0,10" />
-								<Picker.Item label="1km - 2km" value="10,20" />
-								<Picker.Item label="2km - 5km" value="20,50" />
-								<Picker.Item label="5km - 10km" value="50,100" />
-								<Picker.Item label="10km - 20km" value="100,inf" />
-								<Picker.Item label="Over 20km" value="100,inf" />
-							</Picker>
-						</View>
-					</SafeAreaView>
+                    <TouchableOpacity
+                        style={{
+                            marginTop: 30,
+                            flexDirection: 'row',
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            borderWidth: 3,
+                            borderColor: '#000',
+                            width: WIDTH / 2 - 30,
+                            height: 50,
+                            borderRadius: 10,
+                            alignSelf: 'center',
+                        }}
+                        onPress={() => {
+                            setFilterVisible(!filterVisible);
+                        }}
+                    >
+                        <Text style={{
+                            fontSize: 20,
+                            alignSelf: 'center',
+                            color: '#000',
+                            flex: 1,
+                            textAlign: 'center',
+                        }}>
+                            DONE
+                        </Text>
+                    </TouchableOpacity>
+                </SafeAreaView>
+            }
 
-					<TouchableOpacity
-						style={{
-							marginTop: 30,
-							flexDirection: 'row',
-							backgroundColor: 'rgba(255, 255, 255, 0.5)',
-							borderWidth: 3,
-							borderColor: '#000',
-							width: WIDTH / 2 - 30,
-							height: 50,
-							borderRadius: 10,
-							alignSelf: 'center',
-						}}
-						onPress={() => {
-							setFilterVisible(!filterVisible);
-						}}
-					>
-						<Text style={{
-							fontSize: 20,
-							alignSelf: 'center',
-							color: '#000',
-							flex: 1,
-							textAlign: 'center',
-						}}>
-							DONE
-						</Text>
-					</TouchableOpacity>
-				</SafeAreaView>
-			}
-
+            { /* items themselves  */}
 			{ !filterVisible &&
 				<SafeAreaView style={styles.container}>
 					<FlatList
@@ -337,48 +363,48 @@ const Services = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({
-	dropdownstyle: {
-		backgroundColor: 'black',
-	},
-	container: {
-		paddingHorizontal: 5,
-		flex: 1,
-	},
-	item: {
-		backgroundColor: '#f9c2ff',
-		padding: 20,
-		marginVertical: 8,
-		marginHorizontal: 16,  
-	},
-	title: {
-		fontSize: 32,
-	},
-	bgimg: {
-		flex: 1,
-		justifyContent: "center"
-	},
-	filterButtonStyle: {
-		marginLeft: 25,
-		flexDirection: 'row',
-		backgroundColor: 'rgba(255, 255, 255, 0)',
-		borderWidth: 0,
-		borderColor: '#000',
-		width: WIDTH / 2 - 40,
-		height: 25,					 /* THIS IS A FIXED VALUE. CHANGE LATER??? */
-		borderRadius: 10,
-	},
-	buttonImageIconStyle: {
-		width: 35,					/* THIS IS A FIXED VALUE. CHANGE LATER??? */
-    	height: '100%',
-    	resizeMode: 'contain',
-	},
-	buttonTextStyle: {
-		fontSize: 15,
-		alignSelf: 'center',
-		marginLeft: 2,
-		color: '#000',
-		flex: 1,
-	},
+    dropdownstyle: {
+        backgroundColor: 'black',
+    },
+    container: {
+        paddingHorizontal: 5,
+        flex: 1,
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,  
+    },
+    title: {
+        fontSize: 32,
+    },
+    bgimg: {
+        flex: 1,
+        justifyContent: "center"
+    },
+    filterButtonStyle: {
+        marginLeft: 25,
+        flexDirection: 'row',
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        borderWidth: 0,
+        borderColor: '#000',
+        width: WIDTH / 2 - 40,
+        height: 25,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        borderRadius: 10,
+    },
+    buttonImageIconStyle: {
+        width: 35,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        height: '100%',
+        resizeMode: 'contain',
+    },
+    buttonTextStyle: {
+        fontSize: 15,
+        alignSelf: 'center',
+        marginLeft: 2,
+        color: '#000',
+        flex: 1,
+    },
 
 });
 
