@@ -264,7 +264,6 @@ export const ExtraView1 = styled.View`
 `;
 
 export const ExtraView2 = styled.View`
-  justify-content: left;
   flex-direction: row;
   align-items: center;
   padding-top: 20px;

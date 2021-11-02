@@ -79,7 +79,7 @@ const AdminRemoveProduct = ({ navigation, route }) => {
             </ImageBackground>
             <KeyboardAvoidingWrapper>
                 <InnerContainer4>
-                <PageTitle style={{color: 'black', marginTop: 10}}>Remove Store Item</PageTitle>
+                <PageTitle style={{color: 'black', marginTop: 10}}>Remove Store Product</PageTitle>
                 <InnerContainer5>
                     
                     <Formik
@@ -100,7 +100,7 @@ const AdminRemoveProduct = ({ navigation, route }) => {
                             <StyledFormArea>
 
                                 <MyTextInput
-                                    label="Item Name"
+                                    label="Product Name"
                                     icon="pencil"
                                     placeholder="Name"
                                     placeholderTextColor={darkLight}
@@ -113,7 +113,7 @@ const AdminRemoveProduct = ({ navigation, route }) => {
 
                                 {!isSubmitting && (
                                     <StyledButton1 onPress={handleSubmit}>
-                                        <ButtonText>Remove Item</ButtonText>
+                                        <ButtonText>Remove Product</ButtonText>
                                     </StyledButton1>
                                 )}
 
