@@ -26,16 +26,20 @@ const AdminMain = ({ navigation, route }) => {
                         />
                     </TouchableHighlight>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Manage Users</ButtonTextMain>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('AdminAddProduct', data)}>
+                        <ButtonTextMain>Add Store Products</ButtonTextMain>
+                    </StyledButtonMainPage>
+
+                    <StyledButtonMainPage onPress={() => navigation.navigate('AdminRemoveProduct', data)}>
+                        <ButtonTextMain>Remove Store Products</ButtonTextMain>
                     </StyledButtonMainPage>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Manage Listings</ButtonTextMain>
+                        <ButtonTextMain>Remove Users</ButtonTextMain>
                     </StyledButtonMainPage>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Manage Store Products</ButtonTextMain>
+                        <ButtonTextMain>Remove Listings</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>
