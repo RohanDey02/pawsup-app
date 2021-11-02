@@ -8,7 +8,6 @@ const router = express.Router();
 // MongoDB Models
 const User = require('../models/User');
 const Listing = require('./../models/Listing');
-const Item = require('./../models/Item');
 
 // Password Encrypter
 const bcrypt = require('bcrypt');
@@ -279,10 +278,6 @@ router.post('/createListing', (req, res) => {
                 })
             } else {
                 // Create listing
-                
-                User.find({email: listingowner}).then(data => {
-                    var fullname = data.fullname;
-                })
                 const newListing = new Listing({
                     listingowner: listingowner,
                     title: emptyString,
@@ -293,8 +288,7 @@ router.post('/createListing', (req, res) => {
                     sumRatings: 1,
                     numRatings: 1,
                     rating: 1,
-                    bookings: emptyArray,
-                    fullname: fullname
+                    bookings: emptyArray
                 });
 
                 newListing.save().then(result => {
@@ -333,13 +327,7 @@ router.get('/getListing', (req, res) => {
         var query = { listingowner: listingowner };
 
         // Get listing data for bookings
-        Listing.aggregate([{ $match: query }, {
-            $addFields: { 
-            // Creates temporary field to calculate rating of Listing
-            rating: {
-                $divide:["$sumRatings", "$numRatings"] 
-            }}}
-            ]).then(data => {
+        Listing.find(query).then(data => {
             res.json({
                 status: "SUCCESS",
                 message: "Listing Found Successfully",
@@ -357,16 +345,15 @@ router.get('/getListing', (req, res) => {
 
 // Modify Listing
 router.put('/modifyListing', (req, res) => {
-    let { listingowner, title, description, location, features, price, fullname } = req.body;
+    let { listingowner, title, description, location, features, price } = req.body;
 
     listingowner = listingowner.trim();
     title = title.trim();
     description = description.trim();
     location = location.trim();
     features = features.trim();
-    fullname = fullname.trim();
 
-    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || fullname == "" || price < 0) {
+    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || price < 0) {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
@@ -734,7 +721,7 @@ router.get('/getPetownerBookings', (req, res) => {
         // Get listing data for bookings
         Listing.find().then(data => {
             for (const listing of data) {
-                filtered = listing.bookings.filter(function(value) {
+                filtered = listing.bookings.filter(function(value, index, arr) {
                     return (value.reason == petowner);
                 })
                 if (filtered.length > 0) {
@@ -757,7 +744,6 @@ router.get('/getPetownerBookings', (req, res) => {
     }
 });
 
-// Sorting listings
 router.get('/sortListings', (req, res) => {
     let sortVal = req.query.sortVal;
     let order = req.query.order;
