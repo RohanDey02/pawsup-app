@@ -1208,6 +1208,8 @@ router.get('/getInCart', (req, res) => {
             for (var item of data) {
                 for (var cartElem of item.inCart) {
                     if (cartElem.user == email) {
+                        // Changes item's quantity to be the quantity that user has in cart
+                        item.quantity = cartElem.quantity;
                         cart.push(item);
                         totalPrice += (cartElem.quantity * item.price);
                     }
@@ -1227,7 +1229,7 @@ router.get('/getInCart', (req, res) => {
             })
         })
     }
-})
+});
 
 // Get all items
 router.get('/getAllItems', (req, res) => {
@@ -1245,6 +1247,41 @@ router.get('/getAllItems', (req, res) => {
             })
         }
     })
-})
+});
+
+// Delete item from database
+router.delete('/deleteItem', (req, res) => {
+    let name = req.query.name;
+
+    name = name.trim();
+    if (name == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var query = { name: name };
+        Item.deleteOne(query).then(doc => {
+            if (doc.deletedCount < 1) {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: No item deleted"
+                })
+            } else {
+                res.json({
+                    status: "Success",
+                    message: "Item deleted successfully",
+                    data: doc
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Deleting Items"
+            })
+        })
+    }
+});
 
 module.exports = router;
