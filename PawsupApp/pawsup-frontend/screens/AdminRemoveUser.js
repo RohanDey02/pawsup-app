@@ -46,10 +46,9 @@ const AdminRemoveUser = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteUser";
-        var itemValues={ name: credentials.title };
+        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteUser?email=" + credentials.title;
         axios
-            .delete(url, itemValues)
+            .delete(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
