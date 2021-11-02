@@ -1269,7 +1269,7 @@ router.delete('/deleteItem', (req, res) => {
                 })
             } else {
                 res.json({
-                    status: "Success",
+                    status: "SUCCESS",
                     message: "Item deleted successfully",
                     data: doc
                 })
