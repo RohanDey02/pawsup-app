@@ -46,6 +46,18 @@ export const InnerContainer3 = styled.View`
   align-items: center;
 `;
 
+export const InnerContainer4 = styled.View`
+  width: 100%;
+  padding-top: ${StatusBarHeight + 30}px;
+  align-items: center;
+`;
+
+export const InnerContainer5 = styled.View`
+  width: 100%;
+  padding-top: 40px;
+  align-items: center;
+`;
+
 export const WelcomeContainer = styled(InnerContainer)`
   padding: 25px;
   padding-top: 10px;
@@ -158,6 +170,17 @@ export const RightIcon = styled.TouchableOpacity`
 export const StyledButton = styled.TouchableOpacity`
   padding: 15px;
   background-color: ${brand};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 5px;
+  height: 60px;
+  borderRadius:30px;
+`;
+
+export const StyledButton1 = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${red};
   justify-content: center;
   align-items: center;
   border-radius: 5px;
