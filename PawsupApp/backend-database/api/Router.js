@@ -872,7 +872,7 @@ router.post('/makeItem', (req, res) => {
             status: "FAILED",
             message: "Empty fields!"
         });
-    } else if ((!/^\d+$/.test(price)) || (!/^\d+$/.test(quantity))) {
+    } else if ((!/^\d+(\.\d{1,2}){0,1}$/.test(price)) || (!/^\d+(\.\d{1,2}){0,1}$/.test(quantity))) {
         res.json({
             status: "FAILED",
             message: "Price or Quantity is not a number",
