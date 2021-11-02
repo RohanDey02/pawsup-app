@@ -96,13 +96,10 @@ const AdminAddProduct = ({ navigation, route }) => {
                     handleMessage(message, status);
                     setSubmitting(false);
                 } else {
-                    console.log("omg");
                     setSubmitting(false);
-                    console.log("we here");
                     Alert.alert('SUCCESS', 'Product has been added to the store.', [
                         {text: 'OK', onPress: () => navigation.navigate('AdminMain', { ...route })}
                     ]);
-                    console.log("but alert where");
                 }
             })
             .catch((error) => {
