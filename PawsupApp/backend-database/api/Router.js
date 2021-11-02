@@ -1274,7 +1274,7 @@ router.delete('/deleteItem', (req, res) => {
                     data: doc
                 })
             }
-        }).catch(err => {
+        }).catch(err => { 
             console.log(err);
             res.json({
                 status: "FAILED",
