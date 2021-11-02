@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { StatusBar } from 'expo-status-bar';
+import SelectBox from 'react-native-multi-selectbox'
+import { xorBy } from 'lodash'
 
 // Formik
 import { Formik } from "formik";
@@ -19,11 +21,12 @@ import {
     StyledTextInput1,
     StyledButton,
     MsgBox,
-    ExtraView1,
+    ExtraView2,
     ExtraText1,
     LeftIcon,
     Colours,
     ButtonText,
+    PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
@@ -39,17 +42,20 @@ const AdminAddProduct = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [isCancelling, setCancel] = useState(false);
-    const items = [
-        { label: 'cats', value: '1' },
-        { label: 'dogs', value: '2' },
-        { label: 'fish', value: '3' },
-        { label: 'birds', value: '4' }
-    ]
-
-    const handleModify = (credentials, setSubmitting) => {
+    const K_OPTIONS = [
+        { item: 'Cat', id: '1' },
+        { item: 'Dog', id: '2' },
+        { item: 'Fish', id: '3' },
+        { item: 'Parrot', id: '4' }
+    ];
+    const handleModify = (credentials, setSubmitting, selectedPets) => {
         handleMessage(null);
+        var newArr = [];
+        for (var i = 0; i < selectedPets.length; i++) {
+            newArr.push(selectedPets[i]['item']);
+        }
         const url = "https://protected-shelf-96328.herokuapp.com/api/makeItem";
-        var itemValues={ name: credentials.title, price: credentials.price, description: credentials.description, quantity: credentials.quantity, image: credentials.image, pets: credentials.pets };
+        var itemValues={ name: credentials.title, price: credentials.price, description: credentials.description, quantity: credentials.quantity, image: credentials.image, pets: newArr };
         axios
             .post(url, itemValues)
             .then((response) => {
@@ -59,10 +65,13 @@ const AdminAddProduct = ({ navigation, route }) => {
                     handleMessage(message, status);
                     setSubmitting(false);
                 } else {
+                    console.log("omg");
                     setSubmitting(false);
+                    console.log("we here");
                     Alert.alert('SUCCESS', 'Your changes have been saved.', [
                         {text: 'OK', onPress: () => navigation.navigate('AdminMain', { ...route })}
                     ]);
+                    console.log("but alert where");
                 }
             })
             .catch((error) => {
@@ -76,6 +85,11 @@ const AdminAddProduct = ({ navigation, route }) => {
         setMessageType(type);
     }
 
+    const [selectedPets, setSelectedPets] = useState([])
+    function onMultiChange() {
+        return (item) => setSelectedPets(xorBy(selectedPets, [item], 'id'))
+    }
+    
     return (
         <StyledContainer>
             <StatusBar style="dark" />
@@ -83,10 +97,11 @@ const AdminAddProduct = ({ navigation, route }) => {
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
             <KeyboardAvoidingWrapper>
+                <InnerContainer>
+                <PageTitle style={{color: 'black', marginTop: 10}}>Add Store Product</PageTitle>
                 <InnerContainer2>
-                    
                     <Formik
-                        initialValues={{ title: '', price: '', description: '', quantity: '', image: '', pets: [] }}
+                        initialValues={{ title: '', price: '', description: '', quantity: '', image: '' }}
                         onSubmit={(values, { setSubmitting }) => {
                             values = { ...values};
                             if (values.title == '') {
@@ -97,19 +112,18 @@ const AdminAddProduct = ({ navigation, route }) => {
                                 setSubmitting(false);
                             } else if (values.price == '') {
                                 handleMessage('Please provide the price per day in CAD!');
-                                setSubmitting(false);
+                               setSubmitting(false);
                             } else if (values.image == '') {
                                 handleMessage("Please provide the an image's URL!");
                                 setSubmitting(false);
-                            } else if (values.pets == '') {
-                                handleMessage("Please add a pet type!");
+                            }else if (values.quantity == '') {
+                                handleMessage("Please provide the quantity");
                                 setSubmitting(false);
                             } else {
-                                    setSubmitting(true);
-                                    handleModify(values, setSubmitting);
-                                }
+                                setSubmitting(true);
+                                handleModify(values, setSubmitting, selectedPets);
                             }
-                        }
+                        }}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
                             <StyledFormArea>
@@ -156,14 +170,30 @@ const AdminAddProduct = ({ navigation, route }) => {
                                 />
 
                                 <MyTextInput
-                                    label="Pets"
-                                    icon="octoface"
-                                    placeholder="Pets"
+                                    label="Quantity"
+                                    icon="list-ordered"
+                                    placeholder="Quantity"
                                     placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('pets')}
-                                    onBlur={handleBlur('pets')}
-                                    value={values.pets}
+                                    onChangeText={handleChange('quantity')}
+                                    onBlur={handleBlur('quantity')}
+                                    value={values.quantity}
+                                    keyboardType="number-pad"
                                 />
+
+                                <ExtraView2>
+                                    <ExtraText1>Choose the pets this product is applicable for: </ExtraText1>
+                                </ExtraView2>
+
+                                <SelectBox
+                                    label=""
+                                    options={K_OPTIONS}
+                                    selectedValues={selectedPets}
+                                    onMultiSelect={onMultiChange()}
+                                    onTapClose={onMultiChange()}
+                                    isMulti
+                                />
+
+                                <View style={{ height: 40 }} />
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
 
@@ -196,7 +226,8 @@ const AdminAddProduct = ({ navigation, route }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-            </InnerContainer2>
+                    </InnerContainer2>
+            </InnerContainer>
             </KeyboardAvoidingWrapper>
         </StyledContainer>
     );

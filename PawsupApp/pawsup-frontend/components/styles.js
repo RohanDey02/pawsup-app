@@ -46,6 +46,24 @@ export const InnerContainer3 = styled.View`
   align-items: center;
 `;
 
+export const InnerContainer4 = styled.View`
+  width: 100%;
+  padding-top: ${StatusBarHeight + 30}px;
+  align-items: center;
+`;
+
+export const InnerContainer5 = styled.View`
+  width: 100%;
+  padding-top: 40px;
+  align-items: center;
+`;
+
+export const InnerContainer6 = styled.View`
+  width: 100%;
+  padding-top: 10px;
+  align-items: center;
+`;
+
 export const WelcomeContainer = styled(InnerContainer)`
   padding: 25px;
   padding-top: 10px;
@@ -245,6 +263,14 @@ export const ExtraView1 = styled.View`
   padding-bottom: 10px;
 `;
 
+export const ExtraView2 = styled.View`
+  justify-content: left;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+`;
+
 export const ExtraText = styled.Text`
   justify-content: center;
   align-content: center;
@@ -263,6 +289,6 @@ export const TextLink = styled.TouchableOpacity`
 `;
 
 export const TextLinkContent = styled.Text`
-  color: ${brand};
+  color: ${red};
   font-size: 15px;
 `;

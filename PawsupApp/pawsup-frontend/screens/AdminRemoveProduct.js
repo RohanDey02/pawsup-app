@@ -11,8 +11,8 @@ import {
     BackgroundStyle,
     StyledContainer,
     StyledContainer2,
-    InnerContainer3,
-    InnerContainer2,
+    InnerContainer4,
+    InnerContainer5,
     StyledFormArea,
     StyledInputLabel,
     StyledTextInput,
@@ -25,6 +25,7 @@ import {
     LeftIcon,
     Colours,
     ButtonText,
+    PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
@@ -43,10 +44,9 @@ const AdminRemoveProduct = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteItem";
-        var itemValues={ name: credentials.title };
+        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteItem?name=" + credentials.title;
         axios
-            .delete(url, itemValues)
+            .delete(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
@@ -78,7 +78,9 @@ const AdminRemoveProduct = ({ navigation, route }) => {
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
             <KeyboardAvoidingWrapper>
-                <InnerContainer3>
+                <InnerContainer4>
+                <PageTitle style={{color: 'black', marginTop: 10}}>Remove Store Item</PageTitle>
+                <InnerContainer5>
                     
                     <Formik
                         initialValues={{ title: '' }}
@@ -138,7 +140,8 @@ const AdminRemoveProduct = ({ navigation, route }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-            </InnerContainer3>
+                    </InnerContainer5>
+            </InnerContainer4>
             </KeyboardAvoidingWrapper>
         </StyledContainer>
     );
