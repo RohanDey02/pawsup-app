@@ -15,7 +15,7 @@ const EntryCart = ({ item, onPress }) => {
 						{'Price: '+item.price }
 					</Text>
 					<Text >
-						{'Quantity: '+ item.quantityInCart}
+						{'Quantity: '+ item.quantity}
 					</Text>
 			</View>
         </View>
