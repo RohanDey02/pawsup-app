@@ -12,7 +12,8 @@ import {
     StyledContainer,
     StyledContainer2,
     InnerContainer3,
-    InnerContainer2,
+    InnerContainer4,
+    InnerContainer5,
     StyledFormArea,
     StyledInputLabel,
     StyledTextInput,
@@ -25,6 +26,7 @@ import {
     LeftIcon,
     Colours,
     ButtonText,
+    PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
@@ -78,8 +80,9 @@ const AdminRemoveListing = ({ navigation, route }) => {
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
             <KeyboardAvoidingWrapper>
-                <InnerContainer3>
-                    
+                <InnerContainer4>
+                <PageTitle style={{color: 'black', marginTop: 10}}>Remove Listing</PageTitle>
+                <InnerContainer5>
                     <Formik
                         initialValues={{ title: '' }}
                         onSubmit={(values, { setSubmitting }) => {
@@ -138,7 +141,8 @@ const AdminRemoveListing = ({ navigation, route }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-            </InnerContainer3>
+                    </InnerContainer5>
+            </InnerContainer4>
             </KeyboardAvoidingWrapper>
         </StyledContainer>
     );
