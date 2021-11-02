@@ -48,24 +48,23 @@ const Services = ({ navigation, route }) => {
     const [date, setDate] = useState(new Date(2000, 0, 1));
     const [startDate, setStartDate] = useState("tap to choose");
     const [endDate, setEndDate] = useState("tap to choose");
-    var state = {
-        textValue: 'tap to choose'
-    }
-
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShowStartDate(false);
         setDate(currentDate);
         setStartDate(currentDate);
+        setSelectedPrice("a");
         if(endDate != "tap to choose") {
             var sday = selectedDate.getDate();
-            var smonth = selectedDate.getMonth();
-            var syear = selectedDate.getYear();
+            var smonth = selectedDate.getMonth() + 1;
+            var syear = selectedDate.getFullYear();
             var eday = endDate.getDate();
-            var emonth = endDate.getMonth();
-            var eyear = endDate.getYear();
-            handleFilterAvailability({ startdate: sday+'/'+smonth+'/'+syear, enddate: eday+'/'+emonth+'/'+eyear });
+            var emonth = endDate.getMonth() + 1;
+            var eyear = endDate.getFullYear();
+            var startdate = (syear + '/' + smonth + '/' + sday).toString();
+            var enddate = (eyear + '/' + emonth + '/' + eday).toString();
+            handleFilterAvailability("?startdate=" + startdate + "&enddate=" + enddate);
         }
     };
 
@@ -74,14 +73,17 @@ const Services = ({ navigation, route }) => {
         setShowEndDate(false);
         setDate(currentDate);
         setEndDate(currentDate);
+        setSelectedPrice("a");
         if(startDate != "tap to choose") {
             var eday = selectedDate.getDate();
-            var emonth = selectedDate.getMonth();
-            var eyear = selectedDate.getYear();
+            var emonth = selectedDate.getMonth() + 1;
+            var eyear = selectedDate.getFullYear();
             var sday = startDate.getDate();
-            var smonth = startDate.getMonth();
-            var syear = startDate.getYear();
-            handleFilterAvailability({ startdate: sday+'/'+smonth+'/'+syear, enddate: eday+'/'+emonth+'/'+eyear });
+            var smonth = startDate.getMonth() + 1;
+            var syear = startDate.getFullYear();
+            var startdate = (syear + '/' + smonth + '/' + sday).toString();
+            var enddate = (eyear + '/' + emonth + '/' + eday).toString();
+            handleFilterAvailability("?startdate=" + startdate + "&enddate=" + enddate);
         }
     };
 
@@ -108,7 +110,6 @@ const Services = ({ navigation, route }) => {
                         rating: data[0].sumRatings / data[0].numRatings,
                         description: data[0].description,
                     });
-                //console.log(data[0]);
                 setDisplayData(tempData);
             }
             
@@ -119,10 +120,10 @@ const Services = ({ navigation, route }) => {
     }
 
     const handleFilterPrice = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings";
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings" + req;
 
         axios
-            .get(url, {params: req})
+            .get(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
@@ -146,24 +147,22 @@ const Services = ({ navigation, route }) => {
     }
 
     const handleFilterAvailability = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings";
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings" + req;
 
         axios
-            .get(url, {params: req})
+            .get(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-                var users_array = [];
+                var users_array = [];   
 
                 if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
                 else {
                     tempData = [];
                     setDisplayData(tempData);
                     users_array = data;
-                    console.log("RECIEVED:");
                     for(var i = 0; i < users_array.length; i++) {
                         addToData({listingowner: users_array[i]});
-                        console.log(users_array[i]);
                     }
                 }
                 
@@ -241,12 +240,14 @@ const Services = ({ navigation, route }) => {
                                 onValueChange={
                                     (itemValue, itemIndex) => {
                                         setSelectedPrice(itemValue);
-                                        if(itemValue === "a") handleFilterPrice({ minprice: 0, maxprice: 100000 });
-                                        if(itemValue === "b") handleFilterPrice({ minprice: 0, maxprice: 10 });
-                                        if(itemValue === "c") handleFilterPrice({ minprice: 10, maxprice: 20 });
-                                        if(itemValue === "d") handleFilterPrice({ minprice: 20, maxprice: 50 });
-                                        if(itemValue === "e") handleFilterPrice({ minprice: 50, maxprice: 100 });
-                                        if(itemValue === "f") handleFilterPrice({ minprice: 100, maxprice: 100000 });
+                                        setStartDate("tap to choose");
+                                        setEndDate("tap to choose");
+                                        if(itemValue === "a") handleFilterPrice("?minprice=0&maxprice=10000");
+                                        if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice10");
+                                        if(itemValue === "c") handleFilterPrice("?minprice=10&maxprice=20");
+                                        if(itemValue === "d") handleFilterPrice("?minprice=20&maxprice=50");
+                                        if(itemValue === "e") handleFilterPrice("?minprice=50&maxprice=100");
+                                        if(itemValue === "f") handleFilterPrice("?minprice=100&maxprice=10000");
                                     }
                                 }
                             >
@@ -281,7 +282,7 @@ const Services = ({ navigation, route }) => {
                     <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
                         <View style={{flex: 4}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose starting date:
+                                Choose ending date:
                             </Text>
                         </View>
                         <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
