@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
-import Entry2 from '../components/Entry2';
+import EntryCart from '../components/EntryCart';
 import axios from 'axios';
 import {
     BackgroundStyle,
@@ -11,62 +11,37 @@ import {
 } from '../components/styles';
 
 const Cart = ({ navigation, route }) => {
-    const data = route.params;
-    const [listing, setListing] = useState([]);
+    const nav = route.params;
+    const [cart, setCart] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const [price, setPrice] = useState();
 
-    const handleGetCart = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
-
+    const handleGetCart = (email) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
         axios
             .get(url)
             .then((response) => {
                 const result = response.data;
-                const { status, message, data } = result;
+                const { status, message, data ,totalPrice} = result;
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    setListing(data[0]);
-                }
-            })
-            .catch((error) => {
-                handleMessage('An error occurred. Check your network and try again');
-            });
-    };
-
-    const handleGetPetownerCart = (petowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPetownerBookings?petowner=" + petowner;
-        var lst = [];
-
-        axios
-            .get(url)
-            .then((response) => {
-                const result = response.data;
-                const { status, message, data } = result;
-
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                } else {
-                    // This takes you to each listing
-                    for(const listing of data){
-                        for(const booking of listing.bookings){
-                            booking.reason = listing.listingowner;
-                            lst.push(booking);
-                        }
+                    setCart(data);
+                    if(totalPrice>=0)
+                    {
+                    setPrice(totalPrice);
                     }
-
-                    var newlst = [];
-                    newlst.bookings = lst;
-                
-                    setListing(newlst);
+                    else{
+                        setPrice(0);
+                    }
                 }
             })
             .catch((error) => {
                 handleMessage('An error occurred. Check your network and try again');
             });
     };
-
+    
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
@@ -80,32 +55,24 @@ const Cart = ({ navigation, route }) => {
 
     /*
      * Handles cancelling booking which updates database
-     * Pass in email of listingowner, startdate and enddate of appointment, i.e. listingowner, startdate, enddate
+     * Pass in email of email, startdate and enddate of appointment, i.e. email, startdate, enddate
      * dates must be in YYYY/MM/DD format
     */
-    const handleCancel = (listingowner, startdate, enddate) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/cancelBooking";
-        var credentials = { listingowner: listingowner, startdate: startdate, enddate: enddate };
-
+    const handleCancel = (email,item) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/removeFromCart";
+        var credentials = { email: email, item: item, quantity:'1'};
         axios
             .put(url, credentials)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
                     console.log(route.params.email);
-                    if(route.params.accounttype == "Petsitter"){
-                        Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
-                            {text: 'OK'}
-                        ]);
-                    } else if(route.params.accounttype == "Petowner"){
-                        Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
-                            {text: 'OK'}
-                        ]);
-                    }
+                    Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
+                        {text: 'OK'}
+                    ]);
                 }
             })
             .catch((error) => {
@@ -113,13 +80,6 @@ const Cart = ({ navigation, route }) => {
             });
     }
     
-    const handleHandleCancel = (reason, startdate, enddate) => {
-        if(route.params.accounttype == "Petsitter"){
-            handleCancel(listing.listingowner, startdate, enddate);
-        } else if(route.params.accounttype == "Petowner"){
-            handleCancel(reason, startdate, enddate);
-        }
-    }
 
     const Item = ({ title }) => (
 	    <View style={styles.item}>
@@ -127,11 +87,8 @@ const Cart = ({ navigation, route }) => {
 	    </View>
     );
 
-    if(route.params.accounttype == "Petsitter"){
-        handleGetCart(route.params.email);
-    } else if(route.params.accounttype == "Petowner"){
-        handleGetPetownerCart(route.params.email);
-    }
+    handleGetCart(route.params.email);
+
 
     return (
         <StyledContainer2>
@@ -146,7 +103,7 @@ const Cart = ({ navigation, route }) => {
 			
 			<SafeAreaView style={styles.container}>
 				<FlatList
-					data={listing.bookings}
+					data={cart}
 					style={{
 						margin:5,
 						flex: 1
@@ -159,8 +116,8 @@ const Cart = ({ navigation, route }) => {
 					numColumns={1}
 					renderItem={({item}) => {
 						return <View>
-                            <Entry2 item={item} />
-                            <StyledButtonAppointmentPage onPress={() => handleHandleCancel(item.reason, item.startdate, item.enddate)}>
+                            <EntryCart item={item} />
+                            <StyledButtonAppointmentPage onPress={() => handleCancel(route.params.email, item.name)}>
                                 <ButtonText>Remove</ButtonText>
                             </StyledButtonAppointmentPage>
                         </View>
@@ -172,12 +129,12 @@ const Cart = ({ navigation, route }) => {
                         return <View>
                         <View style={{flex:1}}>
                         <Text style={{fontWeight: "bold", fontSize: 17, alignSelf: 'center'}}>
-                            {'Total: ' + item.totalprice}
+                            {'Total: ' + price}
                         </Text>
-                    </View>
-                    <StyledButtonAppointmentPage onPress={() => navigation.navigate('UpcomingAppointment', data)}>
+                        </View>
+                        <StyledButtonAppointmentPage onPress={() => navigation.navigate('UpcomingAppointment', nav)}>
                                 <ButtonText>Checkout</ButtonText>
-                            </StyledButtonAppointmentPage>
+                        </StyledButtonAppointmentPage>
                     </View>
                     }}
 					keyExtractor={item => item._id}
