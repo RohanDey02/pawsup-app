@@ -45,10 +45,9 @@ const AdminRemoveListing = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteListing";
-        var itemValues={ name: credentials.title };
+        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteListing?listingowner=" + credentials.title;
         axios
-            .delete(url, itemValues)
+            .delete(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
