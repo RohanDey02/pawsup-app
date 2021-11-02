@@ -14,6 +14,7 @@ import {
     StyledContainer,
     StyledContainer2,
     InnerContainer,
+    InnerContainer7,
     InnerContainer2,
     StyledFormArea,
     StyledInputLabel,
@@ -31,6 +32,8 @@ import {
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import KeyboardAvoidingWrapper2 from "../components/KeyboardAvoidingWrapper2";
+
 
 // Colours
 const { brand, darkLight, primary } = Colours;
@@ -124,9 +127,29 @@ const AdminAddProduct = ({ navigation, route }) => {
             <ImageBackground
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
-            <KeyboardAvoidingWrapper>
+            <KeyboardAvoidingWrapper2>
                 <InnerContainer>
                 <PageTitle style={{color: 'black', marginTop: 10}}>Add Store Product</PageTitle>
+                <InnerContainer7>
+                <StyledFormArea>
+                <ExtraView2>
+                        <ExtraText1>Choose the pets this product is applicable for: </ExtraText1>
+                        </ExtraView2>
+                                <SelectBox
+                                        label=""
+                                        options={K_OPTIONS}
+                                        selectedValues={selectedPets}
+                                        onMultiSelect={onMultiChange()}
+                                        onTapClose={onMultiChange()}
+                                        isMulti
+                                />
+                                <View style={{ height: 10 }}/>
+                </StyledFormArea>
+                </InnerContainer7>
+                </InnerContainer>
+                </KeyboardAvoidingWrapper2>
+            <KeyboardAvoidingWrapper>
+                <InnerContainer>
                     <InnerContainer2>
                     <Formik
                         initialValues={{ title: '', price: '', description: '', quantity: '', image: '' }}
@@ -208,18 +231,7 @@ const AdminAddProduct = ({ navigation, route }) => {
                                     keyboardType="number-pad"
                                 />
 
-                                <ExtraView2>
-                                    <ExtraText1>Choose the pets this product is applicable for: </ExtraText1>
-                                </ExtraView2>
-                                <SelectBox
-                                        label=""
-                                        options={K_OPTIONS}
-                                        selectedValues={selectedPets}
-                                        onMultiSelect={onMultiChange()}
-                                        onTapClose={onMultiChange()}
-                                        isMulti
-                                />
-                                <View style={{ height: 10 }}/>
+                                
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
 

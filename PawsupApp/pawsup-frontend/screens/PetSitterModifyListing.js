@@ -131,9 +131,9 @@ const PetSitterModifyListing = ({ navigation, route }) => {
             <ImageBackground
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
+            <PageTitle style={{color: 'black', marginTop: 5}}>Modify Listing Details</PageTitle>
             <KeyboardAvoidingWrapper>
             <InnerContainer>
-                <PageTitle style={{color: 'black', marginTop: 5}}>Modify Listing Details</PageTitle>
                 <InnerContainer6>
                 {show && (
                         <DateTimePicker

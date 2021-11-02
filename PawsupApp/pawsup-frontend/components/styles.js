@@ -40,6 +40,11 @@ export const InnerContainer2 = styled.View`
   padding-top: ${StatusBarHeight + 10}px;
 `;
 
+export const InnerContainer7 = styled.View`
+  width: 100%;
+  align-items: center;
+`;
+
 export const InnerContainer3 = styled.View`
   width: 100%;
   padding-top: ${StatusBarHeight + 180}px;
