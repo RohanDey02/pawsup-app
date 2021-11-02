@@ -403,6 +403,44 @@ router.put('/modifyListing', (req, res) => {
     }
 });
 
+// Remove Listing
+router.delete('/deleteListing', (req, res) => {
+    let listingowner = req.query.listingowner;
+
+    if (listingowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var conditions = { listingowner: listingowner };
+
+        // Removes Listing, if it exists, by its listing owner
+        Listing.find(conditions).then(data => {
+            Listing.deleteOne(conditions, req.body).then(doc => {
+                if (doc.deletedCount < 1) {
+                    res.json({
+                        status: "FAILED",
+                        message: "No Listing Was Deleted"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "Listing Deleted Successfully",
+                        data: data
+                    })
+                }
+            });
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding Listing, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // Make Booking
 router.put('/makeBooking', (req, res) => {
     let { listingowner, reason, cost, startdate, enddate } = req.body;
