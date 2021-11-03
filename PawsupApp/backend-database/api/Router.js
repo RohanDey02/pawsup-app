@@ -824,7 +824,7 @@ router.get('/getPetownerBookings', (req, res) => {
                 status: "FAILED",
                 message: "Error: Finding Bookings, Perhaps User has no bookings"
             })
-        })
+        }) 
     }
 });
 
