@@ -7,13 +7,20 @@ const WIDTH = Dimensions.get('window').width - 40;
 const Entry = ({ item, onPress }) => {
     const { title, desc } = item;
     return (
-        <View style={styles.container} >
+        <TouchableOpacity
+			style={styles.container}
+			onPress={
+				() => {
+					console.log("hehe");
+					console.log("asdf");
+				}
+			}>
             <Image
                 source={{uri: item.image}}
                 style={{aspectRatio: 1, flex: 1/NUMCOLS, borderRadius: 123123}}
             />
             <Text style={{fontWeight: "bold", fontSize: 17, alignSelf: 'center'}}>
-                {item.name}
+                {item.fullname}
             </Text>
 
 			<View style={{flexDirection:"row", paddingTop:2, paddingBottom: 4}}>
@@ -24,7 +31,7 @@ const Entry = ({ item, onPress }) => {
                 </View>
                 <View style={{flex:1}}>
 					<Text style={{fontSize: 15, justifyContent: 'flex-end', textAlign: 'right'}}>
-						{item.gender}
+						{item.rating}
 					</Text>
                 </View>
 			</View>
@@ -33,7 +40,7 @@ const Entry = ({ item, onPress }) => {
 			<Text style={{fontSize: 12, textAlign: 'center',}}>
 				{item.description}
 			</Text>
-        </View>
+        </TouchableOpacity>
         
     );
 };

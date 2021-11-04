@@ -1,5 +1,5 @@
 /*
-  This is where we implement the queries. Some queries include signup POST and signin POST. 
+  This is where we implement the queries. Some queries include signup POST and signin POST.
 */
 
 const express = require('express');
@@ -246,6 +246,46 @@ router.put('/update', (req, res) => {
     }
 });
 
+// Remove User
+router.delete('/deleteUser', (req, res) => {
+    let email = req.query.email;
+
+    email = email.trim();
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var conditions = { email: email };
+
+        // Removes User, if it exists, by its email
+        User.find(conditions).then(data => {
+            User.deleteOne(conditions, req.body).then(doc => {
+                if (doc.deletedCount < 1) {
+                    res.json({
+                        status: "FAILED",
+                        message: "No User Was Deleted"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "User Deleted Successfully",
+                        data: data
+                    })
+                }
+            });
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // LISTING:
 
 // Create Listing
@@ -416,6 +456,44 @@ router.put('/modifyListing', (req, res) => {
     }
 });
 
+// Remove Listing
+router.delete('/deleteListing', (req, res) => {
+    let listingowner = req.query.listingowner;
+
+    if (listingowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var conditions = { listingowner: listingowner };
+
+        // Removes Listing, if it exists, by its listing owner
+        Listing.find(conditions).then(data => {
+            Listing.deleteOne(conditions, req.body).then(doc => {
+                if (doc.deletedCount < 1) {
+                    res.json({
+                        status: "FAILED",
+                        message: "No Listing Was Deleted"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "Listing Deleted Successfully",
+                        data: data
+                    })
+                }
+            });
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding Listing, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // Make Booking
 router.put('/makeBooking', (req, res) => {
     let { listingowner, reason, cost, startdate, enddate } = req.body;
@@ -457,7 +535,7 @@ router.put('/makeBooking', (req, res) => {
             if (info.length) {
                 // User exists, now check if date is blocked
                 var bool = false;
-                
+
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
                     var d1 = booking.startdate.split("/");
@@ -472,7 +550,7 @@ router.put('/makeBooking', (req, res) => {
                         break;
                     }
                 }
-                
+
                 if(bool == false){
                     info[0].bookings.push(book);
 
@@ -531,6 +609,11 @@ router.get('/filterPriceListings', (req, res) => {
             status: "FAILED",
             message: "Error: Entering prices below 0!"
         })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
     } else{
         Listing.find({} , (err, listings) => {
             if(err){
@@ -545,14 +628,14 @@ router.get('/filterPriceListings', (req, res) => {
                         listingowners.push(listing.listingowner);
                     }
                 })
-    
+
                 res.json({
                     status: "SUCCESS",
                     message: "Listing Owners With Suitable Price Found Successfully",
                     data: listingowners
                 })
             }
-        })  
+        })
     }
 });
 
@@ -606,14 +689,14 @@ router.get('/filterAvailabilityListings', (req, res) => {
                         listingowners.push(listing.listingowner);
                     }
                 })
-    
+
                 res.json({
                     status: "SUCCESS",
                     message: "Listing Owners With Suitable Availability Found Successfully",
                     data: listingowners
                 })
             }
-        })  
+        })
     }
 });
 
@@ -636,7 +719,7 @@ router.put('/cancelBooking', (req, res) => {
     var e1 = enddate.split("/");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
-    
+
     if (listingowner == "" || startdate == "" || enddate == "") {
         res.json({
             status: "FAILED",
@@ -670,7 +753,7 @@ router.put('/cancelBooking', (req, res) => {
 
                     console.log(value);
                     return !((getDifferenceInDays(startdate1, from) == 0) && (getDifferenceInDays(enddate1, to) == 0));
-/*                  Can use bare string comparison as well since data passed in and data stored has 
+/*                  Can use bare string comparison as well since data passed in and data stored has
                     consistent format, but will convert date and use function to get difference instead.
                     return !((value.startdate == startdate) && (value.enddate == enddate));
  */                });
@@ -740,7 +823,7 @@ router.get('/getPetownerBookings', (req, res) => {
                 if (filtered.length > 0) {
                     listing.bookings = filtered;
                     AllBookings.push(listing);
-                } 
+                }
             }
             res.json({
                 status: "SUCCESS",
@@ -769,10 +852,10 @@ router.get('/sortListings', (req, res) => {
         switch (sortVal) {
         case "rating" :
             Listing.aggregate([{
-                $addFields: { 
+                $addFields: {
                 // Creates temporary field to calculate rating of Listing
                 rating: {
-                    $divide:["$sumRatings", "$numRatings"] 
+                    $divide:["$sumRatings", "$numRatings"]
                 }}}, { $sort: {"rating": order } }
                 ]).then(data => {
                     res.json({
@@ -784,10 +867,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "cost":
             Listing.aggregate([{
-                $addFields: { 
+                $addFields: {
                 // Creates temporary field to calculate rating of Listing
                 rating: {
-                    $divide:["$sumRatings", "$numRatings"] 
+                    $divide:["$sumRatings", "$numRatings"]
                 }}}, { $sort: {"price": order } }
                 ]).then(data => {
                 res.json({
@@ -799,10 +882,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "title":
             Listing.aggregate([{
-            $addFields: { 
+            $addFields: {
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"] 
+                $divide:["$sumRatings", "$numRatings"]
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -814,10 +897,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "description":
             Listing.aggregate([{
-            $addFields: { 
+            $addFields: {
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"] 
+                $divide:["$sumRatings", "$numRatings"]
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -829,10 +912,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "features":
             Listing.aggregate([{
-            $addFields: { 
+            $addFields: {
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"] 
+                $divide:["$sumRatings", "$numRatings"]
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -897,10 +980,10 @@ router.post('/makeItem', (req, res) => {
 
                 const newItem = new Item({
                     name,
-                    price, 
-                    description, 
-                    image, 
-                    pets, 
+                    price,
+                    description,
+                    image,
+                    pets,
                     quantity,
                     inCart: []
                 })
@@ -986,7 +1069,7 @@ router.put('/modifyItem', (req, res) => {
 // Get item
 router.get('/getItem', (req, res) => {
     let name = req.query.name;
-    
+
     if (name == "") {
         res.json({
             status: "FAILED",
@@ -1062,7 +1145,7 @@ router.put('/addToCart', (req, res) => {
                     data[0].inCart = filtered;
                     // Remove quantity added to cart from total stock for item shown
                     data[0].quantity -= quantity;
-                    
+
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
                             res.json({
@@ -1152,7 +1235,7 @@ router.put('/removeFromCart', (req, res) => {
                         filtered.push(cartRemove);
                     }
                     data[0].inCart = filtered;
-                    
+
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
                             res.json({
@@ -1192,7 +1275,6 @@ router.put('/removeFromCart', (req, res) => {
     }
 });
 
-// Get items in cart
 router.get('/getInCart', (req, res) => { 
     let email = req.query.email;
 
@@ -1269,7 +1351,7 @@ router.delete('/deleteItem', (req, res) => {
                 })
             } else {
                 res.json({
-                    status: "Success",
+                    status: "SUCCESS",
                     message: "Item deleted successfully",
                     data: doc
                 })
@@ -1280,6 +1362,84 @@ router.delete('/deleteItem', (req, res) => {
                 status: "FAILED",
                 message: "Error: Deleting Items"
             })
+})
+
+// Filter Store Listings By Price
+router.get('/filterPriceItemListings', (req, res) => {
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
+    var itemlistingnames = [];
+
+    if(minprice < 0 || maxprice < 0){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering prices below 0!"
+        })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the listing price to see if it works
+                    if(itemListing.price >= minprice && itemListing.price <= maxprice){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Price Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })
+    }
+});
+
+// Filter Store Listings By Pet Type
+router.get('/filterPettypeItemListings', (req, res) => {
+    let pettype = req.query.pettype;
+    pettype = pettype.toLowerCase();
+    var lowercased;
+    var itemlistingnames = [];
+
+    if(pettype == ""){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering Empty Pet Type!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the store listing pet types to see if it works
+                    lowercased = itemListing.pets.map(pet => pet.toLowerCase());
+
+                    if(lowercased.includes(pettype)){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Pet Types Found Successfully",
+                    data: itemlistingnames
+                })
+            }
         })
     }
 });
