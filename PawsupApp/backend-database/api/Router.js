@@ -319,6 +319,10 @@ router.post('/createListing', (req, res) => {
                 })
             } else {
                 // Create listing
+                
+                User.find({email: listingowner}).then(data => {
+                    var fullname = data.fullname;
+                })
                 const newListing = new Listing({
                     listingowner: listingowner,
                     title: emptyString,
@@ -329,7 +333,8 @@ router.post('/createListing', (req, res) => {
                     sumRatings: 1,
                     numRatings: 1,
                     rating: 1,
-                    bookings: emptyArray
+                    bookings: emptyArray,
+                    fullname: fullname
                 });
 
                 newListing.save().then(result => {
@@ -368,7 +373,13 @@ router.get('/getListing', (req, res) => {
         var query = { listingowner: listingowner };
 
         // Get listing data for bookings
-        Listing.find(query).then(data => {
+        Listing.aggregate([{ $match: query }, {
+            $addFields: { 
+            // Creates temporary field to calculate rating of Listing
+            rating: {
+                $divide:["$sumRatings", "$numRatings"] 
+            }}}
+            ]).then(data => {
             res.json({
                 status: "SUCCESS",
                 message: "Listing Found Successfully",
@@ -386,15 +397,16 @@ router.get('/getListing', (req, res) => {
 
 // Modify Listing
 router.put('/modifyListing', (req, res) => {
-    let { listingowner, title, description, location, features, price } = req.body;
+    let { listingowner, title, description, location, features, price, fullname } = req.body;
 
     listingowner = listingowner.trim();
     title = title.trim();
     description = description.trim();
     location = location.trim();
     features = features.trim();
+    fullname = fullname.trim();
 
-    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || price < 0) {
+    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || fullname == "" || price < 0) {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
@@ -805,7 +817,7 @@ router.get('/getPetownerBookings', (req, res) => {
         // Get listing data for bookings
         Listing.find().then(data => {
             for (const listing of data) {
-                filtered = listing.bookings.filter(function(value, index, arr) {
+                filtered = listing.bookings.filter(function(value) {
                     return (value.reason == petowner);
                 })
                 if (filtered.length > 0) {
@@ -828,6 +840,7 @@ router.get('/getPetownerBookings', (req, res) => {
     }
 });
 
+// Sorting listings
 router.get('/sortListings', (req, res) => {
     let sortVal = req.query.sortVal;
     let order = req.query.order;
@@ -922,7 +935,7 @@ router.get('/sortListings', (req, res) => {
     }
 });
 
-// STORE:
+// STORE ITEMS:
 
 // Make item
 router.post('/makeItem', (req, res) => {
@@ -1083,41 +1096,6 @@ router.get('/getItem', (req, res) => {
             res.json({
                 status: "FAILED",
                 message: "Error: Finding item in database"
-            })
-        })
-    }
-});
-
-// Delete item from database
-router.delete('/deleteItem', (req, res) => {
-    let name = req.query.name;
-
-    name = name.trim();
-    if (name == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Credentials"
-        })
-    } else {
-        var query = { name: name };
-        Item.deleteOne(query).then(doc => {
-            if (doc.deletedCount < 1) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: No item deleted"
-                })
-            } else {
-                res.json({
-                    status: "Success",
-                    message: "Item deleted successfully",
-                    data: doc
-                })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Deleting Items"
             })
         })
     }
@@ -1351,6 +1329,39 @@ router.get('/getAllItems', (req, res) => {
             })
         }
     })
+});
+
+// Delete item from database
+router.delete('/deleteItem', (req, res) => {
+    let name = req.query.name;
+
+    name = name.trim();
+    if (name == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Credentials"
+        })
+    } else {
+        var query = { name: name };
+        Item.deleteOne(query).then(doc => {
+            if (doc.deletedCount < 1) {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: No item deleted"
+                })
+            } else {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Item deleted successfully",
+                    data: doc
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Deleting Items"
+            })
 })
 
 // Filter Store Listings By Price
