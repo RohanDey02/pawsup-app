@@ -30,7 +30,7 @@ const PetOwnerMain = ({ navigation, route }) => {
                         <ButtonTextMain>Services</ButtonTextMain>
                     </StyledButtonMainPage>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('Shop', data)}>
                         <ButtonTextMain>Store</ButtonTextMain>
                     </StyledButtonMainPage>
 

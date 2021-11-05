@@ -20,6 +20,8 @@ import PetSitterModifyListing from '../screens/PetSitterModifyListing';
 import DetailedListing from '../screens/DetailedListing';
 import UpcomingAppointment from '../screens/UpcomingAppointment';
 import Cart from './../screens/Cart';
+import Shop from './../screens/Shop';
+
 
 const Stack = createStackNavigator();
 
@@ -38,7 +40,7 @@ const RootStack = () => {
                         paddingLeft: 20,
                     },
                 }}
-                initialRouteName="Services"
+                initialRouteName="Shop"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
@@ -51,6 +53,8 @@ const RootStack = () => {
                 <Stack.Screen name="DetailedListing" component={DetailedListing} />
                 <Stack.Screen name="UpcomingAppointment" component={UpcomingAppointment} />
                 <Stack.Screen name="Cart" component={Cart} />
+                <Stack.Screen name="Shop" component={Shop} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );

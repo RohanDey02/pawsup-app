@@ -1362,7 +1362,9 @@ router.delete('/deleteItem', (req, res) => {
                 status: "FAILED",
                 message: "Error: Deleting Items"
             })
-})
+        })
+    }
+});
 
 // Filter Store Listings By Price
 router.get('/filterPriceItemListings', (req, res) => {
