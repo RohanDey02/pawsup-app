@@ -200,7 +200,6 @@ export const StyledButton1 = styled.TouchableOpacity`
   borderRadius:30px;
 `;
 
-
 export const StyledButtonMainPage = styled.TouchableOpacity`
   padding: 15px;
   background-color: ${red};

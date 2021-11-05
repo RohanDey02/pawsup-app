@@ -21,6 +21,8 @@ import DetailedListing from '../screens/DetailedListing';
 import UpcomingAppointment from '../screens/UpcomingAppointment';
 import AdminAddProduct from '../screens/AdminAddProduct';
 import AdminRemoveProduct from '../screens/AdminRemoveProduct';
+import AdminRemoveListing from '../screens/AdminRemoveListing';
+import Cart from './../screens/Cart';
 
 const Stack = createStackNavigator();
 
@@ -39,7 +41,7 @@ const RootStack = () => {
                         paddingLeft: 20,
                     },
                 }}
-                initialRouteName="Login"
+                initialRouteName="Services"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
@@ -53,6 +55,8 @@ const RootStack = () => {
                 <Stack.Screen name="UpcomingAppointment" component={UpcomingAppointment} />
                 <Stack.Screen name="AdminAddProduct" component={AdminAddProduct} />
                 <Stack.Screen name="AdminRemoveProduct" component={AdminRemoveProduct} />
+                <Stack.Screen name="AdminRemoveListing" component={AdminRemoveListing} />
+                <Stack.Screen name="Cart" component={Cart} />
             </Stack.Navigator>
         </NavigationContainer>
     );
