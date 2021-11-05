@@ -8,6 +8,7 @@ const router = express.Router();
 // MongoDB Models
 const User = require('../models/User');
 const Listing = require('./../models/Listing');
+const Item = require('./../models/Item');
 
 // Password Encrypter
 const bcrypt = require('bcrypt');
@@ -558,6 +559,11 @@ router.get('/filterPriceListings', (req, res) => {
             status: "FAILED",
             message: "Error: Entering prices below 0!"
         })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
     } else{
         Listing.find({} , (err, listings) => {
             if(err){
@@ -875,6 +881,88 @@ router.get('/sortListings', (req, res) => {
             message: "Error: Incorrect sort item!",
             data: req.query
         })
+    }
+});
+
+// STORE:
+
+// Filter Store Listings By Price
+router.get('/filterPriceItemListings', (req, res) => {
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
+    var itemlistingnames = [];
+
+    if(minprice < 0 || maxprice < 0){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering prices below 0!"
+        })
+    } else if(minprice > maxprice){
+        res.json({
+            status: "FAILED",
+            message: "Error: Minimum Price is Above Maximum Price!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the listing price to see if it works
+                    if(itemListing.price >= minprice && itemListing.price <= maxprice){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Price Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })  
+    }
+});
+
+// Filter Store Listings By Pet Type
+router.get('/filterPettypeItemListings', (req, res) => {
+    let pettype = req.query.pettype;
+    pettype = pettype.toLowerCase();
+    var lowercased;
+    var itemlistingnames = [];
+
+    if(pettype == ""){
+        res.json({
+            status: "FAILED",
+            message: "Error: Entering Empty Pet Type!"
+        })
+    } else{
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    // Check the store listing pet types to see if it works
+                    lowercased = itemListing.pets.map(pet => pet.toLowerCase());
+
+                    if(lowercased.includes(pettype)){
+                        itemlistingnames.push(itemListing.name);
+                    }
+                })
+    
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Pet Types Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })  
     }
 });
 

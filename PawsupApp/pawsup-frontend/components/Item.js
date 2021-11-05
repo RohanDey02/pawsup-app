@@ -4,35 +4,34 @@ import { View, Image, StyleSheet, Text, Dimensions, TouchableOpacity, } from 're
 const NUMCOLS = 2;
 const WIDTH = Dimensions.get('window').width - 40;
 
-const Entry = ({ item, onPress }) => {
+const Item = ({ item, onPress }) => {
     const { title, desc } = item;
     return (
         <TouchableOpacity style={styles.container}>
+            {
+            ///*
             <Image
-                source={{uri: item.image}}
+                source={{uri: 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png'}}
                 style={{aspectRatio: 1, flex: 1/NUMCOLS, borderRadius: 123123}}
             />
-            <Text style={{fontWeight: "bold", fontSize: 17, alignSelf: 'center'}}>
-                {item.fullname}
+            //*/
+            }
+            <Text style={{fontWeight: "bold", fontSize: 18, alignSelf: 'center'}}>
+                {item.name}
             </Text>
 
 			<View style={{flexDirection:"row", paddingTop:2, paddingBottom: 4}}>
-				<View style={{flex:1}}>
+				<View style={{flex:3}}>
 					<Text style={{fontSize: 15, justifyContent: 'flex-start'}}>
-						{'$' + item.price + '/hr'}
+                        {item.remaining + ' left'}
 					</Text>
                 </View>
-                <View style={{flex:1}}>
+                <View style={{flex:2}}>
 					<Text style={{fontSize: 15, justifyContent: 'flex-end', textAlign: 'right'}}>
-						{item.rating}
+						{'$' + item.price}
 					</Text>
                 </View>
 			</View>
-
-
-			<Text style={{fontSize: 12, textAlign: 'center',}}>
-				{item.description}
-			</Text>
         </TouchableOpacity>
         
     );
@@ -42,7 +41,7 @@ const Entry = ({ item, onPress }) => {
 const styles = StyleSheet.create({
 	container: {
     	backgroundColor: '#fff4bf',
-    	width: WIDTH / 2 - 20,
+    	width: WIDTH / 2 - 10,
     	padding: 10,
     	borderRadius: 10,
   	},
@@ -53,4 +52,4 @@ const styles = StyleSheet.create({
   	},
 });
 
-export default Entry;
+export default Item;

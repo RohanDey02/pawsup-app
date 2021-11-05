@@ -19,7 +19,12 @@ import Setting from './../screens/Setting';
 import PetSitterModifyListing from '../screens/PetSitterModifyListing';
 import DetailedListing from '../screens/DetailedListing';
 import UpcomingAppointment from '../screens/UpcomingAppointment';
+import AdminAddProduct from '../screens/AdminAddProduct';
+import AdminRemoveProduct from '../screens/AdminRemoveProduct';
+import AdminRemoveListing from '../screens/AdminRemoveListing';
 import AdminRemoveUser from '../screens/AdminRemoveUser';
+import Cart from './../screens/Cart';
+import Shop from './../screens/Shop';
 
 const Stack = createStackNavigator();
 
@@ -50,11 +55,15 @@ const RootStack = () => {
                 <Stack.Screen name="PetSitterModifyListing" component={PetSitterModifyListing} />
                 <Stack.Screen name="DetailedListing" component={DetailedListing} />
                 <Stack.Screen name="UpcomingAppointment" component={UpcomingAppointment} />
+                <Stack.Screen name="AdminAddProduct" component={AdminAddProduct} />
+                <Stack.Screen name="AdminRemoveProduct" component={AdminRemoveProduct} />
+                <Stack.Screen name="AdminRemoveListing" component={AdminRemoveListing} />
                 <Stack.Screen name="AdminRemoveUser" component={AdminRemoveUser} />
+                <Stack.Screen name="Cart" component={Cart} />
+                <Stack.Screen name="Shop" component={Shop} />
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
 
 export default RootStack;
-
