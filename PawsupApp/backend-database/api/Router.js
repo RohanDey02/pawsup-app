@@ -600,8 +600,8 @@ router.put('/makeBooking', (req, res) => {
 
 // Filter Listing By Price
 router.get('/filterPriceListings', (req, res) => {
-    let minprice = req.query.minprice;
-    let maxprice = req.query.maxprice;
+    let minprice = parseInt(req.query.minprice);
+    let maxprice = parseInt(req.query.maxprice);
     var listingowners = [];
 
     if(minprice < 0 || maxprice < 0){
@@ -1362,12 +1362,14 @@ router.delete('/deleteItem', (req, res) => {
                 status: "FAILED",
                 message: "Error: Deleting Items"
             })
-})
+        })
+    }
+});
 
 // Filter Store Listings By Price
 router.get('/filterPriceItemListings', (req, res) => {
-    let minprice = req.query.minprice;
-    let maxprice = req.query.maxprice;
+    let minprice = parseInt(req.query.minprice);
+    let maxprice = parseInt(req.query.maxprice);
     var itemlistingnames = [];
 
     if(minprice < 0 || maxprice < 0){
