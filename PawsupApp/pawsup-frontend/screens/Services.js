@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -18,26 +19,7 @@ const Services = ({ navigation, route }) => {
 	//const currentUser = data["0"];
 	//route.params.additional = "temp";
 
-    var tempData = [
-        {
-            id: 'alio@gmail.com',
-            fullname: 'qAli Orozgani',
-            rating: 5,
-            image: CAT_IMG, 
-            email: 'alio@gmail.com',
-            price: 15.99,
-            description: 'hi i am ali and i will pet your dog very well!',
-        },
-        {
-            id: 'josh@gmail.com',
-            fullname: 'Josh',
-            rating: 5,
-            image: CAT_IMG, 
-            email: 'josh@gmail.com',
-            price: 69.99,
-            description: 'give pet pls',
-        },
-    ];
+    var tempData = [];
 
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
@@ -47,6 +29,8 @@ const Services = ({ navigation, route }) => {
     const [date, setDate] = useState(new Date(2000, 0, 1));
     const [startDate, setStartDate] = useState("tap to choose");
     const [endDate, setEndDate] = useState("tap to choose");
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -91,6 +75,8 @@ const Services = ({ navigation, route }) => {
         else setShowEndDate(true);
     };
 
+    
+
     const addToData = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
         axios.get(url, {params: req}).then((response) => {
@@ -106,9 +92,60 @@ const Services = ({ navigation, route }) => {
                         email: data[0].email,
                         price: data[0].price,
                         image: CAT_IMG, 
-                        rating: data[0].sumRatings / data[0].numRatings,
+                        rating: data[0].rating,
                         description: data[0].description,
                     });
+                setDisplayData(tempData);
+            }
+            
+        }).catch((error) => {
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            }
+        );
+    }
+
+    const addToData2 = (req) => {
+        // don't ask why this exists
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
+        axios.get(url, {params: req}).then((response) => {
+            const result = response.data;
+            const { status, message, data } = result;
+
+            if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            else {
+                tempData.push(
+                    {
+                        id: data[0].email,
+                        fullname: data[0].fullname,
+                        email: data[0].email,
+                        price: data[0].price,
+                        image: CAT_IMG, 
+                        rating: data[0].rating,
+                        description: data[0].description,
+                    });
+                setDisplayData(tempData);
+                setFilterVisible(true);     //trick to make things work
+                setFilterVisible(false);
+            }
+            
+        }).catch((error) => {
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            }
+        );
+    }
+
+    const getAllListings = () => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings?minprice=0&maxprice=1000000";
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const { status, message, data } = result;
+
+            if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            else {
+                
+                for(var i = 0; i < data.length; i++) {
+                    addToData2({'listingowner': data[i]});
+                }
                 setDisplayData(tempData);
             }
             
@@ -171,6 +208,14 @@ const Services = ({ navigation, route }) => {
             });
     }
     
+    useEffect(() => {
+        console.log(firstRender);
+        if(!firstRender) {
+            getAllListings();
+            setFirstRender(true);
+            setDisplayData(tempData);
+        }
+    });
 
     return (
         <StyledContainer2>
@@ -201,20 +246,20 @@ const Services = ({ navigation, route }) => {
             
             {!filterVisible && 
                 <SafeAreaView style={{marginTop: 20}}>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                         <TouchableOpacity
                             style={styles.filterButtonStyle}
                             onPress={() => {
                                 setFilterVisible(!filterVisible);
                             }}
                             >
+                            <Text style={styles.buttonTextStyle}>
+                                FILTER & SORT
+                            </Text>
                             <Image
                                 source={FILTER_IMG}
                                 style={styles.buttonImageIconStyle}
                             />
-                            <Text style={styles.buttonTextStyle}>
-                                FILTER & SORT
-                            </Text>
                         </TouchableOpacity>
                     </View>
                 </SafeAreaView>
@@ -324,7 +369,7 @@ const Services = ({ navigation, route }) => {
             }
 
             { /* items themselves  */}
-			{ !filterVisible &&
+			{ !filterVisible && displayData.length > 0 &&
 				<SafeAreaView style={styles.container}>
 					<FlatList
 						data={displayData}
@@ -358,6 +403,15 @@ const Services = ({ navigation, route }) => {
 					/>
 				</SafeAreaView>
 			}
+
+            { /* No items found message  */}
+			{ !filterVisible && displayData.length === 0 &&
+				<SafeAreaView style={styles.container}>
+					<Text style={{alignSelf: 'center', fontSize: 30, fontWeight: 'bold'}}>
+                        No items found!
+                    </Text>
+				</SafeAreaView>
+			}
 		</StyledContainer2>
 	);
 }
@@ -369,6 +423,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 5,
         flex: 1,
+        justifyContent: 'center',
     },
     item: {
         backgroundColor: '#f9c2ff',
@@ -384,13 +439,13 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     filterButtonStyle: {
-        marginLeft: 25,
+        marginRight: 25,
         flexDirection: 'row',
         backgroundColor: 'rgba(255, 255, 255, 0)',
         borderWidth: 0,
         borderColor: '#000',
         width: WIDTH / 2 - 40,
-        height: 25,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        height: 28,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
         borderRadius: 10,
     },
     buttonImageIconStyle: {
@@ -399,11 +454,13 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     buttonTextStyle: {
-        fontSize: 15,
+        fontSize: 17,
         alignSelf: 'center',
         marginLeft: 2,
+        marginTop: 2,
         color: '#000',
         flex: 1,
+        textAlign: 'right',
     },
 
 });

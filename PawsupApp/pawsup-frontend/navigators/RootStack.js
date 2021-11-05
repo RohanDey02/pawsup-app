@@ -41,7 +41,7 @@ const RootStack = () => {
                         paddingLeft: 20,
                     },
                 }}
-                initialRouteName="Shop"
+                initialRouteName="Login"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />

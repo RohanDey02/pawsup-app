@@ -46,6 +46,8 @@ const Services = ({ navigation, route }) => {
                     if(!tempData.includes(item)) tempData.push(item);
                 }
                 setDisplayData(tempData);
+                setFilterVisible(true);
+                setFilterVisible(false);
             }
             
         }).catch((error) => {
@@ -88,15 +90,19 @@ const Services = ({ navigation, route }) => {
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-
+                console.log(status);
+                console.log(message);
                 if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
                 else {
+                    console.log("hi?");
                     tempData = [];
                     setDisplayData(tempData);
+                    console.log("again");
                     
                     for(var i = 0; i < data.length; i++) {
                         addToData({'name': data[i]});
                     }
+                    console.log("at last");
                 }
                 
             })
@@ -135,6 +141,7 @@ const Services = ({ navigation, route }) => {
         if(!firstRender) {
             getAllItems();
             setFirstRender(true);
+            setDisplayData(tempData);
         }
     });
     
@@ -152,20 +159,20 @@ const Services = ({ navigation, route }) => {
             
             {!filterVisible && 
                 <SafeAreaView style={{marginTop: 20}}>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                         <TouchableOpacity
                             style={styles.filterButtonStyle}
                             onPress={() => {
                                 setFilterVisible(!filterVisible);
                             }}
                             >
+                            <Text style={styles.buttonTextStyle}>
+                                FILTER & SORT
+                            </Text>
                             <Image
                                 source={FILTER_IMG}
                                 style={styles.buttonImageIconStyle}
                             />
-                            <Text style={styles.buttonTextStyle}>
-                                FILTER & SORT
-                            </Text>
                         </TouchableOpacity>
                     </View>
                 </SafeAreaView>
@@ -198,7 +205,7 @@ const Services = ({ navigation, route }) => {
                                         if(itemValue === "e") handleFilterPrice("?minprice=50&maxprice=100");
                                         if(itemValue === "f") handleFilterPrice("?minprice=100&maxprice=10000");
                                     }
-                                }
+                                } 
                             >
                                 <Picker.Item label="Any" value="a" />
                                 <Picker.Item label="Under $10" value="b" />
@@ -281,7 +288,7 @@ const Services = ({ navigation, route }) => {
             }
 
             { /* items themselves  */}
-			{ !filterVisible &&
+			{ !filterVisible && displayData.length > 0 &&
 				<SafeAreaView style={styles.container}>
 					<FlatList
 						data={displayData}
@@ -315,6 +322,15 @@ const Services = ({ navigation, route }) => {
 					/>
 				</SafeAreaView>
 			}
+
+            { /* No items found message  */}
+			{ !filterVisible && displayData.length === 0 &&
+				<SafeAreaView style={styles.container}>
+					<Text style={{alignSelf: 'center', fontSize: 30, fontWeight: 'bold'}}>
+                        No items found!
+                    </Text>
+				</SafeAreaView>
+			}
 		</StyledContainer2>
 	);
 }
@@ -326,6 +342,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 5,
         flex: 1,
+        justifyContent: 'center',
     },
     item: {
         backgroundColor: '#f9c2ff',
@@ -341,13 +358,14 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     filterButtonStyle: {
-        marginLeft: 25,
+        marginRight: 25,
         flexDirection: 'row',
+        justifyContent: 'flex-end',
         backgroundColor: 'rgba(255, 255, 255, 0)',
         borderWidth: 0,
         borderColor: '#000',
         width: WIDTH / 2 - 40,
-        height: 25,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        height: 28,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
         borderRadius: 10,
     },
     buttonImageIconStyle: {
@@ -356,11 +374,13 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     buttonTextStyle: {
-        fontSize: 15,
+        fontSize: 17,
         alignSelf: 'center',
         marginLeft: 2,
+        marginTop: 2,
         color: '#000',
         flex: 1,
+        textAlign: 'right',
     },
 
 });
