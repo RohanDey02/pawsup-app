@@ -1,5 +1,5 @@
 /*
-  This is where we implement the queries. Some queries include signup POST and signin POST.
+  This is where we implement the queries. Some queries include signup POST and signin POST. 
 */
 
 const express = require('express');
@@ -246,46 +246,6 @@ router.put('/update', (req, res) => {
     }
 });
 
-// Remove User
-router.delete('/deleteUser', (req, res) => {
-    let email = req.query.email;
-
-    email = email.trim();
-
-    if (email == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Credentials"
-        })
-    } else {
-        var conditions = { email: email };
-
-        // Removes User, if it exists, by its email
-        User.find(conditions).then(data => {
-            User.deleteOne(conditions, req.body).then(doc => {
-                if (doc.deletedCount < 1) {
-                    res.json({
-                        status: "FAILED",
-                        message: "No User Was Deleted"
-                    })
-                } else {
-                    res.json({
-                        status: "SUCCESS",
-                        message: "User Deleted Successfully",
-                        data: data
-                    })
-                }
-            });
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Finding User, Perhaps Doesn't Exist"
-            })
-        })
-    }
-});
-
 // LISTING:
 
 // Create Listing
@@ -319,10 +279,6 @@ router.post('/createListing', (req, res) => {
                 })
             } else {
                 // Create listing
-                
-                User.find({email: listingowner}).then(data => {
-                    var fullname = data.fullname;
-                })
                 const newListing = new Listing({
                     listingowner: listingowner,
                     title: emptyString,
@@ -333,8 +289,7 @@ router.post('/createListing', (req, res) => {
                     sumRatings: 1,
                     numRatings: 1,
                     rating: 1,
-                    bookings: emptyArray,
-                    fullname: fullname
+                    bookings: emptyArray
                 });
 
                 newListing.save().then(result => {
@@ -373,13 +328,7 @@ router.get('/getListing', (req, res) => {
         var query = { listingowner: listingowner };
 
         // Get listing data for bookings
-        Listing.aggregate([{ $match: query }, {
-            $addFields: { 
-            // Creates temporary field to calculate rating of Listing
-            rating: {
-                $divide:["$sumRatings", "$numRatings"] 
-            }}}
-            ]).then(data => {
+        Listing.find(query).then(data => {
             res.json({
                 status: "SUCCESS",
                 message: "Listing Found Successfully",
@@ -397,16 +346,15 @@ router.get('/getListing', (req, res) => {
 
 // Modify Listing
 router.put('/modifyListing', (req, res) => {
-    let { listingowner, title, description, location, features, price, fullname } = req.body;
+    let { listingowner, title, description, location, features, price } = req.body;
 
     listingowner = listingowner.trim();
     title = title.trim();
     description = description.trim();
     location = location.trim();
     features = features.trim();
-    fullname = fullname.trim();
 
-    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || fullname == "" || price < 0) {
+    if (listingowner == "" || title == "" || description == "" || location == "" || features == "" || price < 0) {
         res.json({
             status: "FAILED",
             message: "Error: Empty Listing Fields!"
@@ -456,44 +404,6 @@ router.put('/modifyListing', (req, res) => {
     }
 });
 
-// Remove Listing
-router.delete('/deleteListing', (req, res) => {
-    let listingowner = req.query.listingowner;
-
-    if (listingowner == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Credentials"
-        })
-    } else {
-        var conditions = { listingowner: listingowner };
-
-        // Removes Listing, if it exists, by its listing owner
-        Listing.find(conditions).then(data => {
-            Listing.deleteOne(conditions, req.body).then(doc => {
-                if (doc.deletedCount < 1) {
-                    res.json({
-                        status: "FAILED",
-                        message: "No Listing Was Deleted"
-                    })
-                } else {
-                    res.json({
-                        status: "SUCCESS",
-                        message: "Listing Deleted Successfully",
-                        data: data
-                    })
-                }
-            });
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Finding Listing, Perhaps Doesn't Exist"
-            })
-        })
-    }
-});
-
 // Make Booking
 router.put('/makeBooking', (req, res) => {
     let { listingowner, reason, cost, startdate, enddate } = req.body;
@@ -535,7 +445,7 @@ router.put('/makeBooking', (req, res) => {
             if (info.length) {
                 // User exists, now check if date is blocked
                 var bool = false;
-
+                
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
                     var d1 = booking.startdate.split("/");
@@ -550,7 +460,7 @@ router.put('/makeBooking', (req, res) => {
                         break;
                     }
                 }
-
+                
                 if(bool == false){
                     info[0].bookings.push(book);
 
@@ -600,8 +510,8 @@ router.put('/makeBooking', (req, res) => {
 
 // Filter Listing By Price
 router.get('/filterPriceListings', (req, res) => {
-    let minprice = parseInt(req.query.minprice);
-    let maxprice = parseInt(req.query.maxprice);
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
     var listingowners = [];
 
     if(minprice < 0 || maxprice < 0){
@@ -628,14 +538,14 @@ router.get('/filterPriceListings', (req, res) => {
                         listingowners.push(listing.listingowner);
                     }
                 })
-
+    
                 res.json({
                     status: "SUCCESS",
                     message: "Listing Owners With Suitable Price Found Successfully",
                     data: listingowners
                 })
             }
-        })
+        })  
     }
 });
 
@@ -689,14 +599,14 @@ router.get('/filterAvailabilityListings', (req, res) => {
                         listingowners.push(listing.listingowner);
                     }
                 })
-
+    
                 res.json({
                     status: "SUCCESS",
                     message: "Listing Owners With Suitable Availability Found Successfully",
                     data: listingowners
                 })
             }
-        })
+        })  
     }
 });
 
@@ -719,7 +629,7 @@ router.put('/cancelBooking', (req, res) => {
     var e1 = enddate.split("/");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
-
+    
     if (listingowner == "" || startdate == "" || enddate == "") {
         res.json({
             status: "FAILED",
@@ -753,7 +663,7 @@ router.put('/cancelBooking', (req, res) => {
 
                     console.log(value);
                     return !((getDifferenceInDays(startdate1, from) == 0) && (getDifferenceInDays(enddate1, to) == 0));
-/*                  Can use bare string comparison as well since data passed in and data stored has
+/*                  Can use bare string comparison as well since data passed in and data stored has 
                     consistent format, but will convert date and use function to get difference instead.
                     return !((value.startdate == startdate) && (value.enddate == enddate));
  */                });
@@ -817,13 +727,13 @@ router.get('/getPetownerBookings', (req, res) => {
         // Get listing data for bookings
         Listing.find().then(data => {
             for (const listing of data) {
-                filtered = listing.bookings.filter(function(value) {
+                filtered = listing.bookings.filter(function(value, index, arr) {
                     return (value.reason == petowner);
                 })
                 if (filtered.length > 0) {
                     listing.bookings = filtered;
                     AllBookings.push(listing);
-                }
+                } 
             }
             res.json({
                 status: "SUCCESS",
@@ -840,7 +750,6 @@ router.get('/getPetownerBookings', (req, res) => {
     }
 });
 
-// Sorting listings
 router.get('/sortListings', (req, res) => {
     let sortVal = req.query.sortVal;
     let order = req.query.order;
@@ -852,10 +761,10 @@ router.get('/sortListings', (req, res) => {
         switch (sortVal) {
         case "rating" :
             Listing.aggregate([{
-                $addFields: {
+                $addFields: { 
                 // Creates temporary field to calculate rating of Listing
                 rating: {
-                    $divide:["$sumRatings", "$numRatings"]
+                    $divide:["$sumRatings", "$numRatings"] 
                 }}}, { $sort: {"rating": order } }
                 ]).then(data => {
                     res.json({
@@ -867,10 +776,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "cost":
             Listing.aggregate([{
-                $addFields: {
+                $addFields: { 
                 // Creates temporary field to calculate rating of Listing
                 rating: {
-                    $divide:["$sumRatings", "$numRatings"]
+                    $divide:["$sumRatings", "$numRatings"] 
                 }}}, { $sort: {"price": order } }
                 ]).then(data => {
                 res.json({
@@ -882,10 +791,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "title":
             Listing.aggregate([{
-            $addFields: {
+            $addFields: { 
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"]
+                $divide:["$sumRatings", "$numRatings"] 
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -897,10 +806,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "description":
             Listing.aggregate([{
-            $addFields: {
+            $addFields: { 
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"]
+                $divide:["$sumRatings", "$numRatings"] 
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -912,10 +821,10 @@ router.get('/sortListings', (req, res) => {
             break;
         case "features":
             Listing.aggregate([{
-            $addFields: {
+            $addFields: { 
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"]
+                $divide:["$sumRatings", "$numRatings"] 
             }}}, { $sort: {"price": order } }
             ]).then(data => {
                 res.json({
@@ -935,439 +844,12 @@ router.get('/sortListings', (req, res) => {
     }
 });
 
-// STORE ITEMS:
-
-// Make item
-router.post('/makeItem', (req, res) => {
-    // inCart is not taken into account here because item is being created,
-    // so no users can have it in their cart.
-    let { name, price, description, image, pets, quantity } = req.body;
-
-    name = name.trim();
-    description = description.trim();
-    image = image.trim();
-    for (var pet in pets) {
-        pet = pet.trim();
-    }
-
-    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0 || pets.includes(null)) {
-        res.json({
-            status: "FAILED",
-            message: "Empty fields!"
-        });
-    } else if ((!/^\d+(\.\d{1,2}){0,1}$/.test(price)) || (!/^\d+(\.\d{1,2}){0,1}$/.test(quantity))) {
-        res.json({
-            status: "FAILED",
-            message: "Price or Quantity is not a number",
-        });
-    } else if (price < 1 || quantity < 0){
-        res.json({
-            status: "FAILED",
-            message: "Price or Quantity is not a valid amount",
-        });
-    // TODO: make tests for pets
-    } else {
-        // Check if item exists
-        Item.find({ name }).then(result => {
-            if (result.length) {
-                // Item exists
-                res.json({
-                    status: "FAILED",
-                    message: "Item already exists"
-                })
-            } else {
-                // Create item
-
-                const newItem = new Item({
-                    name,
-                    price, 
-                    description, 
-                    image, 
-                    pets,
-                    quantity,
-                    inCart: []
-                })
-
-                newItem.save().then(result => {
-                    res.json({
-                        status: "SUCCESS",
-                        message: "Item Creation Successful",
-                        data: result,
-                    })
-                }).catch(err => {
-                    res.json({
-                        status: "FAILED",
-                        message: "Error: Saving New Listing"
-                    })
-                })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Checking for existing item"
-            })
-        })
-    }
-});
-
-// Modify item
-router.put('/modifyItem', (req, res) => {
-    let { name, price, description, image, pets, quantity } = req.body;
-
-    name = name.trim();
-    description = description.trim();
-    image = image.trim();
-    for (var pet in pets) {
-        pet = pet.trim();
-    }
-
-    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0 || pets.includes(null)) {
-        res.json({
-            status: "FAILED",
-            message: "Empty fields!"
-        });
-    } else if ((!/^\d+$/.test(price)) || (!/^\d+$/.test(quantity))) {
-        res.json({
-            status: "FAILED",
-            message: "Price or Quantity is not a number",
-        });
-    } else if (price < 1 || quantity < 0){
-        res.json({
-            status: "FAILED",
-            message: "Price or Quantity is not a valid amount",
-        });
-    } else {
-        // Find item in database
-        var query = { name };
-
-        Item.updateOne(query, req.body).then(doc => {
-            if (!doc) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: Could Not Find item"
-                })
-            } else {
-                Item.find(query).then(data =>
-                    res.json({
-                        status: "SUCCESS",
-                        message: "Item Modification Successful",
-                        data: data
-                    })
-                )
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Checking for Existing Item"
-            })
-        })
-    }
-});
-
-// Get item
-router.get('/getItem', (req, res) => {
-    let name = req.query.name;
-    if (name == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Name Field!"
-        })
-    } else {
-        var query = { name: name };
-
-        Item.find(query).then(data => {
-            if (data.length == 0) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: Could Not Find item"
-                })
-            } else {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Item found",
-                    data: data
-                })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Finding item in database"
-            })
-        })
-    }
-});
-
-// Add item to cart for User
-router.put('/addToCart', (req, res) => {
-    let { item, email, quantity } = req.body;
-
-    item = item.trim();
-    email = email.trim();
-
-    if (item == "" || email == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Fields!"
-        })
-    } else {
-        var query = { name: item };
-
-        Item.find(query).then(data => {
-            if (data.length == 0) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: Could Not Find item"
-                })
-            } else {
-                if (data[0].quantity > quantity) {
-                    // Check if user already has item in cart
-                    filtered = data[0].inCart.filter(function(value) {
-                        return (value.user == email);
-                    })
-                    var cartAdd;
-                    // User has item in cart
-                    if (filtered.length == 1) {
-                        filtered[0].quantity += quantity;
-                        cartAdd = filtered[0];
-                    } else {
-                        cartAdd = { user: email, quantity: quantity };
-                    }
-
-                    // Returns cart data for item without the user whose quantity is being changed
-                    filtered = data[0].inCart.filter(function(value) {
-                        return (value.user != email);
-                    })
-                    filtered.push(cartAdd);
-                    data[0].inCart = filtered;
-                    // Remove quantity added to cart from total stock for item shown
-                    data[0].quantity -= quantity;
-                    Item.updateOne(query, data[0]).then(doc => {
-                        if (!doc) {
-                            res.json({
-                                status: "FAILED",
-                                message: "Error could not update item"
-                            })
-                        } else {
-                            Item.find(query).then(data =>
-                                res.json({
-                                    status: "SUCCESS",
-                                    message: "Update Successful",
-                                    data: data
-                                })
-                            )
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        res.json({
-                            status: "FAILED",
-                            message: "Error: Checking for Existing Item #1"
-                        })
-                    })
-                } else {
-                    console.log(item.quantity, quantity);
-                    res.json({
-                        status: "FAILED",
-                        message: "Error: Quantity to be added greater than quantity of item"
-                    })
-                }
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Checking for Existing User #2"
-            })
-        })
-    }
-});
-
-// Remove item from cart for User
-router.put('/removeFromCart', (req, res) => {
-    let { item, email, quantity } = req.body;
-
-    item = item.trim();
-    email = email.trim();
-
-    if (item == "" || email == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Fields!"
-        })
-    } else {
-        var query = { name: item };
-
-        Item.find(query).then(data => {
-            if (data.length == 0) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: Could Not Find item"
-                })
-            } else {
-                filtered = data[0].inCart.filter(function(value) {
-                    return (value.user == email);
-                })
-                var cartRemove;
-                // User has item in cart
-                if (filtered.length == 1) {
-                    var newQuantity = filtered[0].quantity - quantity;
-                    // Initialises cartRemove if newQuantity is positive value,
-                    // otherwise user is removed from cart array for item
-                    if (newQuantity > 0) {
-                        cartRemove = { user: email, quantity: newQuantity };
-                        // Adds back quantity taken away from user to total stock for item
-                        data[0].quantity += quantity;
-                    } else {
-                        // Adds back all the quantity that was in user's order, since order
-                        // since order is to be removed entirely from cart
-                        data[0].quantity += filtered[0].quantity;
-                    }
-                    filtered = data[0].inCart.filter(function(value) {
-                        return (value.user != email);
-                    })
-                    // If cartRemove has an actual object then add the object to filtered,
-                    // otherwise this means quantity was invalid so do not re-add
-                    if (cartRemove != null) {
-                        filtered.push(cartRemove);
-                    }
-                    data[0].inCart = filtered;
-                    Item.updateOne(query, data[0]).then(doc => {
-                        if (!doc) {
-                            res.json({
-                                status: "FAILED",
-                                message: "Error could not update item"
-                            })
-                        } else {
-                            Item.find(query).then(data =>
-                                res.json({
-                                    status: "SUCCESS",
-                                    message: "Update Successful",
-                                    data: data
-                                })
-                            )
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        res.json({
-                            status: "FAILED",
-                            message: "Error: Checking for Existing Item #1"
-                        })
-                    })
-                } else {
-                    res.json({
-                        status: "FAILED",
-                        message: "Error: User does not have item in cart"
-                    })
-                }
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Checking for Existing User #2"
-            })
-        })
-    }
-});
-
-// Get items in cart
-router.get('/getInCart', (req, res) => { 
-    let email = req.query.email;
-
-    if (email == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Listing User Email Field!"
-        })
-    } else {
-        var cart = [];
-        var totalPrice = 0;
-        Item.find().then(data => {
-            for (var item of data) {
-                for (var cartElem of item.inCart) {
-                    if (cartElem.user == email) {
-                        // Changes item's quantity to be the quantity that user has in cart
-                        item.quantity = cartElem.quantity;
-                        cart.push(item);
-                        totalPrice += (cartElem.quantity * item.price);
-                    }
-                }
-            }
-            res.json({
-                status: "SUCCESS",
-                message: "Items in cart found",
-                data: cart,
-                totalPrice
-            })
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Finding Items"
-            })
-        })
-    }
-});
-
-// Get all items
-router.get('/getAllItems', (req, res) => {
-    Item.find().then(data => {
-        if (data.length == 0) {
-            res.json({
-                status: "FAILED",
-                message: "Error: No Items found in database"
-            })
-        } else {
-            res.json({
-                status: "SUCCESS",
-                message: "Items found in database",
-                data: data
-            })
-        }
-    })
-});
-
-// Delete item from database
-router.delete('/deleteItem', (req, res) => {
-    let name = req.query.name;
-
-    name = name.trim();
-    if (name == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Credentials"
-        })
-    } else {
-        var query = { name: name };
-        Item.deleteOne(query).then(doc => {
-            if (doc.deletedCount < 1) {
-                res.json({
-                    status: "FAILED",
-                    message: "Error: No item deleted"
-                })
-            } else {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Item deleted successfully",
-                    data: doc
-                })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.json({
-                status: "FAILED",
-                message: "Error: Deleting Items"
-            })
-        })
-    }
-});
+// STORE:
 
 // Filter Store Listings By Price
 router.get('/filterPriceItemListings', (req, res) => {
-    let minprice = parseInt(req.query.minprice);
-    let maxprice = parseInt(req.query.maxprice);
+    let minprice = req.query.minprice;
+    let maxprice = req.query.maxprice;
     var itemlistingnames = [];
 
     if(minprice < 0 || maxprice < 0){
@@ -1394,14 +876,14 @@ router.get('/filterPriceItemListings', (req, res) => {
                         itemlistingnames.push(itemListing.name);
                     }
                 })
-
+    
                 res.json({
                     status: "SUCCESS",
                     message: "Store Listings With Suitable Price Found Successfully",
                     data: itemlistingnames
                 })
             }
-        })
+        })  
     }
 });
 
@@ -1433,14 +915,14 @@ router.get('/filterPettypeItemListings', (req, res) => {
                         itemlistingnames.push(itemListing.name);
                     }
                 })
-
+    
                 res.json({
                     status: "SUCCESS",
                     message: "Store Listings With Suitable Pet Types Found Successfully",
                     data: itemlistingnames
                 })
             }
-        })
+        })  
     }
 });
 

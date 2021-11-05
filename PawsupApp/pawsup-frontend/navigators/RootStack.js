@@ -23,6 +23,7 @@ import AdminAddProduct from '../screens/AdminAddProduct';
 import AdminRemoveProduct from '../screens/AdminRemoveProduct';
 import AdminRemoveListing from '../screens/AdminRemoveListing';
 import Cart from './../screens/Cart';
+import Shop from './../screens/Shop';
 
 const Stack = createStackNavigator();
 
@@ -41,7 +42,7 @@ const RootStack = () => {
                         paddingLeft: 20,
                     },
                 }}
-                initialRouteName="Services"
+                initialRouteName="Login"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
@@ -57,10 +58,10 @@ const RootStack = () => {
                 <Stack.Screen name="AdminRemoveProduct" component={AdminRemoveProduct} />
                 <Stack.Screen name="AdminRemoveListing" component={AdminRemoveListing} />
                 <Stack.Screen name="Cart" component={Cart} />
+                <Stack.Screen name="Shop" component={Shop} />
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
 
 export default RootStack;
-

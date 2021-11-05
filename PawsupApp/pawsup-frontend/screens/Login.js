@@ -137,7 +137,7 @@ const Login = ({ navigation }) => {
                                 <ExtraView>
                                     <ExtraText>Don't have an account? </ExtraText>
                                     <TextLink onPress={() => navigation.navigate('Signup')}>
-                                        <TextLinkContent>Signup</TextLinkContent>
+                                        <TextLinkContent style={{color: 'blue'}}>Signup</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
                             </StyledFormArea>
