@@ -950,7 +950,7 @@ router.post('/makeItem', (req, res) => {
         pet = pet.trim();
     }
 
-    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0) {
+    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0 || pets.includes(null)) {
         res.json({
             status: "FAILED",
             message: "Empty fields!"
@@ -1022,7 +1022,7 @@ router.put('/modifyItem', (req, res) => {
         pet = pet.trim();
     }
 
-    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0) {
+    if (name == "" || price == "" || description == "" || image == "" || quantity == "" || pets.length == 0 || pets.includes(null)) {
         res.json({
             status: "FAILED",
             message: "Empty fields!"
