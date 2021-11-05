@@ -955,7 +955,7 @@ router.post('/makeItem', (req, res) => {
             status: "FAILED",
             message: "Empty fields!"
         });
-    } else if ((!/^\d+$/.test(price)) || (!/^\d+$/.test(quantity))) {
+    } else if ((!/^\d+(\.\d{1,2}){0,1}$/.test(price)) || (!/^\d+(\.\d{1,2}){0,1}$/.test(quantity))) {
         res.json({
             status: "FAILED",
             message: "Price or Quantity is not a number",
@@ -980,9 +980,9 @@ router.post('/makeItem', (req, res) => {
 
                 const newItem = new Item({
                     name,
-                    price,
-                    description,
-                    image,
+                    price, 
+                    description, 
+                    image, 
                     pets,
                     quantity,
                     inCart: []
@@ -1069,7 +1069,6 @@ router.put('/modifyItem', (req, res) => {
 // Get item
 router.get('/getItem', (req, res) => {
     let name = req.query.name;
-
     if (name == "") {
         res.json({
             status: "FAILED",
@@ -1145,7 +1144,6 @@ router.put('/addToCart', (req, res) => {
                     data[0].inCart = filtered;
                     // Remove quantity added to cart from total stock for item shown
                     data[0].quantity -= quantity;
-
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
                             res.json({
@@ -1235,7 +1233,6 @@ router.put('/removeFromCart', (req, res) => {
                         filtered.push(cartRemove);
                     }
                     data[0].inCart = filtered;
-
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
                             res.json({
@@ -1275,6 +1272,7 @@ router.put('/removeFromCart', (req, res) => {
     }
 });
 
+// Get items in cart
 router.get('/getInCart', (req, res) => { 
     let email = req.query.email;
 
