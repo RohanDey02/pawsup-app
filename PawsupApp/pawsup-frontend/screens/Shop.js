@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent} from 'react-native';
-import Entry from '../components/Entry';
+import Item from '../components/Item';
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
 
 
@@ -23,108 +22,31 @@ const Services = ({ navigation, route }) => {
 
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
+    const [selectedPetType, setSelectedPetType] = useState();
 	const [displayData, setDisplayData] = useState(tempData);
-    const [showStartDate, setShowStartDate] = useState(false);
-    const [showEndDate, setShowEndDate] = useState(false);
-    const [date, setDate] = useState(new Date(2000, 0, 1));
-    const [startDate, setStartDate] = useState("tap to choose");
-    const [endDate, setEndDate] = useState("tap to choose");
     const [firstRender, setFirstRender] = useState(false);
 
-
-    const onChangeStartDate = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowStartDate(false);
-        setDate(currentDate);
-        setStartDate(currentDate);
-        setSelectedPrice("a");
-        if(endDate != "tap to choose") {
-            var sday = selectedDate.getDate();
-            var smonth = selectedDate.getMonth() + 1;
-            var syear = selectedDate.getFullYear();
-            var eday = endDate.getDate();
-            var emonth = endDate.getMonth() + 1;
-            var eyear = endDate.getFullYear();
-            var startdate = (syear + '/' + smonth + '/' + sday).toString();
-            var enddate = (eyear + '/' + emonth + '/' + eday).toString();
-            handleFilterAvailability("?startdate=" + startdate + "&enddate=" + enddate);
-        }
-    };
-
-    const onChangeEndDate = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowEndDate(false);
-        setDate(currentDate);
-        setEndDate(currentDate);
-        setSelectedPrice("a");
-        if(startDate != "tap to choose") {
-            var eday = selectedDate.getDate();
-            var emonth = selectedDate.getMonth() + 1;
-            var eyear = selectedDate.getFullYear();
-            var sday = startDate.getDate();
-            var smonth = startDate.getMonth() + 1;
-            var syear = startDate.getFullYear();
-            var startdate = (syear + '/' + smonth + '/' + sday).toString();
-            var enddate = (eyear + '/' + emonth + '/' + eday).toString();
-            handleFilterAvailability("?startdate=" + startdate + "&enddate=" + enddate);
-        }
-    };
-
-    const showDatePicker = (startOrEnd) => {
-        if(startOrEnd === "start") setShowStartDate(true);
-        else setShowEndDate(true);
-    };
-
-    
-
-    const addToData = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
-        axios.get(url, {params: req}).then((response) => {
+    const getAllItems = () => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getAllItems";
+        axios.get(url).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
 
             if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             else {
-                tempData.push(
-                    {
-                        id: data[0].email,
-                        fullname: data[0].fullname,
-                        email: data[0].email,
-                        price: data[0].price,
-                        image: CAT_IMG, 
-                        rating: data[0].rating,
-                        description: data[0].description,
-                    });
+                for(var i = 0; i < data.length; i++) {
+                    var item = {
+                        id: data[i].id + data[i].name + data[i].price + data[i].image,
+                        name: data[i].name,
+                        price: data[i].price,
+                        image: data[i].image, 
+                        description: data[i].description,
+                        remaining: data[i].quantity
+                    }
+                    if(!tempData.includes(item)) tempData.push(item);
+                }
                 setDisplayData(tempData);
-            }
-            
-        }).catch((error) => {
-                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
-            }
-        );
-    }
-
-    const addToData2 = (req) => {
-        // don't ask why this exists
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
-        axios.get(url, {params: req}).then((response) => {
-            const result = response.data;
-            const { status, message, data } = result;
-
-            if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
-            else {
-                tempData.push(
-                    {
-                        id: data[0].email,
-                        fullname: data[0].fullname,
-                        email: data[0].email,
-                        price: data[0].price,
-                        image: CAT_IMG, 
-                        rating: data[0].rating,
-                        description: data[0].description,
-                    });
-                setDisplayData(tempData);
-                setFilterVisible(true);     //trick to make things work
+                setFilterVisible(true);
                 setFilterVisible(false);
             }
             
@@ -133,19 +55,24 @@ const Services = ({ navigation, route }) => {
             }
         );
     }
-
-    const getAllListings = () => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings?minprice=0&maxprice=1000000";
-        axios.get(url).then((response) => {
+    
+    const addToData = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getItem";
+        axios.get(url, {params: req}).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
 
             if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             else {
-                
-                for(var i = 0; i < data.length; i++) {
-                    addToData2({'listingowner': data[i]});
-                }
+                tempData.push(
+                    {
+                        id: data[0].id + data[0].name + data[0].price + data[0].image,
+                        name: data[0].name,
+                        price: data[0].price,
+                        image: data[0].image, 
+                        description: data[0].description,
+                        remaining: data[0].quantity
+                    });
                 setDisplayData(tempData);
             }
             
@@ -156,24 +83,26 @@ const Services = ({ navigation, route }) => {
     }
 
     const handleFilterPrice = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings" + req;
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceItemListings" + req;
 
         axios
             .get(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-                var users_array = [];
-
+                console.log(status);
+                console.log(message);
                 if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
                 else {
+                    console.log("hi?");
                     tempData = [];
                     setDisplayData(tempData);
-                    users_array = data;
-
-                    for(var i = 0; i < users_array.length; i++) {
-                        addToData({listingowner: users_array[i]});
+                    console.log("again");
+                    
+                    for(var i = 0; i < data.length; i++) {
+                        addToData({'name': data[i]});
                     }
+                    console.log("at last");
                 }
                 
             })
@@ -182,41 +111,40 @@ const Services = ({ navigation, route }) => {
             });
     }
 
-    const handleFilterAvailability = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings" + req;
+    const handleFilterPetType = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPettypeItemListings" + req;
 
         axios
             .get(url)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-                var users_array = [];   
 
                 if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
                 else {
                     tempData = [];
                     setDisplayData(tempData);
-                    users_array = data;
-                    for(var i = 0; i < users_array.length; i++) {
-                        addToData({listingowner: users_array[i]});
+                    console.log(data);
+                    for(var i = 0; i < data.length; i++) {
+                        addToData({name: data[i]});
                     }
                 }
                 
             })
             .catch((error) => {
+                console.log(error);
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             });
     }
     
     useEffect(() => {
-        console.log(firstRender);
         if(!firstRender) {
-            getAllListings();
+            getAllItems();
             setFirstRender(true);
             setDisplayData(tempData);
         }
     });
-
+    
     return (
         <StyledContainer2>
             <ImageBackground
@@ -227,22 +155,7 @@ const Services = ({ navigation, route }) => {
             </ImageBackground>
 
             <StatusBar style="light" />
-            <PageTitle style={{color: 'black', marginTop: 10}}>Available Services</PageTitle>
-            
-            {(showStartDate || showEndDate) && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    minimumDate={new Date(Date.now())}
-                    onChange={(showStartDate ? onChangeStartDate : onChangeEndDate)}
-                    style={{
-                        backgroundColor: 'yellow',
-                    }}
-                />
-            )}  
+            <PageTitle style={{color: 'black', marginTop: 10}}>Shop</PageTitle>
             
             {!filterVisible && 
                 <SafeAreaView style={{marginTop: 20}}>
@@ -284,16 +197,15 @@ const Services = ({ navigation, route }) => {
                                 onValueChange={
                                     (itemValue, itemIndex) => {
                                         setSelectedPrice(itemValue);
-                                        setStartDate("tap to choose");
-                                        setEndDate("tap to choose");
+                                        setSelectedPetType("a");
                                         if(itemValue === "a") handleFilterPrice("?minprice=0&maxprice=10000");
-                                        if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice10");
+                                        if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice=10");
                                         if(itemValue === "c") handleFilterPrice("?minprice=10&maxprice=20");
                                         if(itemValue === "d") handleFilterPrice("?minprice=20&maxprice=50");
                                         if(itemValue === "e") handleFilterPrice("?minprice=50&maxprice=100");
                                         if(itemValue === "f") handleFilterPrice("?minprice=100&maxprice=10000");
                                     }
-                                }
+                                } 
                             >
                                 <Picker.Item label="Any" value="a" />
                                 <Picker.Item label="Under $10" value="b" />
@@ -305,37 +217,44 @@ const Services = ({ navigation, route }) => {
                         </View>
                     </SafeAreaView>
 
-                    {/* place for start date filter */}
-                    <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-                        <View style={{flex: 4}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose starting date:
-                            </Text>
-                        </View>
-                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
-                            <Text
-                                onPress={() => showDatePicker("start")}
-                                style={{fontSize: 16}}
-                                >
-                                {startDate.toString().split(/(\s+)/).slice(0,7)} 
-                            </Text>
-                        </View>
-                    </SafeAreaView>
 
-                    {/* place for end date filter */}
+                    {/* area for pet-type filter  */}
                     <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
                         <View style={{flex: 4}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose ending date:
+                                Choose a pet type:
                             </Text>
                         </View>
-                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
-                            <Text
-                                onPress={() => showDatePicker("end")}
-                                style={{fontSize: 16}}
-                                >
-                                {endDate.toString().split(/(\s+)/).slice(0,7)} 
-                            </Text>
+                        <View style={{flex: 3, alignContent: 'center'}}>    
+                            <Picker
+                                selectedValue={selectedPetType}
+                                mode={'dropdown'}
+                                dropdownIconColor={'red'}
+                                onValueChange={
+                                    (itemValue, itemIndex) => {
+                                        setSelectedPetType(itemValue);
+                                        setSelectedPrice("a");
+                                        if(itemValue === "a") handleFilterPetType("?pettype=any");
+                                        if(itemValue === "b") handleFilterPetType("?pettype=dog");
+                                        if(itemValue === "c") handleFilterPetType("?pettype=cat");
+                                        if(itemValue === "d") handleFilterPetType("?pettype=hamster");
+                                        if(itemValue === "e") handleFilterPetType("?pettype=rabbit");
+                                        if(itemValue === "f") handleFilterPetType("?pettype=fish");
+                                        if(itemValue === "g") handleFilterPetType("?pettype=robot");
+                                        if(itemValue === "h") handleFilterPetType("?pettype=rhino");
+                                    }
+                                }
+                            >
+                                <Picker.Item label="Any" value="a" />
+                                <Picker.Item label="Dog" value="b" />
+                                <Picker.Item label="Cat" value="c" />
+                                <Picker.Item label="Hamster" value="d" />
+                                <Picker.Item label="Rabbit" value="e" />
+                                <Picker.Item label="Fish" value="f" />
+                                <Picker.Item label="Robot" value="g" />
+                                <Picker.Item label="Rhino" value="h" />
+
+                            </Picker>
                         </View>
                     </SafeAreaView>
 
@@ -396,7 +315,7 @@ const Services = ({ navigation, route }) => {
 									}
 								}
 							>
-								<Entry item={item} />
+								<Item item={item} />
 							</TouchableOpacity>
 						}}
 						keyExtractor={item => item.id}
@@ -441,6 +360,7 @@ const styles = StyleSheet.create({
     filterButtonStyle: {
         marginRight: 25,
         flexDirection: 'row',
+        justifyContent: 'flex-end',
         backgroundColor: 'rgba(255, 255, 255, 0)',
         borderWidth: 0,
         borderColor: '#000',
