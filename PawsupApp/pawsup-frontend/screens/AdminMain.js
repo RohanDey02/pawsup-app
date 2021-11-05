@@ -38,8 +38,8 @@ const AdminMain = ({ navigation, route }) => {
                         <ButtonTextMain>Manage Listings</ButtonTextMain>
                     </StyledButtonMainPage>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
-                        <ButtonTextMain>Remove Listings</ButtonTextMain>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('AdminRemoveUser', data)}>
+                        <ButtonTextMain>Manage Users</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>
