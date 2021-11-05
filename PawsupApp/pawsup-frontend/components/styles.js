@@ -40,6 +40,11 @@ export const InnerContainer2 = styled.View`
   padding-top: ${StatusBarHeight + 10}px;
 `;
 
+export const InnerContainer7 = styled.View`
+  width: 100%;
+  align-items: center;
+`;
+
 export const InnerContainer3 = styled.View`
   width: 100%;
   padding-top: ${StatusBarHeight + 180}px;
@@ -55,6 +60,12 @@ export const InnerContainer4 = styled.View`
 export const InnerContainer5 = styled.View`
   width: 100%;
   padding-top: 40px;
+  align-items: center;
+`;
+
+export const InnerContainer6 = styled.View`
+  width: 100%;
+  padding-top: 10px;
   align-items: center;
 `;
 
@@ -199,6 +210,7 @@ export const StyledButtonMainPage = styled.TouchableOpacity`
   width: 310px;
   alignSelf: center;
   height: 86px;
+  borderRadius:50px;
 `;
 
 export const StyledButtonAppointmentPage = styled.TouchableOpacity`
@@ -255,6 +267,13 @@ export const ExtraView1 = styled.View`
   padding-bottom: 10px;
 `;
 
+export const ExtraView2 = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+`;
+
 export const ExtraText = styled.Text`
   justify-content: center;
   align-content: center;
@@ -273,6 +292,6 @@ export const TextLink = styled.TouchableOpacity`
 `;
 
 export const TextLinkContent = styled.Text`
-  color: ${brand};
+  color: ${red};
   font-size: 15px;
 `;
