@@ -30,7 +30,7 @@ const AdminMain = ({ navigation, route }) => {
                         <ButtonTextMain>Manage Users</ButtonTextMain>
                     </StyledButtonMainPage>
 
-                    <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('AdminRemoveListing', data)}>
                         <ButtonTextMain>Manage Listings</ButtonTextMain>
                     </StyledButtonMainPage>
 
