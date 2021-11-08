@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { StatusBar } from 'expo-status-bar';
+import React, { useState , useEffect} from "react";
 
-import {
-    BackgroundStyle,
-} from './../components/styles';
+import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
 import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 const {
@@ -12,10 +9,11 @@ const {
 } = Dimensions.get('window');
 
 const DetailedListing = ({ navigation, route }) => {
-    console.log(route);
     const [listing, setListing] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const handleGetListing = (listingowner) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
@@ -41,7 +39,13 @@ const DetailedListing = ({ navigation, route }) => {
         setMessageType(type);
     };
 
-    handleGetListing(route.params.listingemail);
+    
+    useEffect(() => {
+        if(!firstRender) {
+            handleGetListing(route.params.listingemail);
+            setFirstRender(true);
+        }
+    });
 
     return (
         <SafeAreaView style={styles.container}>
