@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
@@ -303,20 +303,21 @@ const Services = ({ navigation, route }) => {
 						numColumns={2}
 						renderItem={({item, index}) => {
 							
-							return <TouchableOpacity
-								onPress={
-									() => {
-										var routeParams = route.params;
-
-										navigation.navigate('DetailedListing', {
-											routeParams,
-											listingemail: item.email
-										});
-									}
-								}
-							>
-								<Item item={item} />
-							</TouchableOpacity>
+							return (
+                                <TouchableOpacity
+                                    onPress={
+                                        () => {
+                                            var routeParams = route.params;
+                                            navigation.navigate('DetailedItem', {
+                                                routeParams,
+                                                itemname: item.name
+                                            });
+                                        }
+                                    }
+                                >
+                                    <Item item={item} />
+                                </TouchableOpacity>
+                            )
 						}}
 						keyExtractor={item => item.id}
 					/>

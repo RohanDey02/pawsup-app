@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -17,7 +17,9 @@ const DetailedItem = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [petstr,setpetstr]= useState();
-     const handleGetItem = (itemname) => {
+    const [firstRender, setFirstRender] = useState(false);
+
+    const handleGetItem = (itemname) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getItem?name=" + itemname;
 
         axios
@@ -43,7 +45,12 @@ const DetailedItem = ({ navigation, route }) => {
         setMessageType(type);
     };
 
-    handleGetItem("Dog food"); //replace with route.params when connecting pages
+    useEffect(() => {
+        if(!firstRender) {
+            handleGetItem(route.params.itemname);
+            setFirstRender(true);
+        }
+    });
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground

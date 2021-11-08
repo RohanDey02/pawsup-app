@@ -48,7 +48,6 @@ const DetailedListing = ({ navigation, route }) => {
         if(!firstRender) {
             console.log(route.params.listingemail);
             handleGetListing(route.params.listingemail);
-
             setFirstRender(true);
         }
     });
