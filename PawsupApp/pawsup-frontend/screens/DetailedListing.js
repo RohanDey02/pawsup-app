@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -12,10 +12,12 @@ const {
 } = Dimensions.get('window');
 
 const DetailedListing = ({ navigation, route }) => {
-    console.log(route);
+    //console.log(route);
     const [listing, setListing] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const handleGetListing = (listingowner) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
@@ -41,7 +43,15 @@ const DetailedListing = ({ navigation, route }) => {
         setMessageType(type);
     };
 
-    handleGetListing(route.params.listingemail);
+    
+    useEffect(() => {
+        if(!firstRender) {
+            console.log(route.params.listingemail);
+            handleGetListing(route.params.listingemail);
+
+            setFirstRender(true);
+        }
+    });
 
     return (
         <SafeAreaView style={styles.container}>

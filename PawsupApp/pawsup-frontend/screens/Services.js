@@ -87,9 +87,9 @@ const Services = ({ navigation, route }) => {
             else {
                 tempData.push(
                     {
-                        id: data[0].email,
+                        id: data[0].listingowner,
                         fullname: data[0].fullname,
-                        email: data[0].email,
+                        listingowner: data[0].listingowner,
                         price: data[0].price,
                         image: CAT_IMG, 
                         rating: data[0].rating,
@@ -115,9 +115,9 @@ const Services = ({ navigation, route }) => {
             else {
                 tempData.push(
                     {
-                        id: data[0].email,
+                        id: data[0].listingowner,
                         fullname: data[0].fullname,
-                        email: data[0].email,
+                        listingowner: data[0].listingowner,
                         price: data[0].price,
                         image: CAT_IMG, 
                         rating: data[0].rating,
@@ -384,20 +384,21 @@ const Services = ({ navigation, route }) => {
 						numColumns={2}
 						renderItem={({item, index}) => {
 							
-							return <TouchableOpacity
-								onPress={
-									() => {
-										var routeParams = route.params;
-
-										navigation.navigate('DetailedListing', {
-											routeParams,
-											listingemail: item.email
-										});
-									}
-								}
-							>
-								<Entry item={item} />
-							</TouchableOpacity>
+							return (
+                                <TouchableOpacity
+                                    onPress={
+                                        () => {
+                                            var routeParams = route.params;
+                                            navigation.navigate('DetailedListing', {
+                                                routeParams,
+                                                listingemail: item.listingowner
+                                            });
+                                        }
+                                    }
+							    >
+								    <Entry item={item} style={{}} />
+							    </TouchableOpacity>
+                            )
 						}}
 						keyExtractor={item => item.id}
 					/>
