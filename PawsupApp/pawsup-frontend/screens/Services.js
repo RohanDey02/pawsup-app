@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -15,12 +14,7 @@ const WIDTH = Dimensions.get("window").width;
 const SPACING = 20;
 
 const Services = ({ navigation, route }) => {
-	//const data = route.params;
-	//const currentUser = data["0"];
-	//route.params.additional = "temp";
-
     var tempData = [];
-
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
 	const [displayData, setDisplayData] = useState(tempData);

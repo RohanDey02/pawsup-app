@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar } from 'expo-status-bar';
-
-import {
-    BackgroundStyle,
-} from './../components/styles';
+import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
 import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity,Alert } from 'react-native';
+
 const {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
 const DetailedItem = ({ navigation, route }) => {
-    console.log(route);
     const [item, setitem] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();

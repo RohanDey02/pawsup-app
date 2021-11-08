@@ -1,9 +1,6 @@
 import React, { useState , useEffect} from "react";
-import { StatusBar } from 'expo-status-bar';
 
-import {
-    BackgroundStyle,
-} from './../components/styles';
+import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
 import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 const {
@@ -12,7 +9,6 @@ const {
 } = Dimensions.get('window');
 
 const DetailedListing = ({ navigation, route }) => {
-    //console.log(route);
     const [listing, setListing] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -46,7 +42,6 @@ const DetailedListing = ({ navigation, route }) => {
     
     useEffect(() => {
         if(!firstRender) {
-            console.log(route.params.listingemail);
             handleGetListing(route.params.listingemail);
             setFirstRender(true);
         }

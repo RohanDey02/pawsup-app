@@ -1,5 +1,4 @@
-import React, { useState} from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
 import { SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent} from 'react-native';
@@ -7,19 +6,13 @@ import Item from '../components/Item';
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
 
 
-const CAT_IMG = 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png';
 const FILTER_IMG = require('./../assets/icons/filter.png');
 const SORT_IMG = require('./../assets/icons/sort.png');
 const WIDTH = Dimensions.get("window").width;
 const SPACING = 20;
 
 const Services = ({ navigation, route }) => {
-	//const data = route.params;
-	//const currentUser = data["0"];
-	//route.params.additional = "temp";
-
     var tempData = [];
-
 	const [filterVisible, setFilterVisible] = useState(false);
 	const [selectedPrice, setSelectedPrice] = useState();
     const [selectedPetType, setSelectedPetType] = useState();
