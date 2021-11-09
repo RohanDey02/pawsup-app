@@ -9,7 +9,7 @@ const Item = ({ item, onPress }) => {
     return (
         <View style={styles.container}>
             <Image
-                source={{uri: 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png'}}
+                source={{uri: item.image}}
                 style={{aspectRatio: 1, flex: 1/NUMCOLS, borderRadius: 123123}}
             />
             <Text style={{fontWeight: "bold", fontSize: 18, alignSelf: 'center'}}>

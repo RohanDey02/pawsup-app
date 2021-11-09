@@ -159,8 +159,8 @@ const AdminAddProduct = ({ navigation, route }) => {
                                 handleMessage('Please provide a description!');
                                 setSubmitting(false);
                             } else if (values.price == '') {
-                                handleMessage('Please provide the price per day in CAD!');
-                               setSubmitting(false);
+                                handleMessage('Please provide the price of the item in CAD!');
+                                setSubmitting(false);
                             } else if (values.image == '') {
                                 handleMessage("Please provide the an image's URL!");
                                 setSubmitting(false);
@@ -197,7 +197,7 @@ const AdminAddProduct = ({ navigation, route }) => {
                                 />
 
                                 <MyTextInput
-                                    label="Price Per Day (in CAD)"
+                                    label="Price (in CAD)"
                                     icon="clippy"
                                     placeholder="Price"
                                     placeholderTextColor={darkLight}
