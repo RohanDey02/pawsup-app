@@ -152,19 +152,38 @@ const Services = ({ navigation, route }) => {
             
             {!filterVisible && 
                 <SafeAreaView style={{marginTop: 20}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <TouchableOpacity
+                            style={styles.cartButtonStyle}
+                            onPress={
+                                () => {
+                                    var routeParams = route.params;
+                                    navigation.navigate('Cart', {
+                                        routeParams
+                                    });
+                                }
+                            }
+                            >
+                            <Image
+                                source={FILTER_IMG}
+                                style={styles.sortButtonImageIconStyle}
+                            />
+                            <Text style={styles.cartButtonTextStyle}>
+                                CART
+                            </Text>
+                        </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.filterButtonStyle}
                             onPress={() => {
                                 setFilterVisible(!filterVisible);
                             }}
                             >
-                            <Text style={styles.buttonTextStyle}>
+                            <Text style={styles.filterButtonTextStyle}>
                                 FILTER & SORT
                             </Text>
                             <Image
                                 source={FILTER_IMG}
-                                style={styles.buttonImageIconStyle}
+                                style={styles.filterButtonImageIconStyle}
                             />
                         </TouchableOpacity>
                     </View>
@@ -362,12 +381,28 @@ const styles = StyleSheet.create({
         height: 28,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
         borderRadius: 10,
     },
-    buttonImageIconStyle: {
+    cartButtonStyle: {
+        marginLeft: 25,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        borderWidth: 0,
+        borderColor: '#000',
+        width: WIDTH / 2 - 40,
+        height: 28,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        borderRadius: 10,
+    },
+    filterButtonImageIconStyle: {
         width: 35,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
         height: '100%',
         resizeMode: 'contain',
     },
-    buttonTextStyle: {
+    sortButtonImageIconStyle: {
+        width: 35,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        height: '100%',
+        resizeMode: 'contain',
+    },
+    filterButtonTextStyle: {
         fontSize: 17,
         alignSelf: 'center',
         marginLeft: 2,
@@ -375,6 +410,15 @@ const styles = StyleSheet.create({
         color: '#000',
         flex: 1,
         textAlign: 'right',
+    },
+    cartButtonTextStyle: {
+        fontSize: 17,
+        alignSelf: 'center',
+        marginRight: 2,
+        marginTop: 2,
+        color: '#000',
+        flex: 1,
+        textAlign: 'left',
     },
 
 });

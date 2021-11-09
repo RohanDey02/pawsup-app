@@ -939,7 +939,26 @@ router.get('/filterPettypeItemListings', (req, res) => {
             status: "FAILED",
             message: "Error: Entering Empty Pet Type!"
         })
-    } else{
+    } else if (pettype == "any" ) {
+        Item.find({} , (err, itemListings) => {
+            if(err){
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Finding Listings"
+                })
+            } else{
+                itemListings.map(itemListing => {
+                    itemlistingnames.push(itemListing.name);
+                })
+
+                res.json({
+                    status: "SUCCESS",
+                    message: "Store Listings With Suitable Pet Types Found Successfully",
+                    data: itemlistingnames
+                })
+            }
+        })
+    } else {
         Item.find({} , (err, itemListings) => {
             if(err){
                 res.json({
@@ -955,15 +974,15 @@ router.get('/filterPettypeItemListings', (req, res) => {
                         itemlistingnames.push(itemListing.name);
                     }
                 })
-    
+
                 res.json({
                     status: "SUCCESS",
                     message: "Store Listings With Suitable Pet Types Found Successfully",
                     data: itemlistingnames
                 })
             }
-        })  
+        })
     }
-});
+});      
 
 module.exports = router;

@@ -68,20 +68,22 @@ const DetailedItem = ({ navigation, route }) => {
                     Quantity Available: {item.quantity}
                 </Text>
                 <Text numberOfLines={3} style={styles.descriptionText}>
-                Description: {item.description}
+                    Description: {item.description}
                 </Text>
                 <Text numberOfLines={3} style={styles.featuresText}>
-                Suitable for {petstr}.
+                    Suitable for {petstr}.
                 </Text>
-                <TouchableOpacity style={styles.button} onPress = {() => Alert.alert('SUCCESS', 'Item has been added to cart.', [
-                        {text: 'OK'}
-                    ])}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress = {
+                        () => Alert.alert('SUCCESS', 'Item has been added to cart.', [{text: 'OK'}])
+                    }
+                >
                     <Text numberOfLines={1} style={styles.buttonText}>
                         Add Booking to Cart
                     </Text>
                 </TouchableOpacity>
             </ImageBackground>
-
         </SafeAreaView>
     );
 };
