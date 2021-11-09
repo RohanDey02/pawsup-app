@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
 import EntryCart from '../components/EntryCart';
 import axios from 'axios';
@@ -11,11 +11,20 @@ import {
 } from '../components/styles';
 
 const Cart = ({ navigation, route }) => {
+    const WIDTH = Dimensions.get("window").width - 20;
+    const SPACING = 20;
+    const screenWidth = Dimensions.get("window").width;
+    const numColumns = 1;
+    const tileSize = screenWidth ;
+
     const nav = route.params;
+
     const [cart, setCart] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [price, setPrice] = useState();
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const handleGetCart = (email) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
@@ -28,13 +37,10 @@ const Cart = ({ navigation, route }) => {
                     handleMessage(message, status);
                 } else {
                     setCart(data);
-                    if(totalPrice>=0)
-                    {
-                    setPrice(totalPrice);
-                    }
-                    else{
-                        setPrice(0);
-                    }
+                    if(totalPrice >= 0) setPrice(totalPrice);
+                    else setPrice(0);
+                    console.log("done");
+                    console.log(data);
                 }
             })
             .catch((error) => {
@@ -46,12 +52,6 @@ const Cart = ({ navigation, route }) => {
         setMessage(message);
         setMessageType(type);
     };
-
-    const WIDTH = Dimensions.get("window").width - 20;
-    const SPACING = 20;
-    const screenWidth = Dimensions.get("window").width;
-    const numColumns = 1;
-    const tileSize = screenWidth ;
 
     /*
      * Handles cancelling booking which updates database
@@ -87,8 +87,13 @@ const Cart = ({ navigation, route }) => {
 	    </View>
     );
 
-    handleGetCart(route.params.email);
-
+    
+    useEffect(() => {
+        if(!firstRender) {
+            handleGetCart(route.params.email);
+            setFirstRender(true);
+        }
+    });
 
     return (
         <StyledContainer2>
