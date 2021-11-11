@@ -8,22 +8,29 @@ import {
     ButtonTextMain,
     StyledButtonMainPage
 } from './../components/styles';
-import { StyleSheet, Image, TouchableHighlight, ImageBackground } from 'react-native';
+import {StyleSheet, Image, TouchableHighlight, ImageBackground } from 'react-native';
 
 const AdminMain = ({ navigation, route }) => {
     const data = route.params;
-
+    var empty=[];
     return (
         <StyledContainer2>
             <ImageBackground
                 source={require('./../assets/WallpapersAndLogo/MainPageDirectory.png')} resizeMode="cover" style={BackgroundStyle.image}>
             <StatusBar style="dark" />
                 <InnerContainer>
-                    <TouchableHighlight style={styles.settingsicon} onPress={() => navigation.navigate('Settings', data)}>
+                <TouchableHighlight style={styles.settingsicon} onPress={() => navigation.navigate('Settings', data)}>
                         <Image
                             style={styles.settingsicon}
                             source={require("./../assets/WallpapersAndLogo/settings.png")}
                         />
+                    </TouchableHighlight>
+                    <TouchableHighlight style={styles.logoutstyle} onPress={() => navigation.navigate('Login',empty)}>
+                    <Image
+                
+                source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
+                style={styles.logoutstyle}
+            />
                     </TouchableHighlight>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('AdminAddProduct', data)}>
@@ -49,12 +56,20 @@ const AdminMain = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     settingsicon: {
-        top: "-40%",
+        top: "-20%",
         right: "10%",
         width: 50,
         height: 50,
         position: 'absolute',
-    }
+    },
+    logoutstyle: {
+        width: 50,
+        height: 50,
+        top: "-20%",
+        left: "10%",
+        //marginRight: "9%",
+        position: "absolute",
+    },
 });
 
 export default AdminMain;
