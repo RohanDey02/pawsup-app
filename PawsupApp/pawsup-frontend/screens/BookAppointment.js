@@ -71,26 +71,10 @@ const BookAppointment = ({ navigation, route }) => {
         setEndSet(true);
     };
 
-    const handleModify = (credentials, setSubmitting) => {
+    const handleBook = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
-        axios
-            .put(url, credentials)
-            .then((response) => {
-                const result = response.data;
-                const { status, message, data } = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    setSubmitting(false);
-                } else {
-                    setSubmitting(false);
-                    navigation.navigate('DetailedListing', { ...route.params });
-                }
-            })
-            .catch((error) => {
-                setSubmitting(false);
-                handleMessage('An error in booking occurred. Check your network and try again');
-            });
+        setSubmitting(false);
+        navigation.navigate('Checkout', { ...route.params, ...credentials });
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -136,7 +120,7 @@ const BookAppointment = ({ navigation, route }) => {
                     )}
                     
                     <Formik
-                        initialValues={{ listingowner: route.params.listingemail, reason: route.params.routeParams.email, startdate: '', enddate: ''}}
+                        initialValues={{ reason: route.params.routeParams.email, startdate: '', enddate: ''}}
                         onSubmit={(values, { setSubmitting }) => {
                                 if (startSet && !endSet) {
                                     handleMessage('Choose the end date of the booking.');
@@ -153,7 +137,7 @@ const BookAppointment = ({ navigation, route }) => {
                                         var days = endDate.getTime() - startDate.getTime();
                                         var totalCost = route.params.cost + (route.params.cost * (Math.floor(days / (1000 * 60 * 60 * 24))));
                                         values = { ...values, startdate: startDate, enddate: endDate, cost: totalCost};
-                                        handleModify(values, setSubmitting);
+                                        handleBook(values, setSubmitting);
                                     }
                                 }
                         }}
