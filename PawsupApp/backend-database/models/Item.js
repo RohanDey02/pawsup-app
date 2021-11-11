@@ -20,7 +20,7 @@ const ItemSchema = new Schema({
     quantity: Number,
     inCart: [CartSchema],
     sumRatings: Number,
-    numRatings: Number,
+    numRatings: Number
 });
 
 const Item = mongoose.model('Item', ItemSchema);
