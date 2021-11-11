@@ -2,7 +2,8 @@ import React, { useState , useEffect} from "react";
 
 import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
-import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { AirbnbRating } from 'react-native-ratings';
+import { View,StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 const {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
@@ -73,11 +74,15 @@ const DetailedListing = ({ navigation, route }) => {
                 <Text numberOfLines={3} style={styles.featuresText}>
                     {listing.features}
                 </Text>
+                <Text numberOfLines={1} style={styles.priceText}>
+                    Rating: {listing.rating}
+                </Text>
                 <TouchableOpacity style={styles.button}>
                     <Text numberOfLines={1} style={styles.buttonText}>
                         Add Booking to Cart
                     </Text>
                 </TouchableOpacity>
+
             </ImageBackground>
 
         </SafeAreaView>
