@@ -18,6 +18,7 @@ const Cart = ({ navigation, route }) => {
     const tileSize = screenWidth ;
 
     const nav = route.params;
+    console.log(route.params.routeParams.email);
 
     const [cart, setCart] = useState([]);
     const [message, setMessage] = useState();
@@ -69,7 +70,7 @@ const Cart = ({ navigation, route }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    console.log(route.params.email);
+                    console.log(route.params);
                     Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
                         {text: 'OK'}
                     ]);
@@ -90,7 +91,7 @@ const Cart = ({ navigation, route }) => {
     
     useEffect(() => {
         if(!firstRender) {
-            handleGetCart(route.params.email);
+            handleGetCart(route.params.routeParams.email);
             setFirstRender(true);
         }
     });
@@ -122,7 +123,7 @@ const Cart = ({ navigation, route }) => {
 					renderItem={({item}) => {
 						return <View>
                             <EntryCart item={item} />
-                            <StyledButtonAppointmentPage onPress={() => handleCancel(route.params.email, item.name)}>
+                            <StyledButtonAppointmentPage onPress={() => handleCancel(route.params.routeParams.email, item.name)}>
                                 <ButtonText>Remove</ButtonText>
                             </StyledButtonAppointmentPage>
                         </View>
