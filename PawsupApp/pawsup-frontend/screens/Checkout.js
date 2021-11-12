@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput, Alert, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert, ImageBackground } from "react-native";
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 
 import {
     BackgroundStyle,
-    PageTitleCheckout,
     StyledButton,
     ButtonText,
-    SubTitleCheckout,
 } from './../components/styles';
 
 const Checkout = ({ navigation, route }) => {
@@ -62,10 +60,10 @@ const Checkout = ({ navigation, route }) => {
     var y = x.substring(1);
     return (
         <ImageBackground
-            source={require('./../assets/WallpapersAndLogo/MainPageDirectory.png')} resizeMode="cover" style={BackgroundStyle.image}>
+            source={require('./../assets/WallpapersAndLogo/CheckoutPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             <View style={styles.container}>
-                <PageTitleCheckout style={{marginBottom: 5}}>Pawsup Checkout</PageTitleCheckout>
-                <SubTitleCheckout style={{marginBottom: 50}}>Price: {x}</SubTitleCheckout>
+            <Text style={styles.titleText}>Pawsup Checkout</Text>
+                <Text style={styles.headerText}>Price: {x}</Text>
                 <TextInput
                     autoCapitalize="none"
                     placeholder="E-mail"
@@ -97,6 +95,18 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 20,
         marginTop: 80
+    },
+    titleText: {
+        fontSize: 40,
+        fontWeight: "bold",
+        color: '#002233',
+        textAlign: 'center',
+    },
+    headerText: {
+        fontSize: 30,
+        color: '#002233',
+        textAlign: 'center',
+        marginBottom: 100
     },
     input: {
         backgroundColor: "#efefefef",

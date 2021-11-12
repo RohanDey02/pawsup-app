@@ -139,7 +139,7 @@ const Cart = ({ navigation, route }) => {
                         </Text>
                         </View>
                         <StyledButtonAppointmentPage onPress={() => navigation.navigate('UpcomingAppointment', nav)}>
-                                <ButtonText>Checkout</ButtonText>
+                            <ButtonText>Checkout</ButtonText>
                         </StyledButtonAppointmentPage>
                     </View>
                     }}
