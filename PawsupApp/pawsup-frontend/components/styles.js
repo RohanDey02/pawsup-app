@@ -117,15 +117,35 @@ export const PageTitle = styled.Text`
   font-weight: bold;
   color: ${brand};
   padding: 10px;
-  ${(props) =>
-        props.welcome &&
-        `
-    font-size: 35px;
-  `}
+`;
+
+export const PageTitleCheckout = styled.Text`
+  font-size: 36px;
+  text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
+  color: ${primary};
+  padding: 10px;
+  background-color: ${brand};
+  border-radius: 20px;
+`;
+
+export const SubTitleCheckout = styled.Text`
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-left: 80px;
+  margin-right: 80px;
+  padding: 10px;
+  letter-spacing: 1px;
+  background-color: ${brand};
+  border-radius: 5px;
+  color: ${primary};
 `;
 
 export const SubTitle = styled.Text`
-  font-size: 18px;
+  font-size: 24px;
+  text-align: center;
   margin-bottom: 20px;
   letter-spacing: 1px;
   font-weight: bold;

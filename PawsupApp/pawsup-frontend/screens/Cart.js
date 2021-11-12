@@ -15,7 +15,7 @@ const Cart = ({ navigation, route }) => {
     const SPACING = 20;
     const screenWidth = Dimensions.get("window").width;
     const numColumns = 1;
-    const tileSize = screenWidth ;
+    const tileSize = screenWidth;
 
     const nav = route.params;
     console.log(route.params.routeParams.email);
