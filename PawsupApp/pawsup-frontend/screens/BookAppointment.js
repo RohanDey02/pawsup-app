@@ -73,8 +73,29 @@ const BookAppointment = ({ navigation, route }) => {
 
     const handleBook = (credentials, setSubmitting) => {
         handleMessage(null);
-        setSubmitting(false);
-        navigation.navigate('Checkout', { ...route.params, ...credentials });
+        const url = "https://protected-shelf-96328.herokuapp.com/api/checkBookings";
+        var itemValues={ listingowner: route.params.listingemail, startdate: credentials.startdate, enddate: credentials.enddate };
+        axios
+            .put(url, itemValues)
+            .then((response) => {
+                const { status, message } = response.data;
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                    setSubmitting(false);
+                } else {
+                    if (message !== 'EMPTY') {
+                        handleMessage('This slot has already been booked. Please select a different slot.');
+                        setSubmitting(false);
+                    } else {
+                        setSubmitting(false);
+                        navigation.navigate('Checkout', { ...route.params, ...credentials });
+                    }
+                }
+            })
+            .catch((error) => {
+                setSubmitting(false);
+                handleMessage('An error occurred. Check your network and try again');
+            });
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -120,8 +141,12 @@ const BookAppointment = ({ navigation, route }) => {
                     )}
                     
                     <Formik
-                        initialValues={{ reason: route.params.routeParams.email, startdate: '', enddate: ''}}
+                        initialValues={{ reason: route.params.routeParams.email, startdate: '', enddate: '', checkoutType: 'BOOKING'}}
                         onSubmit={(values, { setSubmitting }) => {
+                                if (!startSet && !endSet) {
+                                    handleMessage('Choose the start and the end dates of the booking.');
+                                    setSubmitting(false);
+                                }
                                 if (startSet && !endSet) {
                                     handleMessage('Choose the end date of the booking.');
                                     setSubmitting(false);
