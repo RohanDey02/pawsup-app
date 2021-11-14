@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
 import Entry2 from '../components/Entry2';
 import axios from 'axios';
@@ -14,6 +14,8 @@ const UpcomingAppointment = ({ navigation, route }) => {
     const [listing, setListing] = useState([]);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const handleGetListing = (listingowner) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
@@ -93,6 +95,11 @@ const UpcomingAppointment = ({ navigation, route }) => {
                 const { status, message, data } = result;
 
                 if (status !== 'SUCCESS') {
+                    if(message === "Error: Start Date is within 2 days of current time") {
+                        Alert.alert('FAILURE', 'Cannot cancel bookings within 2 days.', [
+                            {text: 'OK'}
+                        ]);
+                    }
                     handleMessage(message, status);
                 } else {
                     console.log(route.params.email);
@@ -104,6 +111,11 @@ const UpcomingAppointment = ({ navigation, route }) => {
                         Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
                             {text: 'OK'}
                         ]);
+                    }
+                    if(route.params.accounttype == "Petsitter"){
+                        handleGetListing(route.params.email);
+                    } else if(route.params.accounttype == "Petowner"){
+                        handleGetPetownerBookings(route.params.email);
                     }
                 }
             })
@@ -125,12 +137,18 @@ const UpcomingAppointment = ({ navigation, route }) => {
 		    <Text style={styles.title}>{title}</Text>
 	    </View>
     );
+    
 
-    if(route.params.accounttype == "Petsitter"){
-        handleGetListing(route.params.email);
-    } else if(route.params.accounttype == "Petowner"){
-        handleGetPetownerBookings(route.params.email);
-    }
+    useEffect(() => {
+        if(!firstRender) {
+            if(route.params.accounttype == "Petsitter"){
+                handleGetListing(route.params.email);
+            } else if(route.params.accounttype == "Petowner"){
+                handleGetPetownerBookings(route.params.email);
+            }
+            setFirstRender(true);
+        }
+    });
 
     return (
         <StyledContainer2>

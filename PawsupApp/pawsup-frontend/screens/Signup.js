@@ -100,13 +100,12 @@ const Signup = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingWrapper>
         <StyledContainer>
-            
+            <StatusBar style="dark" />
                 <ImageBackground
                 source={require('./../assets/WallpapersAndLogo/PawsupMainPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
                 </ImageBackground>
-                <StatusBar style="dark" />
+                <KeyboardAvoidingWrapper>
                 <InnerContainer3>
                      
 
@@ -234,16 +233,15 @@ const Signup = ({ navigation }) => {
                                 <ExtraView>
                                     <ExtraText>Already have an account? </ExtraText>
                                     <TextLink onPress={() => navigation.navigate('Login')}>
-                                        <TextLinkContent>Login</TextLinkContent>
+                                        <TextLinkContent style={{color: 'blue'}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
                             </StyledFormArea>
                         )}
                     </Formik>
                 </InnerContainer3>
-                
+                </KeyboardAvoidingWrapper>
             </StyledContainer>
-            </KeyboardAvoidingWrapper>
     );
 };
 

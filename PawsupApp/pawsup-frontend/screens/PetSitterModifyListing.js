@@ -12,7 +12,7 @@ import {
     StyledContainer,
     StyledContainer2,
     InnerContainer,
-    InnerContainer2,
+    InnerContainer6,
     StyledFormArea,
     StyledInputLabel,
     StyledTextInput,
@@ -24,6 +24,7 @@ import {
     LeftIcon,
     Colours,
     ButtonText,
+    PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 
@@ -79,7 +80,7 @@ const PetSitterModifyListing = ({ navigation, route }) => {
         handleMessage(null);
         const url = "https://protected-shelf-96328.herokuapp.com/api/modifyListing";
         var modifyValues={ listingowner: credentials.listingowner, title: credentials.title, description: credentials.description, location: credentials.location, features: credentials.features,  price: credentials.price};
-        var blockValues={ listingowner: credentials.listingowner, reason: credentials.reason, startdate: startDate, enddate: endDate};
+        var blockValues={ listingowner: credentials.listingowner, reason: credentials.reason, startdate: startDate, enddate: endDate, cost: 0};
         axios
             .put(url, modifyValues)
             .then((response) => {
@@ -130,8 +131,10 @@ const PetSitterModifyListing = ({ navigation, route }) => {
             <ImageBackground
                  source={require('./../assets/WallpapersAndLogo/ServicesPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
+            <PageTitle style={{color: 'black', marginTop: 5}}>Modify Listing Details</PageTitle>
             <KeyboardAvoidingWrapper>
-                <InnerContainer2>
+            <InnerContainer>
+                <InnerContainer6>
                 {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -315,7 +318,8 @@ const PetSitterModifyListing = ({ navigation, route }) => {
                             </StyledFormArea>
                         )}
                     </Formik>
-            </InnerContainer2>
+            </InnerContainer6>
+            </InnerContainer>
             </KeyboardAvoidingWrapper>
         </StyledContainer>
     );

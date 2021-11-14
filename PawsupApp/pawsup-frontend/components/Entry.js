@@ -7,14 +7,7 @@ const WIDTH = Dimensions.get('window').width - 40;
 const Entry = ({ item, onPress }) => {
     const { title, desc } = item;
     return (
-        <TouchableOpacity
-			style={styles.container}
-			onPress={
-				() => {
-					console.log("hehe");
-					console.log("asdf");
-				}
-			}>
+        <View style={styles.container}>
             <Image
                 source={{uri: item.image}}
                 style={{aspectRatio: 1, flex: 1/NUMCOLS, borderRadius: 123123}}
@@ -40,7 +33,7 @@ const Entry = ({ item, onPress }) => {
 			<Text style={{fontSize: 12, textAlign: 'center',}}>
 				{item.description}
 			</Text>
-        </TouchableOpacity>
+        </View>
         
     );
 };
