@@ -287,6 +287,35 @@ router.delete('/deleteUser', (req, res) => {
     }
 });
 
+// Get Previous Ordered Items
+router.get('/getPreviousOrders', (req, res) => {
+    let email = req.query.email;
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Email Field!"
+        })
+    } else {
+        var query = { email: email };
+
+        // Project only previousorders field
+        User.find(query, { previousorders: 1 }).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User Found Successfully",
+                data: data[0]
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // LISTING:
 
 // Create Listing
