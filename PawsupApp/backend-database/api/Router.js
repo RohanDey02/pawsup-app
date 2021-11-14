@@ -4,8 +4,6 @@
 
 const express = require('express');
 const router = express.Router();
-// const axios = require('axios');
-// const fetch = require('node-fetch');
 
 // MongoDB Models
 const User = require('../models/User');
@@ -206,18 +204,6 @@ router.get('/getUser', (req, res) => {
         })
     }
 });
-
-router.put('/upsert', (req, res) => {
-    User.updateMany({}, {previousorders: []}, {multi: true}).then(data => {
-        User.find().then(data => {
-            res.json({
-                status: "SUCCESS",
-                message: "Users Found Successfully",
-                data: data
-            })
-        })
-    })
-})
 
 // Update
 router.put('/update', (req, res) => {
@@ -946,6 +932,7 @@ router.get('/sortListings', (req, res) => {
 
 // Add rating for Listing
 router.put('/addListingRating', (req, res) => {
+    // Accepts rating from 1 - 5 for Luce's implementation
     let { listingowner, rating } = req.body;
 
     listingowner = listingowner.trim();
@@ -1043,7 +1030,7 @@ router.get('/getPreviousBookings', (req, res) => {
             message: "Error: Finding Bookings, Perhaps User has no bookings"
         })
     })
-})
+});
 
 // STORE:
 
@@ -1679,7 +1666,7 @@ router.put('/itemCheckout', async (req, res) => {
         if (cart.length == 0) {
             res.json({
                 status: "FAILED",
-                message: "No items in cart",
+                message: "No items in cart for User",
                 data: cart,
             })
         } else {
