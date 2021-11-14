@@ -1022,12 +1022,13 @@ router.get('/getPreviousBookings', (req, res) => {
     Listing.find({"bookings.reason": petowner}).then(data => {
         var previousBookings = [];
         for (var listing of data) {
+            console.log(listing.title);
             var rating = listing.sumRatings/listing.numRatings;
             filtered = listing.bookings.filter(function(value, index, arr) {
-                var d2 = value.enddate.split("/");
+                var d2 = value.enddate.split("-");
 
                 var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
-
+                console.log(value.reason, getDifferenceInDays(new Date(), to));
                 // Finds all elements in which the enddate is past current data
                 return ((value.reason == petowner) && (getDifferenceInDays(new Date(), to) < 0));
             })
@@ -1039,19 +1040,21 @@ router.get('/getPreviousBookings', (req, res) => {
                     newVal.rating = rating;
                     previousBookings.push(newVal);
                 }
-            } else {
-                res.json({
-                    status: "FAILED",
-                    message: "No previous appointments found"
-                })
-                return;
             }
         }
-        res.json({
-            status: "SUCCESS",
-            message: "Previous appointments found successfully",
-            data: previousBookings
-        })
+        if (previousBookings.length > 0) {
+            res.json({
+                status: "SUCCESS",
+                message: "Previous appointments found successfully",
+                data: previousBookings
+            })
+        } else {
+            res.json({
+                status: "FAILED",
+                message: "No previous appointments found"
+            })
+            return;
+        }
     }).catch(err => {
         console.log(err);
         res.json({
