@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, Alert, ImageBackground } from "react-native";
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 
@@ -8,11 +8,60 @@ import {
     ButtonText,
 } from './../components/styles';
 
+// Axios
+import axios from 'axios';
+
 const Checkout = ({ navigation, route }) => {
-    console.log(route);
     const [email, setEmail] = useState();
     const [cardDetails, setCardDetails] = useState();
+    const [price, setPrice] = useState();
     const { confirmPayment, loading } = useConfirmPayment();
+    const [firstRender, setFirstRender] = useState(false);
+    const [message, setMessage] = useState();
+    const [messageType, setMessageType] = useState();
+
+    // Handle Purchasing Items
+    const handleCart = () => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/itemCheckout";
+        var values = {email: route.params.routeParams.email};
+        axios
+            .put(url, values)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+                console.log(message);
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    console.log("Purchase Successful");
+                }
+            })
+            .catch((error) => {
+                handleMessage('An error occurred. Check your network and try again');
+            })
+    }
+    
+    const handleBooking = () => {
+        handleMessage(null);
+        const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
+        var values = {listingowner: route.params.listingemail, reason: route.params.reason, cost: route.params.cost, startdate: route.params.startdate, enddate: route.params.enddate}
+
+        axios
+            .put(url, values)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    console.log("Booking Successful");
+                }
+            })
+            .catch((error) => {
+                setSubmitting(false);
+                handleMessage('An error in booking occurred. Check your network and try again');
+            });
+    }
 
     const fetchPaymentIntentClientSecret = async (amount) => {
         const response = await fetch("https://protected-shelf-96328.herokuapp.com/api/createPaymentIntent?amount=" + amount, {
@@ -47,8 +96,45 @@ const Checkout = ({ navigation, route }) => {
                 if (error) {
                     alert(`Payment Confirmation Error: ${error.message}`);
                 } else if (paymentIntent) {
-                    alert(message);
-                    console.log("Payment successful\n", paymentIntent);
+                    if(route.params.checkoutType == "CART") {
+                        console.log("Payment successful\n", paymentIntent);
+                        handleCart();
+                        
+                        // Cleanup Data
+                        delete route.params.checkoutType;
+
+                        if(route.params.routeParams.accounttype == "Petowner") {
+                            Alert.alert('SUCCESS', message, [
+                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params)}
+                            ]);
+                        } else if(route.params.routeParams.accounttype == "Petsitter") {
+                            Alert.alert('SUCCESS', message, [
+                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params)}
+                            ]);
+                        }
+                        
+                    } else if(route.params.checkoutType == "BOOKING") {
+                        console.log("Payment successful\n", paymentIntent);
+                        handleBooking();
+
+                        // Cleanup Data
+                        delete route.params.checkoutType;
+                        delete route.params.listingemail;
+                        delete route.params.reason;
+                        delete route.params.cost;
+                        delete route.params.startdate;
+                        delete route.params.enddate;
+
+                        if(route.params.routeParams.accounttype == "Petowner") {
+                            Alert.alert('SUCCESS', message, [
+                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params)}
+                            ]);
+                        } else if(route.params.routeParams.accounttype == "Petsitter") {
+                            Alert.alert('SUCCESS', message, [
+                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params)}
+                            ]);
+                        }
+                    }
                 }
             }
         } catch (e) {
@@ -56,14 +142,51 @@ const Checkout = ({ navigation, route }) => {
         }
     };
 
-    var x = "$422"
-    var y = x.substring(1);
+    // Get the cart
+    const handleGetCart = (email) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        axios
+            .get(url)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data, totalPrice } = result;
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    if(totalPrice>=0){
+                        setPrice(totalPrice);
+                    } else{
+                        setPrice(0);
+                    }
+                }
+            })
+            .catch((error) => {
+                handleMessage('An error occurred. Check your network and try again');
+            });
+    };
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
+    };
+
+    if(route.params.checkoutType == "CART"){
+        useEffect(() => {
+            if(!firstRender) {
+                handleGetCart(route.params.routeParams.email);
+                setFirstRender(true);
+            }
+        });
+    } else {
+        setPrice(route.params.cost);
+    }
+
     return (
         <ImageBackground
             source={require('./../assets/WallpapersAndLogo/CheckoutPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             <View style={styles.container}>
             <Text style={styles.titleText}>Pawsup Checkout</Text>
-                <Text style={styles.headerText}>Price: {x}</Text>
+                <Text style={styles.headerText}>Price: {price}</Text>
                 <TextInput
                     autoCapitalize="none"
                     placeholder="E-mail"
@@ -82,7 +205,7 @@ const Checkout = ({ navigation, route }) => {
                         setCardDetails(cardDetails);
                     }}
                 />
-                <StyledButton onPress={() => handlePayPress(y*100)} disabled={loading} >
+                <StyledButton onPress={() => handlePayPress(price*100)} disabled={loading} >
                     <ButtonText>Pay</ButtonText>
                 </StyledButton>
             </View>

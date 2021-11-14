@@ -1,6 +1,5 @@
 import React from "react";
-// import RootStack from "./navigators/RootStack";
-import RootStack from "./screens/Checkout";
+import RootStack from "./navigators/RootStack";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 export default function App() {
