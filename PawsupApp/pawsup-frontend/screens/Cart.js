@@ -11,13 +11,9 @@ import {
 } from '../components/styles';
 
 const Cart = ({ navigation, route }) => {
-    const WIDTH = Dimensions.get("window").width - 20;
     const SPACING = 20;
-    const screenWidth = Dimensions.get("window").width;
-    const numColumns = 1;
-    const tileSize = screenWidth;
+    route.params.checkoutType = 'CART';
 
-    const nav = route.params;
     console.log(route.params.routeParams.email);
 
     const [cart, setCart] = useState([]);
@@ -138,8 +134,8 @@ const Cart = ({ navigation, route }) => {
                             {'Total: ' + price}
                         </Text>
                         </View>
-                        <StyledButtonAppointmentPage onPress={() => navigation.navigate('UpcomingAppointment', nav)}>
-                                <ButtonText>Checkout</ButtonText>
+                        <StyledButtonAppointmentPage onPress={() => navigation.navigate('Checkout', { ...route.params })}>
+                            <ButtonText>Checkout</ButtonText>
                         </StyledButtonAppointmentPage>
                     </View>
                     }}

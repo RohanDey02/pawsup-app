@@ -503,17 +503,17 @@ router.put('/makeBooking', (req, res) => {
     startdate = startdate.trim();
     enddate = enddate.trim();
 
-    // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
-    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
-    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
-
     var tempstartdate = startdate.substring(0,10);
     startdate = tempstartdate;
 
     var tempenddate = enddate.substring(0,10);
     enddate = tempenddate;
+    
+    // Converting to Date Format
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
     var book = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
@@ -538,8 +538,8 @@ router.put('/makeBooking', (req, res) => {
 
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
-                    var d1 = booking.startdate.split("/");
-                    var d2 = booking.enddate.split("/");
+                    var d1 = booking.startdate.split("-");
+                    var d2 = booking.enddate.split("-");
 
                     var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                     var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -598,6 +598,91 @@ router.put('/makeBooking', (req, res) => {
     }
 });
 
+// Check bookings of a listing
+router.put('/checkBookings', (req, res) => {
+    let listingowner = req.body.listingowner;
+    let startdate = req.body.startdate;
+    let enddate = req.body.enddate;
+
+    listingowner = listingowner.trim();
+    startdate = startdate.trim();
+    enddate = enddate.trim();
+
+    var tempstartdate = startdate.substring(0,10);
+    startdate = tempstartdate;
+
+    var tempenddate = enddate.substring(0,10);
+    enddate = tempenddate;
+
+    // Converting to Date Format
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
+
+    console.log(startdate1);
+    console.log(enddate1);
+
+    if (listingowner == "" || startdate == "" || enddate == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Booking Search Fields!"
+        })
+    } else if(enddate1 < startdate1) {
+        res.json({
+            status: "FAILED",
+            message: "Error: End Date is before Start Date"
+        })
+    } else {
+        var query = { listingowner: listingowner };
+
+        // Get Listing Data
+        Listing.find(query).then(info => {
+            if (info.length) {
+                // User exists, now check if date is blocked
+                var bool = false;
+
+                // Iterate through all of the dates
+                for(const booking of info[0].bookings) {
+                    var d1 = booking.startdate.split("-");
+                    var d2 = booking.enddate.split("-");
+
+                    var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+                    var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+
+                    // Check for overlapping
+                    if((startdate1 >= from && startdate1 <= to) || (enddate1 >= from && enddate1 <= to) || (from >= startdate1 && from <= enddate1) || (to >= startdate1 && to <= enddate1)){
+                        bool = true;
+                        break;
+                    }
+                }
+
+                if(bool == false){
+                    res.json({
+                        status: "SUCCESS",
+                        message: "EMPTY"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "FULL"
+                    })
+                }
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Invalid Credentials"
+                })
+            }
+        }).catch(err => {
+            res.json({
+                status: "FAILED",
+                message: "Error: Checking for Existing Listing"
+            })
+        })
+    }
+})
+
 // Filter Listing By Price
 router.get('/filterPriceListings', (req, res) => {
     let minprice = parseInt(req.query.minprice);
@@ -649,8 +734,8 @@ router.get('/filterAvailabilityListings', (req, res) => {
     enddate = enddate.trim();
 
     // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
@@ -672,8 +757,8 @@ router.get('/filterAvailabilityListings', (req, res) => {
                     var bool = false;
                     // Iterate through all of the dates
                     for(const booking of listing.bookings) {
-                        var d1 = booking.startdate.split("/");
-                        var d2 = booking.enddate.split("/");
+                        var d1 = booking.startdate.split("-");
+                        var d2 = booking.enddate.split("-");
 
                         var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                         var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -715,8 +800,8 @@ router.put('/cancelBooking', (req, res) => {
     enddate = enddate.trim();
 
     // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
@@ -745,8 +830,8 @@ router.put('/cancelBooking', (req, res) => {
 
                 var bookings = info[0].bookings;
                 var filtered = bookings.filter(function(value, index, arr) {
-                    var d1 = value.startdate.split("/");
-                    var d2 = value.enddate.split("/");
+                    var d1 = value.startdate.split("-");
+                    var d2 = value.enddate.split("-");
 
                     var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                     var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -1475,7 +1560,6 @@ router.get('/filterPettypeItemListings', (req, res) => {
 });
 
 // Stripe Payments
-
 router.post("/createPaymentIntent", async (req, res) => {
     let amount = req.query.amount;
 
