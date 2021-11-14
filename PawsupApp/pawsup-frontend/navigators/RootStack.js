@@ -52,14 +52,14 @@ const RootStack = () => {
                 <Stack.Screen name="Signup" component={Signup} />
                 <Stack.Screen name="PetOwnerMain" component={PetOwnerMain} options={({ navigation, route }) => ({
                     headerLeft: null,
-                })}/>
+                })} />
                 <Stack.Screen name="Services" component={Services} />
                 <Stack.Screen name="AdminMain" component={AdminMain} options={({ navigation, route }) => ({
                     headerLeft: null,
-                })}/>
+                })} />
                 <Stack.Screen name="PetSitterMain" component={PetSitterMain} options={({ navigation, route }) => ({
                     headerLeft: null,
-                })}/>
+                })} />
                 <Stack.Screen name="Settings" component={Setting} />
                 <Stack.Screen name="PetSitterModifyListing" component={PetSitterModifyListing} />
                 <Stack.Screen name="DetailedListing" component={DetailedListing} />
