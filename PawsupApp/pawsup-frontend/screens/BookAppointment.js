@@ -107,7 +107,7 @@ const BookAppointment = ({ navigation, route }) => {
         <StyledContainer>
             <StatusBar style="dark" />
             <ImageBackground
-                 source={require('./../assets/WallpapersAndLogo/StorePage.png')} resizeMode="cover" style={BackgroundStyle.image}>
+                 source={require('./../assets/WallpapersAndLogo/SocialPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
             </ImageBackground>
             <PageTitle style={{color: 'black', marginTop: 5}}>Book Appointment</PageTitle>
             <KeyboardAvoidingWrapper>
