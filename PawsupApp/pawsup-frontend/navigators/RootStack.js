@@ -26,6 +26,7 @@ import AdminRemoveUser from '../screens/AdminRemoveUser';
 import Cart from './../screens/Cart';
 import Shop from './../screens/Shop';
 import DetailedItem from './../screens/DetailedItem';
+import BookAppointment from './../screens/BookAppointment';
 
 const Stack = createStackNavigator();
 
@@ -69,6 +70,7 @@ const RootStack = () => {
                 <Stack.Screen name="Cart" component={Cart} />
                 <Stack.Screen name="Shop" component={Shop} />
                 <Stack.Screen name="DetailedItem" component={DetailedItem} />
+                <Stack.Screen name="BookAppointment" component={BookAppointment} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -203,7 +203,6 @@ const Services = ({ navigation, route }) => {
     }
     
     useEffect(() => {
-        console.log(firstRender);
         if(!firstRender) {
             getAllListings();
             setFirstRender(true);
@@ -385,7 +384,8 @@ const Services = ({ navigation, route }) => {
                                             var routeParams = route.params;
                                             navigation.navigate('DetailedListing', {
                                                 routeParams,
-                                                listingemail: item.listingowner
+                                                listingemail: item.listingowner,
+                                                cost: item.price
                                             });
                                         }
                                     }
