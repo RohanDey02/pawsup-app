@@ -20,6 +20,8 @@ const Checkout = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
+    console.log(route.params);
+
     // Handle Purchasing Items
     const handleCart = () => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/itemCheckout";
@@ -177,8 +179,13 @@ const Checkout = ({ navigation, route }) => {
                 setFirstRender(true);
             }
         });
-    } else {
-        setPrice(route.params.cost);
+    } else if(route.params.checkoutType == "BOOKING"){
+        useEffect(() => {
+            if(!firstRender) {
+                setPrice(route.params.cost);
+                setFirstRender(true);
+            }
+        });
     }
 
     return (

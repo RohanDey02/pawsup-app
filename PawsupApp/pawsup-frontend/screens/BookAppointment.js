@@ -5,28 +5,25 @@ import { StatusBar } from 'expo-status-bar';
 import { Formik } from "formik";
 
 // Icons
-import { Octicons, Ionicons, Fontisto } from "@expo/vector-icons"
+import { Octicons } from "@expo/vector-icons"
 
 import {
     BackgroundStyle,
     StyledContainer,
-    StyledContainer2,
     InnerContainer,
     InnerContainer6,
     StyledFormArea,
     StyledInputLabel,
     StyledTextInput,
-    StyledTextInput1,
     StyledButton,
     MsgBox,
-    ExtraView1,
-    ExtraText1,
     LeftIcon,
     Colours,
     ButtonText,
     PageTitle
 } from '../components/styles';
-import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+
+import { View, ActivityIndicator, ImageBackground, TouchableOpacity, LogBox } from 'react-native';
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
@@ -37,6 +34,11 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+
+LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+]);
+
 const BookAppointment = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -88,7 +90,13 @@ const BookAppointment = ({ navigation, route }) => {
                         setSubmitting(false);
                     } else {
                         setSubmitting(false);
-                        navigation.navigate('Checkout', { ...route.params, ...credentials });
+                        route.params.checkoutType = credentials.checkoutType;
+                        route.params.reason = credentials.reason;
+                        route.params.cost = credentials.cost;
+                        route.params.startdate = credentials.startdate;
+                        route.params.enddate = credentials.enddate;
+                        
+                        navigation.navigate('Checkout', { ...route.params });
                     }
                 }
             })
@@ -143,28 +151,28 @@ const BookAppointment = ({ navigation, route }) => {
                     <Formik
                         initialValues={{ reason: route.params.routeParams.email, startdate: '', enddate: '', checkoutType: 'BOOKING'}}
                         onSubmit={(values, { setSubmitting }) => {
-                                if (!startSet && !endSet) {
-                                    handleMessage('Choose the start and the end dates of the booking.');
+                            if (!startSet && !endSet) {
+                                handleMessage('Choose the start and the end dates of the booking.');
+                                setSubmitting(false);
+                            }
+                            if (startSet && !endSet) {
+                                handleMessage('Choose the end date of the booking.');
+                                setSubmitting(false);
+                            } else if (!startSet && endSet) {
+                                handleMessage('Choose the start date of the booking.');
+                                setSubmitting(false);
+                            } else if (startSet && endSet) {
+                                if (startDate.getTime() > endDate.getTime()) {
+                                    handleMessage('The end date must come after the start date!');
                                     setSubmitting(false);
+                                } else {
+                                    setSubmitting(true);
+                                    var days = endDate.getTime() - startDate.getTime();
+                                    var totalCost = route.params.cost + (route.params.cost * (Math.floor(days / (1000 * 60 * 60 * 24))));
+                                    values = { ...values, startdate: startDate, enddate: endDate, cost: totalCost};
+                                    handleBook(values, setSubmitting);
                                 }
-                                if (startSet && !endSet) {
-                                    handleMessage('Choose the end date of the booking.');
-                                    setSubmitting(false);
-                                } else if (!startSet && endSet) {
-                                    handleMessage('Choose the start date of the booking.');
-                                    setSubmitting(false);
-                                } else if (startSet && endSet) {
-                                    if (startDate.getTime() > endDate.getTime()) {
-                                        handleMessage('The end date must come after the start date!');
-                                        setSubmitting(false);
-                                    } else {
-                                        setSubmitting(true);
-                                        var days = endDate.getTime() - startDate.getTime();
-                                        var totalCost = route.params.cost + (route.params.cost * (Math.floor(days / (1000 * 60 * 60 * 24))));
-                                        values = { ...values, startdate: startDate, enddate: endDate, cost: totalCost};
-                                        handleBook(values, setSubmitting);
-                                    }
-                                }
+                            }
                         }}
                     >
                     {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
