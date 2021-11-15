@@ -26,6 +26,8 @@ import AdminRemoveUser from '../screens/AdminRemoveUser';
 import Cart from './../screens/Cart';
 import Shop from './../screens/Shop';
 import DetailedItem from './../screens/DetailedItem';
+import PreviousAppointments from '../screens/PreviousAppointments';
+import PreviousStorePurchase from '../screens/PreviousStorePurchase';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +65,8 @@ const RootStack = () => {
                 <Stack.Screen name="Cart" component={Cart} />
                 <Stack.Screen name="Shop" component={Shop} />
                 <Stack.Screen name="DetailedItem" component={DetailedItem} />
+                <Stack.Screen name="PreviousAppointments" component={PreviousAppointments}/>
+                <Stack.Screen name="PreviousStorePurchase" component={PreviousStorePurchase}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

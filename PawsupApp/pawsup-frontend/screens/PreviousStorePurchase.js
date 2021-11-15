@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
 import EntryCart from '../components/EntryCart';
 import axios from 'axios';
@@ -17,9 +17,11 @@ const PreviousStorePurchase = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [price, setPrice] = useState();
+    const [firstRender, setFirstRender] = useState(false);
+
 
     const handleGetCart = (email) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousOrders?email=" + email;
         axios
             .get(url)
             .then((response) => {
@@ -54,32 +56,7 @@ const PreviousStorePurchase = ({ navigation, route }) => {
     const numColumns = 1;
     const tileSize = screenWidth ;
 
-    /*
-     * Handles cancelling booking which updates database
-     * Pass in email of email, startdate and enddate of appointment, i.e. email, startdate, enddate
-     * dates must be in YYYY/MM/DD format
-    */
-    const handleCancel = (email,item) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/removeFromCart";
-        var credentials = { email: email, item: item, quantity:'1'};
-        axios
-            .put(url, credentials)
-            .then((response) => {
-                const result = response.data;
-                const { status, message, data } = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                } else {
-                    console.log(route.params.email);
-                    Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
-                        {text: 'OK'}
-                    ]);
-                }
-            })
-            .catch((error) => {
-                handleMessage('An error occurred. Check your network and try again');
-            });
-    }
+    
     
 
     const Item = ({ title }) => (
@@ -88,7 +65,13 @@ const PreviousStorePurchase = ({ navigation, route }) => {
 	    </View>
     );
 
-    handleGetCart(route.params.email);
+    // ADDED THIS HERE!!!
+    useEffect(() => {
+        if(!firstRender) {
+            handleGetCart(route.params.email);
+            setFirstRender(true);
+        }
+    });
     return (
         <StyledContainer2>
 			<ImageBackground
@@ -116,7 +99,7 @@ const PreviousStorePurchase = ({ navigation, route }) => {
 					renderItem={({item}) => {
 						return <View>
                             <EntryCart item={item} />
-                            <StoreRating />
+                            <StoreRating item={item}/>
                         </View>
 					}}
                     ListHeaderComponent = {() => {

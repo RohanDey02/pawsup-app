@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
-import Entry2 from '../components/Entry2';
-import StoreRating from '../components/StoreRating';
+import ListingRating from '../components/ListingRating';
 import axios from 'axios';
 import {
     BackgroundStyle,
@@ -19,8 +18,7 @@ const PreviousAppointments = ({ navigation, route }) => {
 
 
     const handleGetListing = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
-
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousBookings?listingowner=" + listingowner;
         axios
             .get(url)
             .then((response) => {
@@ -37,38 +35,7 @@ const PreviousAppointments = ({ navigation, route }) => {
             });
     };
 
-    const handleGetPetownerBookings = (petowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPetownerBookings?petowner=" + petowner;
-        var lst = [];
-
-        axios
-            .get(url)
-            .then((response) => {
-                const result = response.data;
-                const { status, message, data } = result;
-
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                } else {
-                    // This takes you to each listing
-                    for(const listing of data){
-                        for(const booking of listing.bookings){
-                            booking.reason = listing.listingowner;
-                            lst.push(booking);
-                        }
-                    }
-
-                    var newlst = [];
-                    newlst.bookings = lst;
-                
-                    setListing(newlst);
-                }
-            })
-            .catch((error) => {
-                handleMessage('An error occurred. Check your network and try again');
-            });
-    };
-
+    
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
@@ -80,59 +47,6 @@ const PreviousAppointments = ({ navigation, route }) => {
     const numColumns = 1;
     const tileSize = screenWidth ;
 
-    /*
-     * Handles cancelling booking which updates database
-     * Pass in email of listingowner, startdate and enddate of appointment, i.e. listingowner, startdate, enddate
-     * dates must be in YYYY/MM/DD format
-    */
-    const handleCancel = (listingowner, startdate, enddate) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/cancelBooking";
-        var credentials = { listingowner: listingowner, startdate: startdate, enddate: enddate };
-
-        axios
-            .put(url, credentials)
-            .then((response) => {
-                const result = response.data;
-                const { status, message, data } = result;
-
-                if (status !== 'SUCCESS') {
-                    if(message === "Error: Start Date is within 2 days of current time") {
-                        Alert.alert('FAILURE', 'Cannot cancel bookings within 2 days.', [
-                            {text: 'OK'}
-                        ]);
-                    }
-                    handleMessage(message, status);
-                } else {
-                    console.log(route.params.email);
-                    if(route.params.accounttype == "Petsitter"){
-                        Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
-                            {text: 'OK'}
-                        ]);
-                    } else if(route.params.accounttype == "Petowner"){
-                        Alert.alert('SUCCESS', 'Your booking has been cancelled.', [
-                            {text: 'OK'}
-                        ]);
-                    }
-                    if(route.params.accounttype == "Petsitter"){
-                        handleGetListing(route.params.email);
-                    } else if(route.params.accounttype == "Petowner"){
-                        handleGetPetownerBookings(route.params.email);
-                    }
-                }
-            })
-            .catch((error) => {
-                handleMessage('An error occurred. Check your network and try again');
-            });
-    }
-    
-    const handleHandleCancel = (reason, startdate, enddate) => {
-        if(route.params.accounttype == "Petsitter"){
-            handleCancel(listing.listingowner, startdate, enddate);
-        } else if(route.params.accounttype == "Petowner"){
-            handleCancel(reason, startdate, enddate);
-        }
-    }
-
     const Item = ({ title }) => (
 	    <View style={styles.item}>
 		    <Text style={styles.title}>{title}</Text>
@@ -142,11 +56,7 @@ const PreviousAppointments = ({ navigation, route }) => {
 
     useEffect(() => {
         if(!firstRender) {
-            if(route.params.accounttype == "Petsitter"){
-                handleGetListing(route.params.email);
-            } else if(route.params.accounttype == "Petowner"){
-                handleGetPetownerBookings(route.params.email);
-            }
+            handleGetListing(route.params.email);
             setFirstRender(true);
         }
     });
@@ -178,7 +88,7 @@ const PreviousAppointments = ({ navigation, route }) => {
 					renderItem={({item}) => {
 						return <View>
                             <Entry2 item={item} />
-                            <StoreRating />
+                            <ListingRating item={item} />
                         </View>
 					}}
                 
