@@ -30,7 +30,8 @@ const PreviousStorePurchase = ({ navigation, route }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    setCart(data);
+                    console.log(data);
+                    setCart(data.previousorders);
                     if(totalPrice>=0)
                     {
                     setPrice(totalPrice);

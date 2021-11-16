@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
 import ListingRating from '../components/ListingRating';
+import Entry2 from '../components/Entry2';
 import axios from 'axios';
 import {
     BackgroundStyle,
@@ -18,7 +19,7 @@ const PreviousAppointments = ({ navigation, route }) => {
 
 
     const handleGetListing = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousBookings?listingowner=" + listingowner;
+        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousBookings?petowner=" + listingowner;
         axios
             .get(url)
             .then((response) => {
@@ -27,7 +28,8 @@ const PreviousAppointments = ({ navigation, route }) => {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    setListing(data[0]);
+                    //console.log(data);
+                    setListing(data);
                 }
             })
             .catch((error) => {
@@ -57,10 +59,11 @@ const PreviousAppointments = ({ navigation, route }) => {
     useEffect(() => {
         if(!firstRender) {
             handleGetListing(route.params.email);
+            console.log(listing);
             setFirstRender(true);
         }
     });
-
+    
     return (
         <StyledContainer2>
 			<ImageBackground
@@ -74,7 +77,7 @@ const PreviousAppointments = ({ navigation, route }) => {
 			
 			<SafeAreaView style={styles.container}>
 				<FlatList
-					data={listing.bookings}
+					data={listing}
 					style={{
 						margin:5,
 						flex: 1
