@@ -62,8 +62,8 @@ const DetailedListing = ({ navigation, route }) => {
                 <Text numberOfLines={1} style={styles.listingOwnerText}>
                     Contact: {listing.listingowner}
                 </Text>
-                <Text numberOfLines={1} style={styles.priceText}>
-                    Price: ${listing.price}/day
+                <Text numberOfLines={2} style={styles.priceText}>
+                    Price: ${listing.price}/day {"\n"}Rating: {Number(Number((listing.rating)).toFixed(1))}/1
                 </Text>
                 <Text numberOfLines={1} style={styles.locationText}>
                     Location: {listing.location}
@@ -73,9 +73,6 @@ const DetailedListing = ({ navigation, route }) => {
                 </Text>
                 <Text numberOfLines={3} style={styles.featuresText}>
                     {listing.features}
-                </Text>
-                <Text numberOfLines={1} style={styles.priceText}>
-                    Rating: {listing.rating}
                 </Text>
                 <TouchableOpacity style={styles.button}>
                     <Text numberOfLines={1} style={styles.buttonText}>
