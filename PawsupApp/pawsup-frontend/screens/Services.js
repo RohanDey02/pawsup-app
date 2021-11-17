@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent} from 'react-native';
+import { Modal, SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent, Touchable} from 'react-native';
 import Entry from '../components/Entry';
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
 
@@ -24,7 +24,43 @@ const Services = ({ navigation, route }) => {
     const [startDate, setStartDate] = useState("tap to choose");
     const [endDate, setEndDate] = useState("tap to choose");
     const [firstRender, setFirstRender] = useState(false);
+    const [selectedSortMethod, setSelectedSortMethod] = useState("");
 
+    const handleSort = (req) => {
+        const url = "https://protected-shelf-96328.herokuapp.com/api/sortListings" + req;
+        axios
+            .get(url)
+            .then((response) => {
+                const result = response.data;
+                const { status, message, data } = result;
+                var users_array = [];
+
+                if (status !== 'SUCCESS') ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+                else {
+                    tempData = [];
+                    setDisplayData(tempData);
+                    users_array = data;
+
+                    for(var i = 0; i < users_array.length; i++) {
+                        tempData.push(
+                            {
+                                id: data[i].listingowner,
+                                fullname: data[i].fullname,
+                                listingowner: data[i].listingowner,
+                                price: data[i].price,
+                                image: CAT_IMG, 
+                                rating: data[i].rating,
+                                description: data[i].description,
+                            });
+                    }
+                    setDisplayData(tempData);
+                }
+                
+            })
+            .catch((error) => {
+                ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
+            });
+    };
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -32,6 +68,7 @@ const Services = ({ navigation, route }) => {
         setDate(currentDate);
         setStartDate(currentDate);
         setSelectedPrice("a");
+        setSelectedSortMethod("a");
         if(endDate != "tap to choose") {
             var sday = selectedDate.getDate();
             var smonth = selectedDate.getMonth() + 1;
@@ -51,6 +88,7 @@ const Services = ({ navigation, route }) => {
         setDate(currentDate);
         setEndDate(currentDate);
         setSelectedPrice("a");
+        setSelectedSortMethod("a");
         if(startDate != "tap to choose") {
             var eday = selectedDate.getDate();
             var emonth = selectedDate.getMonth() + 1;
@@ -68,8 +106,6 @@ const Services = ({ navigation, route }) => {
         if(startOrEnd === "start") setShowStartDate(true);
         else setShowEndDate(true);
     };
-
-    
 
     const addToData = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
@@ -96,7 +132,7 @@ const Services = ({ navigation, route }) => {
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             }
         );
-    }
+    };
 
     const addToData2 = (req) => {
         // don't ask why this exists
@@ -126,7 +162,7 @@ const Services = ({ navigation, route }) => {
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             }
         );
-    }
+    };
 
     const getAllListings = () => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings?minprice=0&maxprice=1000000";
@@ -147,7 +183,7 @@ const Services = ({ navigation, route }) => {
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             }
         );
-    }
+    };
 
     const handleFilterPrice = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings" + req;
@@ -174,7 +210,7 @@ const Services = ({ navigation, route }) => {
             .catch((error) => {
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             });
-    }
+    };
 
     const handleFilterAvailability = (req) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings" + req;
@@ -200,7 +236,7 @@ const Services = ({ navigation, route }) => {
             .catch((error) => {
                 ToastAndroid.show('An error occured. Try again later.', ToastAndroid.SHORT);
             });
-    }
+    };
     
     useEffect(() => {
         if(!firstRender) {
@@ -258,27 +294,38 @@ const Services = ({ navigation, route }) => {
                 </SafeAreaView>
             }
             
-            {  /* filter stuff */}
+            {  /* filter and sort stuff */}
             { filterVisible &&  
-                <SafeAreaView style={{margin: 15, alignContent: 'center'}}>
+                <SafeAreaView style={{margin: 15, alignContent: 'center', flexGrow: 1, backgroundColor: 'rgba(255, 255, 255, 0)'}}>
+                    <View> 
+                        <Text style={{fontSize: 29, fontWeight: 'bold'}}>
+                            Filter:
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                        }}
+                    />
 
                     {/* area for price filter   */}
                     <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-                        <View style={{flex: 4}}>
+                        <View style={{flex: 2}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose a price range:
+                                {"   Price range:"}
                             </Text>
                         </View>
                         <View style={{flex: 3, alignContent: 'center'}}>    
                             <Picker
                                 selectedValue={selectedPrice}
                                 mode={'dropdown'}
-                                dropdownIconColor={'red'}
                                 onValueChange={
                                     (itemValue, itemIndex) => {
                                         setSelectedPrice(itemValue);
                                         setStartDate("tap to choose");
                                         setEndDate("tap to choose");
+                                        setSelectedSortMethod("a");
                                         if(itemValue === "a") handleFilterPrice("?minprice=0&maxprice=10000");
                                         if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice10");
                                         if(itemValue === "c") handleFilterPrice("?minprice=10&maxprice=20");
@@ -300,12 +347,12 @@ const Services = ({ navigation, route }) => {
 
                     {/* place for start date filter */}
                     <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-                        <View style={{flex: 4}}>
+                        <View style={{flex: 2}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose starting date:
+                                {"   Starting date:"}
                             </Text>
                         </View>
-                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
+                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 10}}>    
                             <Text
                                 onPress={() => showDatePicker("start")}
                                 style={{fontSize: 16}}
@@ -317,12 +364,12 @@ const Services = ({ navigation, route }) => {
 
                     {/* place for end date filter */}
                     <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
-                        <View style={{flex: 4}}>
+                        <View style={{flex: 2}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                                Choose ending date:
+                                {"   Ending date:"}
                             </Text>
                         </View>
-                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 17}}>    
+                        <View style={{flex: 3, alignContent: 'center', paddingLeft: 10}}>    
                             <Text
                                 onPress={() => showDatePicker("end")}
                                 style={{fontSize: 16}}
@@ -332,33 +379,92 @@ const Services = ({ navigation, route }) => {
                         </View>
                     </SafeAreaView>
 
-                    <TouchableOpacity
-                        style={{
-                            marginTop: 30,
-                            flexDirection: 'row',
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                            borderWidth: 3,
-                            borderColor: '#000',
-                            width: WIDTH / 2 - 30,
-                            height: 50,
-                            borderRadius: 10,
-                            alignSelf: 'center',
-                        }}
-                        onPress={() => {
-                            setFilterVisible(!filterVisible);
-                        }}
-                    >
-                        <Text style={{
-                            fontSize: 20,
-                            alignSelf: 'center',
-                            color: '#000',
-                            flex: 1,
-                            textAlign: 'center',
-                        }}>
-                            DONE
+                    <View> 
+                        <Text style={{fontSize: 29, fontWeight: 'bold', paddingTop: 50}}>
+                            Sort:
                         </Text>
-                    </TouchableOpacity>
+                    </View>
+                    <View style={{borderBottomColor: 'black', borderBottomWidth: 1}}>
+                    </View>
+
+                    {/* area for sort tings ykwis */}
+                    <SafeAreaView style={{marginVertical: 10, flexDirection: 'row'}}>
+                        <View style={{flex: 3}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                                {"   Sort method:"}
+                            </Text>
+                        </View>
+                        <View style={{flex: 6, alignContent: 'center'}}>    
+                            <Picker
+                                selectedValue={selectedSortMethod}
+                                mode={'dropdown'}
+                                onValueChange={
+                                    (itemValue, itemIndex) => {
+                                        setSelectedSortMethod(itemValue);
+                                        setStartDate("tap to choose");
+                                        setEndDate("tap to choose");
+                                        setSelectedPrice("a");
+                                        if(itemValue === "a") handleFilterPrice("?minprice=0&maxprice=10000");
+                                        if(itemValue === "b") handleSort("?sortVal=title&order=desc");
+                                        if(itemValue === "c") handleSort("?sortVal=title&order=asc");
+                                        if(itemValue === "d") handleSort("?sortVal=rating&order=desc");
+                                        if(itemValue === "e") handleSort("?sortVal=rating&order=asc");
+                                        if(itemValue === "f") handleSort("?sortVal=cost&order=desc");
+                                        if(itemValue === "g") handleSort("?sortVal=cost&order=asc");
+                                        if(itemValue === "h") handleSort("?sortVal=features&order=desc");
+                                        if(itemValue === "i") handleSort("?sortVal=features&order=asc");
+                                        if(itemValue === "j") handleSort("?sortVal=description&order=desc");
+                                        if(itemValue === "k") handleSort("?sortVal=description&order=asc");
+                                    }
+                                }
+                            >
+                                <Picker.Item label="Any" value="a" />
+                                <Picker.Item label="Title (high to low)" value="b" />
+                                <Picker.Item label="Title (low to high)" value="c" />
+                                <Picker.Item label="Rating (high to low)" value="d" />
+                                <Picker.Item label="Rating (low to high)" value="e" />
+                                <Picker.Item label="Cost (high to low)" value="f" />
+                                <Picker.Item label="Cost (low to high)" value="g" />
+                                <Picker.Item label="Features (high to low)" value="h" />
+                                <Picker.Item label="Features (low to high)" value="i" />
+                                <Picker.Item label="Description (high to low)" value="j" />
+                                <Picker.Item label="Description (low to high)" value="k" />
+
+                            </Picker>
+                        </View>
+                    </SafeAreaView>
+
+                    {/* DONE button */}
+                    <View style={{position: 'absolute', position: 'absolute', bottom: 40, alignSelf: 'center'}}>
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                                borderWidth: 3,
+                                borderColor: '#000',
+                                width: WIDTH / 2 - 30,
+                                height: 50,
+                                borderRadius: 10,
+                                alignSelf: 'center',
+                            }}
+                            onPress={() => {
+                                setFilterVisible(!filterVisible);
+                            }}
+                        >
+                            <Text style={{
+                                fontSize: 20,
+                                alignSelf: 'center',
+                                color: '#000',
+                                flex: 1,
+                                textAlign: 'center',
+                            }}>
+                                DONE
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </SafeAreaView>
+                
+            
             }
 
             { /* items themselves  */}
@@ -437,11 +543,12 @@ const styles = StyleSheet.create({
         marginRight: 25,
         flexDirection: 'row',
         backgroundColor: 'rgba(255, 255, 255, 0)',
-        borderWidth: 0,
+        borderWidth: 2,
         borderColor: '#000',
         width: WIDTH / 2 - 40,
-        height: 28,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
+        height: 35,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
         borderRadius: 10,
+        paddingVertical: 2,
     },
     buttonImageIconStyle: {
         width: 35,                  /* THIS IS A FIXED VALUE. CHANGE LATER??? */
