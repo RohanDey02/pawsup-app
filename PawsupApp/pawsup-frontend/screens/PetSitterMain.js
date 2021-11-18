@@ -38,7 +38,7 @@ const PetSitterMain = ({ navigation, route }) => {
                         <ButtonTextMain>Your Bookings</ButtonTextMain>
                     </StyledButtonMainPage>
                     <StyledButtonMainPage onPress={() => navigation.navigate('PreviousStorePurchase', data)}>
-                        <ButtonTextMain>Your old cart</ButtonTextMain>
+                        <ButtonTextMain>Previous Purchases</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>

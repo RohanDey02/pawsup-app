@@ -38,10 +38,10 @@ const PetOwnerMain = ({ navigation, route }) => {
                         <ButtonTextMain>Your Appointments</ButtonTextMain>
                     </StyledButtonMainPage>
                     <StyledButtonMainPage onPress={() => navigation.navigate('PreviousAppointments', data)}>
-                        <ButtonTextMain>Your Previous Appointments</ButtonTextMain>
+                        <ButtonTextMain>Previous Appointments</ButtonTextMain>
                     </StyledButtonMainPage>
                     <StyledButtonMainPage onPress={() => navigation.navigate('PreviousStorePurchase', data)}>
-                        <ButtonTextMain>Your old cart</ButtonTextMain>
+                        <ButtonTextMain>Previous Purchases</ButtonTextMain>
                     </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>

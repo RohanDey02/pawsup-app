@@ -37,7 +37,7 @@ const handleMessage = (message, type = 'FAILED') => {
 
   return(
     <AirbnbRating
-    size = {WIDTH/50}
+    size = {WIDTH/30}
     defaultRating = {3}
     onFinishRating = {rating => handleRating(item.reason,rating)}
     />
