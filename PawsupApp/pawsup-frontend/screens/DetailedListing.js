@@ -2,7 +2,8 @@ import React, { useState , useEffect} from "react";
 
 import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
-import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { AirbnbRating } from 'react-native-ratings';
+import { View,StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 const {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
@@ -60,8 +61,8 @@ const DetailedListing = ({ navigation, route }) => {
                 <Text numberOfLines={1} style={styles.listingOwnerText}>
                     Contact: {listing.listingowner}
                 </Text>
-                <Text numberOfLines={1} style={styles.priceText}>
-                    Price: ${listing.price}/day
+                <Text numberOfLines={2} style={styles.priceText}>
+                    Price: ${listing.price}/day {"\n"}Rating: {Number(Number((listing.rating)).toFixed(1))}/1
                 </Text>
                 <Text numberOfLines={1} style={styles.locationText}>
                     Location: {listing.location}
@@ -84,6 +85,7 @@ const DetailedListing = ({ navigation, route }) => {
                         Book
                     </Text>
                 </TouchableOpacity>
+
             </ImageBackground>
 
         </SafeAreaView>

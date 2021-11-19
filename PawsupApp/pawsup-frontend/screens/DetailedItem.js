@@ -61,11 +61,12 @@ const DetailedItem = ({ navigation, route }) => {
                 <Text numberOfLines={1} style={styles.itemOwnerText}>
                     Item Name: {item.name}
                 </Text>
-                <Text numberOfLines={1} style={styles.priceText}>
-                    Price: ${item.price}/pc
+                <Text numberOfLines={2} style={styles.priceText}>
+                    Price: ${item.price}/pc {'\n'}
+                    Rating: {Number(Number((item.rating)).toFixed(1))}/1
                 </Text>
                 <Text numberOfLines={1} style={styles.locationText}>
-                    Quantity Available: {item.quantity}
+                    Quantity Available: {item.quantity} 
                 </Text>
                 <Text numberOfLines={3} style={styles.descriptionText}>
                     Description: {item.description}
