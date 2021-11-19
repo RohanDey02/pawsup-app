@@ -104,8 +104,7 @@ router.post('/signup', (req, res) => {
                         location,
                         phonenumber,
                         accounttype,
-                        pettype,
-                        previousorders: []
+                        pettype
                     });
 
                     newUser.save().then(result => {
@@ -533,17 +532,17 @@ router.put('/makeBooking', (req, res) => {
     startdate = startdate.trim();
     enddate = enddate.trim();
 
-    // Converting to Date Format
-    var s1 = startdate.split("-");
-    var e1 = enddate.split("-");
-    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
-    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
-
     var tempstartdate = startdate.substring(0,10);
     startdate = tempstartdate;
 
     var tempenddate = enddate.substring(0,10);
     enddate = tempenddate;
+    
+    // Converting to Date Format
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
     var book = { reason: reason, cost: cost, startdate: startdate, enddate: enddate };
 
@@ -1203,9 +1202,7 @@ router.post('/makeItem', (req, res) => {
                     image,
                     pets,
                     quantity,
-                    inCart: [],
-                    sumRatings: 1,
-                    numRatings: 1
+                    inCart: []
                 })
 
                 newItem.save().then(result => {
@@ -1297,23 +1294,25 @@ router.get('/getItem', (req, res) => {
         })
     } else {
         var query = { name: name };
-        Item.aggregate([{ $match: query }, {
-            $addFields: { 
-            // Creates temporary field to calculate rating of Listing
-            rating: {
-                $divide:["$sumRatings", "$numRatings"] 
-            }}}
-            ]).then(data => {
-            res.json({
-                status: "SUCCESS",
-                message: "Item Found Successfully",
-                data: data
-            })
+
+        Item.find(query).then(data => {
+            if (data.length == 0) {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Could Not Find item"
+                })
+            } else {
+                res.json({
+                    status: "SUCCESS",
+                    message: "Item found",
+                    data: data
+                })
+            }
         }).catch(err => {
             console.log(err);
             res.json({
                 status: "FAILED",
-                message: "Error: Finding Listing, Perhaps Doesn't Exist"
+                message: "Error: Finding item in database"
             })
         })
     }
@@ -1692,142 +1691,6 @@ router.get('/filterPettypeItemListings', (req, res) => {
                 })
             }
         })
-    }
-});
-
-// Add rating for item
-router.put('/addItemRating', (req, res) => {
-    let { item, rating } = req.body;
-    console.log(item, rating);
-
-    if ((item == "") || (!/^[1-5]$/.test(rating))) {
-        res.json({
-            status: "FAILED",
-            message: "Error: Invalid fields"
-        })
-        return;
-    }
-    var query = { name: item };
-    Item.updateOne(query, { $inc: { numRatings: 1, sumRatings: rating/5 } }).then(data => {
-        if (data.modifiedCount < 1) {
-            res.json({
-                status: "FAILED",
-                message: "Error: rating modification failed",
-                data: data
-            })
-        } else {
-            Item.aggregate([{ $match: query }, {
-                $addFields: { 
-                // Creates temporary field to calculate rating of Listing
-                rating: {
-                    $divide:["$sumRatings", "$numRatings"] 
-                }}}
-                ]).then(data => {
-                    res.json({
-                        status: "SUCCESS",
-                        message: "Item rating modified successfully",
-                        data: data
-                    })
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-        res.json({
-            status: "FAILED",
-            message: "Error: Updating item"
-        })
-    })
-});
-
-async function getInCart(email) {
-    try {
-        var cart = [];
-        const data = await Item.find();
-        for (var item of data) {
-            for (var cartElem of item.inCart) {
-                if (cartElem.user == email) {
-                    // Changes item's quantity to be the quantity that user has in cart
-                    item.quantity = cartElem.quantity;
-                    cart.push(item);
-                }
-            }
-        }
-        return cart;
-    } catch (e) {
-        console.log(e);
-        return e;
-    }
-}
-
-async function removeUserFromCart(item, email) {
-    try {
-        const data = await Item.find({name: item});
-        filtered = data[0].inCart.filter(function(value) {
-            return (value.user != email);
-        });
-        data[0].inCart = filtered;
-        await Item.updateOne({name: item}, data[0]);
-        return 1;
-    } catch (e) {
-        console.log(e);
-        return 0;
-    }
-}
-
-// Checkout items in cart
-router.put('/itemCheckout', async (req, res) => {
-    let { email } = req.body;
-
-    if (email == "") {
-        res.json({
-            status: "FAILED",
-            message: "Error: Empty Listing User Email Field!"
-        })
-    } else {
-        const cart = await getInCart(email);
-        if (cart.length == 0) {
-            res.json({
-                status: "FAILED",
-                message: "No items in cart for User",
-                data: cart,
-            })
-        } else {
-            var previousItems = [];
-            var temp;
-            for (var elem of cart) {
-                var prevElem = { name: elem.name, price: elem.price, image: elem.image, quantity: elem.quantity, rating: elem.sumRatings/elem.numRatings};
-                previousItems.push(prevElem);
-                if (await removeUserFromCart(elem.name, email) == 0) {
-                    res.json({
-                        status: "FAILED",
-                        message: "Could not update cart"
-                    })
-                    return;
-                }
-            }
-            try {
-                var data = await User.find({email: email});
-                data[0].previousorders.push(...previousItems);
-                User.updateOne({email: email}, data[0]).then(data => {
-                    User.find({email: email}).then(data => {
-                        res.json({
-                            status: "SUCCESS",
-                            message: "Checkout Successful",
-                            data: data
-                        })
-                    })
-                }).catch(err => {
-                    console.log(err);
-                    res.json({
-                        status: "FAILED",
-                        message: "Error: Updating previous orders failed"
-                    })
-                })
-            } catch (e) {
-                console.log(e);
-                return 0;
-            }
-        }
     }
 });
 

@@ -259,4 +259,5 @@ const MyTextInput = ({ label, icon, isDate, showDatePicker, ...props }) => {
         </View>
     );
 };
+
 export default BookAppointment;
