@@ -12,7 +12,7 @@ import { StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-nati
 
 const PetOwnerMain = ({ navigation, route }) => {
     const data = route.params;
-
+    var empty=[];
     return (
         <StyledContainer2>
             <ImageBackground
@@ -25,7 +25,13 @@ const PetOwnerMain = ({ navigation, route }) => {
                             source={require("./../assets/WallpapersAndLogo/settings.png")}
                         />
                     </TouchableOpacity>
-
+                    <TouchableOpacity style={styles.logoutstyle} onPress={() => navigation.navigate('Login',empty)}>
+                    <Image
+                        
+                        source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
+                        style={styles.logoutstyle}
+                    />
+                    </TouchableOpacity>
                     <StyledButtonMainPage onPress={() => navigation.navigate('Services', data)}>
                         <ButtonTextMain>Services</ButtonTextMain>
                     </StyledButtonMainPage>
@@ -56,6 +62,13 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         position: 'absolute',
+    },
+    logoutstyle: {
+        width: 50,
+        height: 50,
+        top: "-40%",
+        left: "10%",
+        position: "absolute",
     }
 });
 
