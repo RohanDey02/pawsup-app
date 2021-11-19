@@ -141,7 +141,7 @@ const Services = ({ navigation, route }) => {
     return (
         <StyledContainer2>
             <ImageBackground
-                source={require('./../assets/WallpapersAndLogo/ServicesPage.png')}
+                source={require('./../assets/WallpapersAndLogo/StorePage.png')}
                 resizeMode="cover"
                 style={BackgroundStyle.image}
             >

@@ -28,6 +28,8 @@ import Shop from './../screens/Shop';
 import DetailedItem from './../screens/DetailedItem';
 import PreviousAppointments from '../screens/PreviousAppointments';
 import PreviousStorePurchase from '../screens/PreviousStorePurchase';
+import Checkout from './../screens/Checkout';
+import BookAppointment from './../screens/BookAppointment';
 
 const Stack = createStackNavigator();
 
@@ -50,10 +52,16 @@ const RootStack = () => {
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
-                <Stack.Screen name="PetOwnerMain" component={PetOwnerMain} />
+                <Stack.Screen name="PetOwnerMain" component={PetOwnerMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
                 <Stack.Screen name="Services" component={Services} />
-                <Stack.Screen name="AdminMain" component={AdminMain} />
-                <Stack.Screen name="PetSitterMain" component={PetSitterMain} />
+                <Stack.Screen name="AdminMain" component={AdminMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
+                <Stack.Screen name="PetSitterMain" component={PetSitterMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
                 <Stack.Screen name="Settings" component={Setting} />
                 <Stack.Screen name="PetSitterModifyListing" component={PetSitterModifyListing} />
                 <Stack.Screen name="DetailedListing" component={DetailedListing} />
@@ -67,6 +75,8 @@ const RootStack = () => {
                 <Stack.Screen name="DetailedItem" component={DetailedItem} />
                 <Stack.Screen name="PreviousAppointments" component={PreviousAppointments}/>
                 <Stack.Screen name="PreviousStorePurchase" component={PreviousStorePurchase}/>
+                <Stack.Screen name="Checkout" component={Checkout} />
+                <Stack.Screen name="BookAppointment" component={BookAppointment} />
             </Stack.Navigator>
         </NavigationContainer>
     );

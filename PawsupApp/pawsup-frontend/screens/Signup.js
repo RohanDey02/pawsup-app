@@ -233,7 +233,7 @@ const Signup = ({ navigation }) => {
                                 <ExtraView>
                                     <ExtraText>Already have an account? </ExtraText>
                                     <TextLink onPress={() => navigation.navigate('Login')}>
-                                        <TextLinkContent>Login</TextLinkContent>
+                                        <TextLinkContent style={{color: 'blue'}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
                             </StyledFormArea>

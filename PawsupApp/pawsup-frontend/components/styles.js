@@ -117,15 +117,11 @@ export const PageTitle = styled.Text`
   font-weight: bold;
   color: ${brand};
   padding: 10px;
-  ${(props) =>
-        props.welcome &&
-        `
-    font-size: 35px;
-  `}
 `;
 
 export const SubTitle = styled.Text`
-  font-size: 18px;
+  font-size: 24px;
+  text-align: center;
   margin-bottom: 20px;
   letter-spacing: 1px;
   font-weight: bold;
