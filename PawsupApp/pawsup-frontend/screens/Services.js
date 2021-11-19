@@ -327,7 +327,7 @@ const Services = ({ navigation, route }) => {
                                         setEndDate("tap to choose");
                                         setSelectedSortMethod("a");
                                         if(itemValue === "a") handleFilterPrice("?minprice=0&maxprice=10000");
-                                        if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice10");
+                                        if(itemValue === "b") handleFilterPrice("?minprice=0&maxprice=10");
                                         if(itemValue === "c") handleFilterPrice("?minprice=10&maxprice=20");
                                         if(itemValue === "d") handleFilterPrice("?minprice=20&maxprice=50");
                                         if(itemValue === "e") handleFilterPrice("?minprice=50&maxprice=100");
