@@ -20,8 +20,6 @@ const Checkout = ({ navigation, route }) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
-    console.log(route.params);
-
     // Handle Purchasing Items
     const handleCart = () => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/itemCheckout";
@@ -82,9 +80,11 @@ const Checkout = ({ navigation, route }) => {
             Alert.alert("Please Enter Complete Card Details and Email");
             return;
         }
+
         const billingDetails = {
             email: email,
         };
+
         try {
             const { status, message, data } = await fetchPaymentIntentClientSecret(amount);
             //2. confirm the payment
