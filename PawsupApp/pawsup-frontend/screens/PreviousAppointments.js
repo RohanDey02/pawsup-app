@@ -1,15 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, Alert } from 'react-native';
+import { SafeAreaView, ImageBackground, View, FlatList, StyleSheet, Text, StatusBar, Dimensions, LogBox } from 'react-native';
 import ListingRating from '../components/ListingRating';
 import Entry2 from '../components/Entry2';
 import axios from 'axios';
+
 import {
     BackgroundStyle,
     StyledContainer2,
-    PageTitle,
-    ButtonText,
-    StyledButtonAppointmentPage
+    PageTitle
 } from '../components/styles';
+
+LogBox.ignoreLogs([
+    'Encountered two children with the same key',
+]);
 
 const PreviousAppointments = ({ navigation, route }) => {
     const [listing, setListing] = useState([]);
