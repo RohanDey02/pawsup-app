@@ -74,9 +74,16 @@ const DetailedListing = ({ navigation, route }) => {
                 <Text numberOfLines={3} style={styles.featuresText}>
                     {listing.features}
                 </Text>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button}
+                    onPress = {
+                        () => {
+                            navigation.navigate('BookAppointment', { 
+                                ...route.params,
+                            });
+                        }
+                    }>
                     <Text numberOfLines={1} style={styles.buttonText}>
-                        Add Booking to Cart
+                        Book
                     </Text>
                 </TouchableOpacity>
 

@@ -13,6 +13,12 @@ const Item = require('./../models/Item');
 // Password Encrypter
 const bcrypt = require('bcrypt');
 
+// Stripe Implementation
+const Stripe = require("stripe");
+const PUBLISHABLE_KEY = "pk_test_51JuLH0JReyjnby8oC8maNyfaVdFojSjYkPSXKnYjkC6FpeSYq8F28oAW6X4FzafORx4kUustkwvdB6kegnLh1RLL00AKUD17mC";
+const SECRET_KEY = "sk_test_51JuLH0JReyjnby8onCnmPTLP2HvdcALvtJURYWrgvzFNe4qiH6eexZOJWaYS1qAKvGXbsDIOSb9R99VLDwHyzQbL005EEugsXH";
+const stripe = Stripe(SECRET_KEY, { apiVersion: "2020-08-27" });
+
 // USER:
 
 // Signup
@@ -98,7 +104,8 @@ router.post('/signup', (req, res) => {
                         location,
                         phonenumber,
                         accounttype,
-                        pettype
+                        pettype,
+                        previousorders: []
                     });
 
                     newUser.save().then(result => {
@@ -286,6 +293,35 @@ router.delete('/deleteUser', (req, res) => {
     }
 });
 
+// Get Previous Ordered Items
+router.get('/getPreviousOrders', (req, res) => {
+    let email = req.query.email;
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Email Field!"
+        })
+    } else {
+        var query = { email: email };
+
+        // Project only previousorders field
+        User.find(query, { previousorders: 1 }).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User Found Successfully",
+                data: data[0]
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // LISTING:
 
 // Create Listing
@@ -369,10 +405,10 @@ router.get('/getListing', (req, res) => {
 
         // Get listing data for bookings
         Listing.aggregate([{ $match: query }, {
-            $addFields: { 
+            $addFields: {
             // Creates temporary field to calculate rating of Listing
             rating: {
-                $divide:["$sumRatings", "$numRatings"] 
+                $divide:["$sumRatings", "$numRatings"]
             }}}
             ]).then(data => {
             res.json({
@@ -498,8 +534,8 @@ router.put('/makeBooking', (req, res) => {
     enddate = enddate.trim();
 
     // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
@@ -532,8 +568,8 @@ router.put('/makeBooking', (req, res) => {
 
                 // Iterate through all of the dates
                 for(const booking of info[0].bookings) {
-                    var d1 = booking.startdate.split("/");
-                    var d2 = booking.enddate.split("/");
+                    var d1 = booking.startdate.split("-");
+                    var d2 = booking.enddate.split("-");
 
                     var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                     var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -592,6 +628,91 @@ router.put('/makeBooking', (req, res) => {
     }
 });
 
+// Check bookings of a listing
+router.put('/checkBookings', (req, res) => {
+    let listingowner = req.body.listingowner;
+    let startdate = req.body.startdate;
+    let enddate = req.body.enddate;
+
+    listingowner = listingowner.trim();
+    startdate = startdate.trim();
+    enddate = enddate.trim();
+
+    var tempstartdate = startdate.substring(0,10);
+    startdate = tempstartdate;
+
+    var tempenddate = enddate.substring(0,10);
+    enddate = tempenddate;
+
+    // Converting to Date Format
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
+    var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
+    var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
+
+    console.log(startdate1);
+    console.log(enddate1);
+
+    if (listingowner == "" || startdate == "" || enddate == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Booking Search Fields!"
+        })
+    } else if(enddate1 < startdate1) {
+        res.json({
+            status: "FAILED",
+            message: "Error: End Date is before Start Date"
+        })
+    } else {
+        var query = { listingowner: listingowner };
+
+        // Get Listing Data
+        Listing.find(query).then(info => {
+            if (info.length) {
+                // User exists, now check if date is blocked
+                var bool = false;
+
+                // Iterate through all of the dates
+                for(const booking of info[0].bookings) {
+                    var d1 = booking.startdate.split("-");
+                    var d2 = booking.enddate.split("-");
+
+                    var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
+                    var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+
+                    // Check for overlapping
+                    if((startdate1 >= from && startdate1 <= to) || (enddate1 >= from && enddate1 <= to) || (from >= startdate1 && from <= enddate1) || (to >= startdate1 && to <= enddate1)){
+                        bool = true;
+                        break;
+                    }
+                }
+
+                if(bool == false){
+                    res.json({
+                        status: "SUCCESS",
+                        message: "EMPTY"
+                    })
+                } else {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "FULL"
+                    })
+                }
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "Error: Invalid Credentials"
+                })
+            }
+        }).catch(err => {
+            res.json({
+                status: "FAILED",
+                message: "Error: Checking for Existing Listing"
+            })
+        })
+    }
+})
+
 // Filter Listing By Price
 router.get('/filterPriceListings', (req, res) => {
     let minprice = parseInt(req.query.minprice);
@@ -643,8 +764,8 @@ router.get('/filterAvailabilityListings', (req, res) => {
     enddate = enddate.trim();
 
     // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
@@ -666,8 +787,8 @@ router.get('/filterAvailabilityListings', (req, res) => {
                     var bool = false;
                     // Iterate through all of the dates
                     for(const booking of listing.bookings) {
-                        var d1 = booking.startdate.split("/");
-                        var d2 = booking.enddate.split("/");
+                        var d1 = booking.startdate.split("-");
+                        var d2 = booking.enddate.split("-");
 
                         var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                         var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -709,8 +830,8 @@ router.put('/cancelBooking', (req, res) => {
     enddate = enddate.trim();
 
     // Converting to Date Format
-    var s1 = startdate.split("/");
-    var e1 = enddate.split("/");
+    var s1 = startdate.split("-");
+    var e1 = enddate.split("-");
     var startdate1 = new Date(s1[0], parseInt(s1[1])-1, s1[2]);
     var enddate1 = new Date(e1[0], parseInt(e1[1])-1, e1[2]);
 
@@ -739,8 +860,8 @@ router.put('/cancelBooking', (req, res) => {
 
                 var bookings = info[0].bookings;
                 var filtered = bookings.filter(function(value, index, arr) {
-                    var d1 = value.startdate.split("/");
-                    var d2 = value.enddate.split("/");
+                    var d1 = value.startdate.split("-");
+                    var d2 = value.enddate.split("-");
 
                     var from = new Date(d1[0], parseInt(d1[1])-1, d1[2]);  // -1 because months are from 0 to 11
                     var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
@@ -834,7 +955,6 @@ router.get('/getPetownerBookings', (req, res) => {
     }
 });
 
-// Sort Listings
 router.get('/sortListings', (req, res) => {
     let sortVal = req.query.sortVal;
     let order = req.query.order;
@@ -931,6 +1051,7 @@ router.get('/sortListings', (req, res) => {
 
 // Add rating for Listing
 router.put('/addListingRating', (req, res) => {
+    // Accepts rating from 1 - 5 for Luce's implementation
     let { listingowner, rating } = req.body;
 
     listingowner = listingowner.trim();
@@ -970,6 +1091,64 @@ router.put('/addListingRating', (req, res) => {
         res.json({
             status: "FAILED",
             message: "Error: Updating Listing"
+        })
+    })
+});
+
+// Get previous appointments for petowner
+router.get('/getPreviousBookings', (req, res) => {
+    let petowner = req.query.petowner;
+
+    petowner = petowner.trim();
+
+    if (petowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Invalid fields"
+        })
+        return;
+    }
+
+    Listing.find({"bookings.reason": petowner}).then(data => {
+        var previousBookings = [];
+        for (var listing of data) {
+            console.log(listing.title);
+            var rating = listing.sumRatings/listing.numRatings;
+            filtered = listing.bookings.filter(function(value, index, arr) {
+                var d2 = value.enddate.split("-");
+
+                var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+                console.log(value.reason, getDifferenceInDays(new Date(), to));
+                // Finds all elements in which the enddate is past current data
+                return ((value.reason == petowner) && (getDifferenceInDays(new Date(), to) < 0));
+            })
+            if (filtered.length > 0) {
+                for (var booking in filtered) {
+                    var newVal = JSON.parse(JSON.stringify(filtered[booking]));     // Deep copy of altered booking
+                    newVal.reason = listing.listingowner;
+                    newVal.rating = rating;
+                    previousBookings.push(newVal);
+                }
+            }
+        }
+        if (previousBookings.length > 0) {
+            res.json({
+                status: "SUCCESS",
+                message: "Previous appointments found successfully",
+                data: previousBookings
+            })
+        } else {
+            res.json({
+                status: "FAILED",
+                message: "No previous appointments found"
+            })
+            return;
+        }
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: "FAILED",
+            message: "Error: Finding Bookings, Perhaps User has no bookings"
         })
     })
 });
@@ -1202,7 +1381,7 @@ router.put('/addToCart', (req, res) => {
                     message: "Error: Could Not Find item"
                 })
             } else {
-                if (data[0].quantity > quantity) {
+                if (data[0].quantity >= quantity) {
                     // Check if user already has item in cart
                     filtered = data[0].inCart.filter(function(value) {
                         return (value.user == email);
@@ -1517,8 +1696,7 @@ router.get('/filterPettypeItemListings', (req, res) => {
 // Add rating for item
 router.put('/addItemRating', (req, res) => {
     let { item, rating } = req.body;
-
-    item = item.trim();
+    console.log(item, rating);
 
     if ((item == "") || (!/^[1-5]$/.test(rating))) {
         res.json({
@@ -1557,6 +1735,130 @@ router.put('/addItemRating', (req, res) => {
             message: "Error: Updating item"
         })
     })
+});
+
+async function getInCart(email) {
+    try {
+        var cart = [];
+        const data = await Item.find();
+        for (var item of data) {
+            for (var cartElem of item.inCart) {
+                if (cartElem.user == email) {
+                    // Changes item's quantity to be the quantity that user has in cart
+                    item.quantity = cartElem.quantity;
+                    cart.push(item);
+                }
+            }
+        }
+        return cart;
+    } catch (e) {
+        console.log(e);
+        return e;
+    }
+}
+
+async function removeUserFromCart(item, email) {
+    try {
+        const data = await Item.find({name: item});
+        filtered = data[0].inCart.filter(function(value) {
+            return (value.user != email);
+        });
+        data[0].inCart = filtered;
+        await Item.updateOne({name: item}, data[0]);
+        return 1;
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}
+
+// Checkout items in cart
+router.put('/itemCheckout', async (req, res) => {
+    let { email } = req.body;
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Listing User Email Field!"
+        })
+    } else {
+        const cart = await getInCart(email);
+        if (cart.length == 0) {
+            res.json({
+                status: "FAILED",
+                message: "No items in cart for User",
+                data: cart,
+            })
+        } else {
+            var previousItems = [];
+            var temp;
+            for (var elem of cart) {
+                var prevElem = { name: elem.name, price: elem.price, image: elem.image, quantity: elem.quantity, rating: elem.sumRatings/elem.numRatings};
+                previousItems.push(prevElem);
+                if (await removeUserFromCart(elem.name, email) == 0) {
+                    res.json({
+                        status: "FAILED",
+                        message: "Could not update cart"
+                    })
+                    return;
+                }
+            }
+            try {
+                var data = await User.find({email: email});
+                data[0].previousorders.push(...previousItems);
+                User.updateOne({email: email}, data[0]).then(data => {
+                    User.find({email: email}).then(data => {
+                        res.json({
+                            status: "SUCCESS",
+                            message: "Checkout Successful",
+                            data: data
+                        })
+                    })
+                }).catch(err => {
+                    console.log(err);
+                    res.json({
+                        status: "FAILED",
+                        message: "Error: Updating previous orders failed"
+                    })
+                })
+            } catch (e) {
+                console.log(e);
+                return 0;
+            }
+        }
+    }
+});
+
+// Stripe Payments
+router.post("/createPaymentIntent", async (req, res) => {
+    let amount = req.query.amount;
+
+    if (amount < 0) {
+        res.json({ error: "Incorrect Amount" });
+    } else {
+        try {
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount, // In cents
+                currency: "cad",
+                payment_method_types: ["card"],
+            });
+
+            const clientSecret = paymentIntent.client_secret;
+
+            res.json({
+                status: "SUCCESS",
+                message: "Payment Successful!",
+                data: clientSecret,
+            });
+        } catch (e) {
+            console.log(e.message);
+            res.json({
+                status: "FAILED",
+                message: e.message,
+                data: {}
+            });
+        }
+    }
 });
 
 module.exports = router;
