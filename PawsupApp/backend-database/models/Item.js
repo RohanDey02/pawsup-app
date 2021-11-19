@@ -18,7 +18,9 @@ const ItemSchema = new Schema({
     image: String,
     pets: [String],
     quantity: Number,
-    inCart: [CartSchema]
+    inCart: [CartSchema],
+    sumRatings: Number,
+    numRatings: Number
 });
 
 const Item = mongoose.model('Item', ItemSchema);

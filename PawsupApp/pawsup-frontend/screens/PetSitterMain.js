@@ -37,6 +37,9 @@ const PetSitterMain = ({ navigation, route }) => {
                     <StyledButtonMainPage onPress={() => navigation.navigate('UpcomingAppointment', data)}>
                         <ButtonTextMain>Your Bookings</ButtonTextMain>
                     </StyledButtonMainPage>
+                    <StyledButtonMainPage onPress={() => navigation.navigate('PreviousStorePurchase', data)}>
+                        <ButtonTextMain>Previous Purchases</ButtonTextMain>
+                    </StyledButtonMainPage>
                 </InnerContainer>
             </ImageBackground>
             </StyledContainer2>

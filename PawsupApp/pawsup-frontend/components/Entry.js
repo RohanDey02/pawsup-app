@@ -24,7 +24,7 @@ const Entry = ({ item, onPress }) => {
                 </View>
                 <View style={{flex:1}}>
 					<Text style={{fontSize: 15, justifyContent: 'flex-end', textAlign: 'right'}}>
-						{item.rating}
+						{Number(Number((item.rating)).toFixed(1))+'/1'}
 					</Text>
                 </View>
 			</View>
