@@ -6,6 +6,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const PreviouslyOrderedSchema = new Schema({
+  name: String,
+  price: Number,
+  image: String,
+  quantity: Number,
+  rating: Number
+})
+
 const UserSchema = new Schema({
     email: String,
     password: String,
@@ -14,7 +22,8 @@ const UserSchema = new Schema({
 	  location: String,
     phonenumber: String,
     accounttype: String,
-    pettype: String
+    pettype: String,
+    previousorders: [PreviouslyOrderedSchema]
 });
 
 const User = mongoose.model('User', UserSchema);

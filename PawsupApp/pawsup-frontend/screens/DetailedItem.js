@@ -76,7 +76,7 @@ const DetailedItem = ({ navigation, route }) => {
                 <TouchableOpacity
                     style={styles.button}
                     onPress = {
-                        () => Alert.alert('SUCCESS', 'Item has been added to cart.', [{text: 'OK'}])
+                        () => navigation.navigate('AddToCart', route.params)
                     }
                 >
                     <Text numberOfLines={1} style={styles.buttonText}>

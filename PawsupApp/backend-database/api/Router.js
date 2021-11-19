@@ -292,6 +292,35 @@ router.delete('/deleteUser', (req, res) => {
     }
 });
 
+// Get Previous Ordered Items
+router.get('/getPreviousOrders', (req, res) => {
+    let email = req.query.email;
+
+    if (email == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Empty Email Field!"
+        })
+    } else {
+        var query = { email: email };
+
+        // Project only previousorders field
+        User.find(query, { previousorders: 1 }).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User Found Successfully",
+                data: data[0]
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: "FAILED",
+                message: "Error: Finding User, Perhaps Doesn't Exist"
+            })
+        })
+    }
+});
+
 // LISTING:
 
 // Create Listing
@@ -985,7 +1014,7 @@ router.get('/sortListings', (req, res) => {
             // Creates temporary field to calculate rating of Listing
             rating: {
                 $divide:["$sumRatings", "$numRatings"]
-            }}}, { $sort: {"price": order } }
+            }}}, { $sort: {"description": order } }
             ]).then(data => {
                 res.json({
                     status: "SUCCESS",
@@ -1017,6 +1046,110 @@ router.get('/sortListings', (req, res) => {
             data: req.query
         })
     }
+});
+
+// Add rating for Listing
+router.put('/addListingRating', (req, res) => {
+    // Accepts rating from 1 - 5 for Luce's implementation
+    let { listingowner, rating } = req.body;
+
+    listingowner = listingowner.trim();
+
+    if ((listingowner == "") || (!/^[1-5]$/.test(rating))) {
+        res.json({
+            status: "FAILED",
+            message: "Error: Invalid fields"
+        })
+        return;
+    }
+    var query = { listingowner: listingowner };
+    Listing.updateOne(query, { $inc: { numRatings: 1, sumRatings: rating/5 } }).then(data => {
+        if (data.modifiedCount < 1) {
+            res.json({
+                status: "FAILED",
+                message: "Error: rating modification failed",
+                data: data
+            })
+        } else {
+            Listing.aggregate([{ $match: query }, {
+                $addFields: { 
+                // Creates temporary field to calculate rating of Listing
+                rating: {
+                    $divide:["$sumRatings", "$numRatings"] 
+                }}}
+                ]).then(data => {
+                    res.json({
+                        status: "SUCCESS",
+                        message: "Listing rating modified successfully",
+                        data: data
+                    })
+            })
+        }
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: "FAILED",
+            message: "Error: Updating Listing"
+        })
+    })
+});
+
+// Get previous appointments for petowner
+router.get('/getPreviousBookings', (req, res) => {
+    let petowner = req.query.petowner;
+
+    petowner = petowner.trim();
+
+    if (petowner == "") {
+        res.json({
+            status: "FAILED",
+            message: "Error: Invalid fields"
+        })
+        return;
+    }
+
+    Listing.find({"bookings.reason": petowner}).then(data => {
+        var previousBookings = [];
+        for (var listing of data) {
+            console.log(listing.title);
+            var rating = listing.sumRatings/listing.numRatings;
+            filtered = listing.bookings.filter(function(value, index, arr) {
+                var d2 = value.enddate.split("-");
+
+                var to = new Date(d2[0], parseInt(d2[1])-1, d2[2]);
+                console.log(value.reason, getDifferenceInDays(new Date(), to));
+                // Finds all elements in which the enddate is past current data
+                return ((value.reason == petowner) && (getDifferenceInDays(new Date(), to) < 0));
+            })
+            if (filtered.length > 0) {
+                for (var booking in filtered) {
+                    var newVal = JSON.parse(JSON.stringify(filtered[booking]));     // Deep copy of altered booking
+                    newVal.reason = listing.listingowner;
+                    newVal.rating = rating;
+                    previousBookings.push(newVal);
+                }
+            }
+        }
+        if (previousBookings.length > 0) {
+            res.json({
+                status: "SUCCESS",
+                message: "Previous appointments found successfully",
+                data: previousBookings
+            })
+        } else {
+            res.json({
+                status: "FAILED",
+                message: "No previous appointments found"
+            })
+            return;
+        }
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: "FAILED",
+            message: "Error: Finding Bookings, Perhaps User has no bookings"
+        })
+    })
 });
 
 // STORE:
@@ -1239,6 +1372,7 @@ router.put('/addToCart', (req, res) => {
         })
     } else {
         var query = { name: item };
+        var quant = parseInt(quantity);
 
         Item.find(query).then(data => {
             if (data.length == 0) {
@@ -1247,7 +1381,7 @@ router.put('/addToCart', (req, res) => {
                     message: "Error: Could Not Find item"
                 })
             } else {
-                if (data[0].quantity > quantity) {
+                if (data[0].quantity > quant) {
                     // Check if user already has item in cart
                     filtered = data[0].inCart.filter(function(value) {
                         return (value.user == email);
@@ -1255,10 +1389,10 @@ router.put('/addToCart', (req, res) => {
                     var cartAdd;
                     // User has item in cart
                     if (filtered.length == 1) {
-                        filtered[0].quantity += quantity;
+                        filtered[0].quantity += quant;
                         cartAdd = filtered[0];
                     } else {
-                        cartAdd = { user: email, quantity: quantity };
+                        cartAdd = { user: email, quantity: quant };
                     }
 
                     // Returns cart data for item without the user whose quantity is being changed
@@ -1268,7 +1402,7 @@ router.put('/addToCart', (req, res) => {
                     filtered.push(cartAdd);
                     data[0].inCart = filtered;
                     // Remove quantity added to cart from total stock for item shown
-                    data[0].quantity -= quantity;
+                    data[0].quantity -= quant;
 
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
@@ -1329,6 +1463,7 @@ router.put('/removeFromCart', (req, res) => {
         })
     } else {
         var query = { name: item };
+        var quant = parseInt(quantity);
 
         Item.find(query).then(data => {
             if (data.length == 0) {
@@ -1343,13 +1478,13 @@ router.put('/removeFromCart', (req, res) => {
                 var cartRemove;
                 // User has item in cart
                 if (filtered.length == 1) {
-                    var newQuantity = filtered[0].quantity - quantity;
+                    var newQuantity = filtered[0].quantity - quant;
                     // Initialises cartRemove if newQuantity is positive value,
                     // otherwise user is removed from cart array for item
                     if (newQuantity > 0) {
                         cartRemove = { user: email, quantity: newQuantity };
                         // Adds back quantity taken away from user to total stock for item
-                        data[0].quantity += quantity;
+                        data[0].quantity += quant;
                     } else {
                         // Adds back all the quantity that was in user's order, since order
                         // since order is to be removed entirely from cart

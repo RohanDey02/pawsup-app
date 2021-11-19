@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Formik } from "formik";
 
 // Icons
-import { Octicons, Ionicons, Fontisto } from "@expo/vector-icons"
+import { Octicons, Ionicons } from "@expo/vector-icons"
 
 import {
     BackgroundStyle,
@@ -25,6 +25,7 @@ import {
     Colours,
     ButtonText,
 } from './../components/styles';
+
 import { View, ActivityIndicator, ImageBackground } from 'react-native';
 
 // Colours

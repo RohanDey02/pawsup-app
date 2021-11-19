@@ -28,6 +28,7 @@ import Shop from './../screens/Shop';
 import DetailedItem from './../screens/DetailedItem';
 import Checkout from './../screens/Checkout';
 import BookAppointment from './../screens/BookAppointment';
+import AddToCart from '../screens/AddToCart';
 
 const Stack = createStackNavigator();
 
@@ -73,6 +74,7 @@ const RootStack = () => {
                 <Stack.Screen name="DetailedItem" component={DetailedItem} />
                 <Stack.Screen name="Checkout" component={Checkout} />
                 <Stack.Screen name="BookAppointment" component={BookAppointment} />
+                <Stack.Screen name="AddToCart" component={AddToCart} />
             </Stack.Navigator>
         </NavigationContainer>
     );
