@@ -1381,7 +1381,7 @@ router.put('/addToCart', (req, res) => {
                     message: "Error: Could Not Find item"
                 })
             } else {
-                if (data[0].quantity > quant) {
+                if (data[0].quantity >= quant) {
                     // Check if user already has item in cart
                     filtered = data[0].inCart.filter(function(value) {
                         return (value.user == email);
