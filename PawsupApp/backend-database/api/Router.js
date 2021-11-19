@@ -1015,7 +1015,7 @@ router.get('/sortListings', (req, res) => {
             // Creates temporary field to calculate rating of Listing
             rating: {
                 $divide:["$sumRatings", "$numRatings"]
-            }}}, { $sort: {"price": order } }
+            }}}, { $sort: {"description": order } }
             ]).then(data => {
                 res.json({
                     status: "SUCCESS",
@@ -1373,6 +1373,7 @@ router.put('/addToCart', (req, res) => {
         })
     } else {
         var query = { name: item };
+        var quant = parseInt(quantity);
 
         Item.find(query).then(data => {
             if (data.length == 0) {
@@ -1381,7 +1382,7 @@ router.put('/addToCart', (req, res) => {
                     message: "Error: Could Not Find item"
                 })
             } else {
-                if (data[0].quantity >= quantity) {
+                if (data[0].quantity >= quant) {
                     // Check if user already has item in cart
                     filtered = data[0].inCart.filter(function(value) {
                         return (value.user == email);
@@ -1389,10 +1390,10 @@ router.put('/addToCart', (req, res) => {
                     var cartAdd;
                     // User has item in cart
                     if (filtered.length == 1) {
-                        filtered[0].quantity += quantity;
+                        filtered[0].quantity += quant;
                         cartAdd = filtered[0];
                     } else {
-                        cartAdd = { user: email, quantity: quantity };
+                        cartAdd = { user: email, quantity: quant };
                     }
 
                     // Returns cart data for item without the user whose quantity is being changed
@@ -1402,7 +1403,7 @@ router.put('/addToCart', (req, res) => {
                     filtered.push(cartAdd);
                     data[0].inCart = filtered;
                     // Remove quantity added to cart from total stock for item shown
-                    data[0].quantity -= quantity;
+                    data[0].quantity -= quant;
 
                     Item.updateOne(query, data[0]).then(doc => {
                         if (!doc) {
@@ -1463,6 +1464,7 @@ router.put('/removeFromCart', (req, res) => {
         })
     } else {
         var query = { name: item };
+        var quant = parseInt(quantity);
 
         Item.find(query).then(data => {
             if (data.length == 0) {
@@ -1477,13 +1479,13 @@ router.put('/removeFromCart', (req, res) => {
                 var cartRemove;
                 // User has item in cart
                 if (filtered.length == 1) {
-                    var newQuantity = filtered[0].quantity - quantity;
+                    var newQuantity = filtered[0].quantity - quant;
                     // Initialises cartRemove if newQuantity is positive value,
                     // otherwise user is removed from cart array for item
                     if (newQuantity > 0) {
                         cartRemove = { user: email, quantity: newQuantity };
                         // Adds back quantity taken away from user to total stock for item
-                        data[0].quantity += quantity;
+                        data[0].quantity += quant;
                     } else {
                         // Adds back all the quantity that was in user's order, since order
                         // since order is to be removed entirely from cart
