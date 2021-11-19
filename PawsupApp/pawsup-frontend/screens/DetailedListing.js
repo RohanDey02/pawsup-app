@@ -15,7 +15,6 @@ const DetailedListing = ({ navigation, route }) => {
     const [messageType, setMessageType] = useState();
     const [firstRender, setFirstRender] = useState(false);
 
-
     const handleGetListing = (listingowner) => {
         const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
 
