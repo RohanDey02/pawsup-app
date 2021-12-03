@@ -25,13 +25,13 @@ const PetSitterMain = ({ navigation, route }) => {
                             source={require("./../assets/WallpapersAndLogo/settings.png")}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.logoutstyle} onPress={() => navigation.navigate('Login',empty)}>
-                    <Image
-                
-                        source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
-                        style={styles.logoutstyle}
-                    />
+                    <TouchableOpacity style={styles.logoutstyle} onPress={() => navigation.push('Login')}>
+                        <Image
+                            source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
+                            style={styles.logoutstyle}
+                        />
                     </TouchableOpacity>
+
                     <StyledButtonMainPage onPress={() => navigation.navigate('PetSitterModifyListing', data)}>
                         <ButtonTextMain>Modify Your Listing</ButtonTextMain>
                     </StyledButtonMainPage>
@@ -54,7 +54,7 @@ const PetSitterMain = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     settingsicon: {
-        top: "-40%",
+        top: "-20%",
         right: "10%",
         width: 50,
         height: 50,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     logoutstyle: {
         width: 50,
         height: 50,
-        top: "-40%",
+        top: "-20%",
         left: "10%",
         position: "absolute",
     },
