@@ -107,11 +107,11 @@ const Checkout = ({ navigation, route }) => {
 
                         if(route.params.routeParams.accounttype == "Petowner") {
                             Alert.alert('SUCCESS', message, [
-                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params)}
+                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params.routeParams)}
                             ]);
                         } else if(route.params.routeParams.accounttype == "Petsitter") {
                             Alert.alert('SUCCESS', message, [
-                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params)}
+                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params.routeParams)}
                             ]);
                         }
                         
@@ -129,11 +129,11 @@ const Checkout = ({ navigation, route }) => {
 
                         if(route.params.routeParams.accounttype == "Petowner") {
                             Alert.alert('SUCCESS', message, [
-                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params)}
+                                {text: 'OK', onPress: () => navigation.navigate('PetOwnerMain', route.params.routeParams)}
                             ]);
                         } else if(route.params.routeParams.accounttype == "Petsitter") {
                             Alert.alert('SUCCESS', message, [
-                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params)}
+                                {text: 'OK', onPress: () => navigation.navigate('PetSitterMain', route.params.routeParams)}
                             ]);
                         }
                     }

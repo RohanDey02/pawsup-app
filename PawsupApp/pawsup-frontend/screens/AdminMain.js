@@ -8,7 +8,7 @@ import {
     ButtonTextMain,
     StyledButtonMainPage
 } from './../components/styles';
-import {StyleSheet, Image, TouchableHighlight, ImageBackground } from 'react-native';
+import {StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 
 const AdminMain = ({ navigation, route }) => {
     const data = route.params;
@@ -19,19 +19,18 @@ const AdminMain = ({ navigation, route }) => {
                 source={require('./../assets/WallpapersAndLogo/MainPageDirectory.png')} resizeMode="cover" style={BackgroundStyle.image}>
             <StatusBar style="dark" />
                 <InnerContainer>
-                <TouchableHighlight style={styles.settingsicon} onPress={() => navigation.navigate('Settings', data)}>
+                    <TouchableOpacity style={styles.settingsicon} onPress={() => navigation.navigate('Settings', data)}>
                         <Image
                             style={styles.settingsicon}
                             source={require("./../assets/WallpapersAndLogo/settings.png")}
                         />
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.logoutstyle} onPress={() => navigation.navigate('Login',empty)}>
-                    <Image
-                
-                source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
-                style={styles.logoutstyle}
-            />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.logoutstyle} onPress={() => navigation.push('Login')}>
+                        <Image
+                            source={{uri: 'https://i.imgur.com/qzIRCkV.png'}}
+                            style={styles.logoutstyle}
+                        />
+                    </TouchableOpacity>
 
                     <StyledButtonMainPage onPress={() => navigation.navigate('AdminAddProduct', data)}>
                         <ButtonTextMain>Add Store Products</ButtonTextMain>
