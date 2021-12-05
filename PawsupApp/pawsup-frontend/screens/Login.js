@@ -5,14 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 import { Formik } from "formik";
 
 // Icons
-import { Octicons, Ionicons, Fontisto } from "@expo/vector-icons"
+import { Octicons, Ionicons } from "@expo/vector-icons"
 
 import {
-    StyledContainer,
+    BackgroundStyle,
+    StyledContainer2,
     InnerContainer,
-    PageLogo,
-    PageTitle,
-    SubTitle,
     StyledFormArea,
     LeftIcon,
     RightIcon,
@@ -20,21 +18,18 @@ import {
     StyledTextInput,
     StyledButton,
     MsgBox,
-    Line,
     ExtraView,
     ExtraText,
     TextLink,
     TextLinkContent,
     Colours,
-    ButtonText
+    ButtonText,
 } from './../components/styles';
-import { View, ActivityIndicator } from 'react-native';
+
+import { View, ActivityIndicator, ImageBackground } from 'react-native';
 
 // Colours
 const { brand, darkLight, primary } = Colours;
-
-// Keyboard Avoiding Wrapper
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 // API Client
 import axios from 'axios';
@@ -49,18 +44,24 @@ const Login = ({ navigation }) => {
     */
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/user/signin";
+        const url = "https://protected-shelf-96328.herokuapp.com/api/signin";
 
         axios
             .post(url, credentials)
             .then((response) => {
                 const result = response.data;
                 const { status, message, data } = result;
-
+                
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
-                    navigation.navigate('Welcome', { ...data[0] });
+                    if(data[0].accounttype == 'Petowner'){
+                        navigation.navigate('PetOwnerMain', { ...data[0] });
+                    } else if(data[0].accounttype == 'Petsitter'){
+                        navigation.navigate('PetSitterMain', { ...data[0] });
+                    } else if(data[0].accounttype == 'Admin'){
+                        navigation.navigate('AdminMain', { ...data[0] });
+                    }
                 }
                 setSubmitting(false);
             })
@@ -76,13 +77,12 @@ const Login = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingWrapper>
-            <StyledContainer>
-                <StatusBar style="dark" />
-                <InnerContainer>
-                    <PageTitle>Pawsup</PageTitle>
-                    <SubTitle>Account Login</SubTitle>
-
+        <StyledContainer2>
+            <ImageBackground
+                source={require('./../assets/PawsupMainPage.png')} resizeMode="cover" style={BackgroundStyle.image}>
+            <StatusBar style="dark" />
+            <InnerContainer>
+                
                     <Formik
                         initialValues={{ email: '', password: '' }}
                         onSubmit={(values, { setSubmitting }) => {
@@ -138,15 +138,15 @@ const Login = ({ navigation }) => {
                                 <ExtraView>
                                     <ExtraText>Don't have an account? </ExtraText>
                                     <TextLink onPress={() => navigation.navigate('Signup')}>
-                                        <TextLinkContent>Signup</TextLinkContent>
+                                        <TextLinkContent style={{color: 'blue'}}>Signup</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
                             </StyledFormArea>
                         )}
                     </Formik>
-                </InnerContainer>
-            </StyledContainer>
-        </KeyboardAvoidingWrapper>
+            </InnerContainer>
+        </ImageBackground>
+    </StyledContainer2>
     );
 };
 

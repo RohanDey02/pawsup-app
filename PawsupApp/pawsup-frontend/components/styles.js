@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Image, View, Text, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';
+import { Image, View, Text, TextInput, Touchable, TouchableOpacity, ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -8,9 +8,9 @@ const StatusBarHeight = Constants.statusBarHeight;
 export const Colours = {
     primary: "#ffffff",
     secondary: "#E5E7EB",
-    tertiary: "#1F2937",
+    tertiary: "#1f2937",
     darkLight: "#9CA3AF",
-    brand: "#6D28D9",
+    brand: "#000000",
     green: "#10B981",
     red: "#EF4444",
 };
@@ -24,9 +24,48 @@ export const StyledContainer = styled.View`
   background-color: ${primary};
 `;
 
+export const StyledContainer2 = styled.View`
+  flex: 1;
+  background-color: ${primary};
+`;
+
 export const InnerContainer = styled.View`
   width: 100%;
-  flex: 1;
+  align-items: center;
+`;
+
+export const InnerContainer2 = styled.View`
+  width: 100%;
+  align-items: center;
+  padding-top: ${StatusBarHeight + 10}px;
+`;
+
+export const InnerContainer7 = styled.View`
+  width: 100%;
+  align-items: center;
+`;
+
+export const InnerContainer3 = styled.View`
+  width: 100%;
+  padding-top: ${StatusBarHeight + 180}px;
+  align-items: center;
+`;
+
+export const InnerContainer4 = styled.View`
+  width: 100%;
+  padding-top: ${StatusBarHeight + 30}px;
+  align-items: center;
+`;
+
+export const InnerContainer5 = styled.View`
+  width: 100%;
+  padding-top: 40px;
+  align-items: center;
+`;
+
+export const InnerContainer6 = styled.View`
+  width: 100%;
+  padding-top: 10px;
   align-items: center;
 `;
 
@@ -40,6 +79,21 @@ export const PageLogo = styled.Image`
   width: 250px;
   height: 200px;
 `;
+ 
+export const BackgroundStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: "center",
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  }
+});
 
 export const Avatar = styled.Image`
   width: 100px;
@@ -63,25 +117,15 @@ export const PageTitle = styled.Text`
   font-weight: bold;
   color: ${brand};
   padding: 10px;
-  ${(props) =>
-        props.welcome &&
-        `
-    font-size: 35px;
-  `}
 `;
 
 export const SubTitle = styled.Text`
-  font-size: 18px;
+  font-size: 24px;
+  text-align: center;
   margin-bottom: 20px;
   letter-spacing: 1px;
   font-weight: bold;
   color: ${tertiary};
-  ${(props) =>
-        props.welcome &&
-        `
-    margin-bottom: 5px;
-    font-weight: normal;
-  `}
 `;
 
 export const StyledTextInput = styled.TextInput`
@@ -92,6 +136,19 @@ export const StyledTextInput = styled.TextInput`
   border-radius: 5px;
   font-size: 16px;
   height: 40px;
+  margin-vertical: 3px;
+  margin-bottom: 8px;
+  color: ${tertiary};
+`;
+
+export const StyledTextInput1 = styled.TextInput`
+  background-color: ${secondary};
+  padding: 0px;
+  padding-left: 55px;
+  padding-right: 55px;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 100px;
   margin-vertical: 3px;
   margin-bottom: 8px;
   color: ${tertiary};
@@ -125,24 +182,53 @@ export const StyledButton = styled.TouchableOpacity`
   border-radius: 5px;
   margin-vertical: 5px;
   height: 60px;
-  ${(props) =>
-        props.google == true &&
-        `
-    background-color: ${green};
-    flex-direction: row;
-    justify-content: center;
-  `}
+  borderRadius:30px;
+`;
+
+export const StyledButton1 = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${red};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 5px;
+  height: 60px;
+  borderRadius:30px;
+`;
+
+export const StyledButtonMainPage = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${red};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 10px;
+  width: 310px;
+  alignSelf: center;
+  height: 86px;
+  borderRadius:50px;
+`;
+
+export const StyledButtonAppointmentPage = styled.TouchableOpacity`
+  padding: 15px;
+  background-color: ${green};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 10px;
+  alignSelf: center;
+  width: 110px;
+  height: 50px;
+`;
+
+export const ButtonTextMain = styled.Text`
+  color: ${primary};
+  font-size: 24px;
 `;
 
 export const ButtonText = styled.Text`
   color: ${primary};
   font-size: 16px;
-  ${(props) =>
-        props.google == true &&
-        `
-    color: ${primary};
-    padding: 25px;
-  `}
 `;
 
 export const MsgBox = styled.Text`
@@ -169,9 +255,29 @@ export const ExtraView = styled.View`
   padding: 10px;
 `;
 
+export const ExtraView1 = styled.View`
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+`;
+
+export const ExtraView2 = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+`;
+
 export const ExtraText = styled.Text`
   justify-content: center;
   align-content: center;
+  color: ${tertiary};
+  font-size: 15px;
+`;
+
+export const ExtraText1 = styled.Text`
   color: ${tertiary};
   font-size: 15px;
 `;
@@ -182,6 +288,6 @@ export const TextLink = styled.TouchableOpacity`
 `;
 
 export const TextLinkContent = styled.Text`
-  color: ${brand};
+  color: ${red};
   font-size: 15px;
 `;

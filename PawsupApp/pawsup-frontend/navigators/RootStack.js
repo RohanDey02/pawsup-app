@@ -11,54 +11,77 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Screens
 import Login from './../screens/Login';
 import Signup from './../screens/Signup';
-import Welcome from './../screens/Welcome';
+import AdminMain from './../screens/AdminMain';
+import PetOwnerMain from './../screens/PetOwnerMain';
+import PetSitterMain from './../screens/PetSitterMain';
+import Services from './../screens/Services';
+import Setting from './../screens/Setting';
+import PetSitterModifyListing from '../screens/PetSitterModifyListing';
+import DetailedListing from '../screens/DetailedListing';
+import UpcomingAppointment from '../screens/UpcomingAppointment';
+import AdminAddProduct from '../screens/AdminAddProduct';
+import AdminRemoveProduct from '../screens/AdminRemoveProduct';
+import AdminRemoveListing from '../screens/AdminRemoveListing';
+import AdminRemoveUser from '../screens/AdminRemoveUser';
+import Cart from './../screens/Cart';
+import Shop from './../screens/Shop';
+import DetailedItem from './../screens/DetailedItem';
+import PreviousAppointments from '../screens/PreviousAppointments';
+import PreviousStorePurchase from '../screens/PreviousStorePurchase';
+import Checkout from './../screens/Checkout';
+import BookAppointment from './../screens/BookAppointment';
+import AddToCart from '../screens/AddToCart';
 
 const Stack = createStackNavigator();
 
-// Credentials Context
-import { CredentialsContext } from './../components/CredentialsContext';
-
 const RootStack = () => {
     return (
-        // <CredentialsContext.Consumer>
-        // {({ storedCredentials }) => (
-            <NavigationContainer style={{ backgroundColor: 'red' }}>
+        <NavigationContainer style={{ backgroundColor: 'red' }}>
             <Stack.Navigator
                 screenOptions={{
-                headerStyle: {
-                    backgroundColor: 'transparent',
-                },
-                headerTintColor: tertiary,
-                headerTransparent: true,
-                headerTitle: '',
-                headerLeftContainerStyle: {
-                    paddingLeft: 20,
-                },
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
                 }}
                 initialRouteName="Login"
             >
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
-                <Stack.Screen name="Welcome" component={Welcome} />
-                {/* {storedCredentials ? (
-                <Stack.Screen
-                    options={{
-                    headerTintColor: primary,
-                    }}
-                    name="Login"
-                    component={Login}
-                />
-                ) :(
-                <>
-                    <Stack.Screen name="Signup" component={Signup} />
-                </>
-                )} */}
+                <Stack.Screen name="PetOwnerMain" component={PetOwnerMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
+                <Stack.Screen name="Services" component={Services} />
+                <Stack.Screen name="AdminMain" component={AdminMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
+                <Stack.Screen name="PetSitterMain" component={PetSitterMain} options={({ navigation, route }) => ({
+                    headerLeft: null,
+                })} />
+                <Stack.Screen name="Settings" component={Setting} />
+                <Stack.Screen name="PetSitterModifyListing" component={PetSitterModifyListing} />
+                <Stack.Screen name="DetailedListing" component={DetailedListing} />
+                <Stack.Screen name="UpcomingAppointment" component={UpcomingAppointment} />
+                <Stack.Screen name="AdminAddProduct" component={AdminAddProduct} />
+                <Stack.Screen name="AdminRemoveProduct" component={AdminRemoveProduct} />
+                <Stack.Screen name="AdminRemoveListing" component={AdminRemoveListing} />
+                <Stack.Screen name="AdminRemoveUser" component={AdminRemoveUser} />
+                <Stack.Screen name="Cart" component={Cart} />
+                <Stack.Screen name="Shop" component={Shop} />
+                <Stack.Screen name="DetailedItem" component={DetailedItem} />
+                <Stack.Screen name="PreviousAppointments" component={PreviousAppointments}/>
+                <Stack.Screen name="PreviousStorePurchase" component={PreviousStorePurchase}/>
+                <Stack.Screen name="Checkout" component={Checkout} />
+                <Stack.Screen name="BookAppointment" component={BookAppointment} />
+                <Stack.Screen name="AddToCart" component={AddToCart} />
             </Stack.Navigator>
-            </NavigationContainer>
-        // )}
-        // </CredentialsContext.Consumer>
+        </NavigationContainer>
     );
 };
 
 export default RootStack;
-
