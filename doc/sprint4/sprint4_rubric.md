@@ -104,7 +104,7 @@
     - 1 mark  = two or more tasks are missing
     - 0 marks = no tasks or tasks do not match at all
     
-    Your Mark: 1 
+    Your Mark: 2 
 
   - Is the pull request done by the person to whom the task has been assigned to?  (max 2 marks)
     - 2 marks = all assigned tasks are completed
@@ -121,7 +121,7 @@
     - 1 mark  = pull request for 4 or more tasks not made from own separate branch
     - 0 marks = pull request for the majority of tasks not made from own separate branch
   
-    Your Mark: 3
+    Your Mark: 5
     
   - Is the git commit message clear? (max 2 marks)
     - 2 marks = all commit message begin with the ticket number of the task followed by a short description of commit changes
@@ -143,7 +143,7 @@
     - 1 mark  = at least one branch is not named after the associated single ticket number
     - 0 marks = most branch names are not named after the associated single ticket number
     
-    Your Mark: 1
+    Your Mark: 2
 
   - Burndown chart (max 2 marks)
     - 2 marks = burndown chart present, matched jira chart, and explantions are adequate.
@@ -240,4 +240,4 @@ Tracking on Jira Total Mark: 20 / 24
 
 ## Total Mark
 
-88 / 93
+92 / 93
