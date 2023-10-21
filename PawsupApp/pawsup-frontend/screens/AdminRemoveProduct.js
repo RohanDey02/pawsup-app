@@ -28,7 +28,7 @@ import {
     PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
-
+import SERVER_URL from '../server-url';
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 // Colours
@@ -44,7 +44,8 @@ const AdminRemoveProduct = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteItem?name=" + credentials.title;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/deleteItem?name=" + credentials.title;
+        const url = `http://${SERVER_URL}/api/deleteItem?name=` + credentials.title;
         axios
             .delete(url)
             .then((response) => {

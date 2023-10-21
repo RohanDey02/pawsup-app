@@ -33,6 +33,7 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const Login = ({ navigation }) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -44,7 +45,8 @@ const Login = ({ navigation }) => {
     */
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/signin";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/signin";
+        const url = `http://${SERVER_URL}/api/signin`;
 
         axios
             .post(url, credentials)

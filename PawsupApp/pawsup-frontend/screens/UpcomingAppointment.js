@@ -9,6 +9,7 @@ import {
     ButtonText,
     StyledButtonAppointmentPage
 } from '../components/styles';
+import SERVER_URL from '../server-url';
 
 const UpcomingAppointment = ({ navigation, route }) => {
     const [listing, setListing] = useState([]);
@@ -18,7 +19,8 @@ const UpcomingAppointment = ({ navigation, route }) => {
 
 
     const handleGetListing = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
+        const url = `http://${SERVER_URL}/api/getListing?listingowner=` + listingowner;
 
         axios
             .get(url)
@@ -37,7 +39,8 @@ const UpcomingAppointment = ({ navigation, route }) => {
     };
 
     const handleGetPetownerBookings = (petowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPetownerBookings?petowner=" + petowner;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getPetownerBookings?petowner=" + petowner;
+        const url = `http://${SERVER_URL}/api/getPetownerBookings?petowner=` + petowner;
         var lst = [];
 
         axios
@@ -85,7 +88,8 @@ const UpcomingAppointment = ({ navigation, route }) => {
      * dates must be in YYYY/MM/DD format
     */
     const handleCancel = (listingowner, startdate, enddate) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/cancelBooking";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/cancelBooking";
+        const url = `http://${SERVER_URL}/api/cancelBooking`;
         var credentials = { listingowner: listingowner, startdate: startdate, enddate: enddate };
 
         axios

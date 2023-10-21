@@ -37,6 +37,7 @@ import KeyboardAvoidingWrapper2 from "../components/KeyboardAvoidingWrapper2";
 
 // Colours
 const { brand, darkLight, primary } = Colours;
+import SERVER_URL from '../server-url';
 
 // API Client
 import axios from 'axios';
@@ -85,7 +86,8 @@ const AdminAddProduct = ({ navigation, route }) => {
         for (var i = 0; i < selectedPets.length; i++) {
             newArr.push(selectedPets[i]['item']);
         }
-        const url = "https://protected-shelf-96328.herokuapp.com/api/makeItem";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/makeItem";
+        const url = `http://${SERVER_URL}/api/makeItem`;
         var itemValues={ name: credentials.title, price: credentials.price, description: credentials.description, quantity: credentials.quantity, image: credentials.image, pets: newArr };
         axios
             .post(url, itemValues)

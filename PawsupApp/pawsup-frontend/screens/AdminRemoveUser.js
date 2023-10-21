@@ -38,6 +38,7 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const AdminRemoveUser = ({ navigation, route }) => {
     const [message, setMessage] = useState();
@@ -46,7 +47,8 @@ const AdminRemoveUser = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteUser?email=" + credentials.title;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/deleteUser?email=" + credentials.title;
+        const url = `http://${SERVER_URL}/api/deleteUser?email=` + credentials.title;
         axios
             .delete(url)
             .then((response) => {

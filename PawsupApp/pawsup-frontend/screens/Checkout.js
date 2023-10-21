@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, Alert, ImageBackground } from "react-native";
-import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
+// import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 
 import {
     BackgroundStyle,
@@ -10,19 +10,21 @@ import {
 
 // Axios
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const Checkout = ({ navigation, route }) => {
     const [email, setEmail] = useState();
     const [cardDetails, setCardDetails] = useState();
     const [price, setPrice] = useState();
-    const { confirmPayment, loading } = useConfirmPayment();
+    // const { confirmPayment, loading } = useConfirmPayment();
     const [firstRender, setFirstRender] = useState(false);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
     // Handle Purchasing Items
     const handleCart = () => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/itemCheckout";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/itemCheckout";
+        const url = `http://${SERVER_URL}/api/itemCheckout`;
         var values = {email: route.params.routeParams.email};
         axios
             .put(url, values)
@@ -43,7 +45,8 @@ const Checkout = ({ navigation, route }) => {
     
     const handleBooking = () => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
+        const url = `http://${SERVER_URL}/api/makeBooking`;
         var values = {listingowner: route.params.listingemail, reason: route.params.reason, cost: route.params.cost, startdate: route.params.startdate, enddate: route.params.enddate}
 
         axios
@@ -64,7 +67,7 @@ const Checkout = ({ navigation, route }) => {
     }
 
     const fetchPaymentIntentClientSecret = async (amount) => {
-        const response = await fetch("https://protected-shelf-96328.herokuapp.com/api/createPaymentIntent?amount=" + amount, {
+        const response = await fetch(`http://${SERVER_URL}/api/createPaymentIntent?amount=` + amount, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,10 +94,10 @@ const Checkout = ({ navigation, route }) => {
             if (status !== "SUCCESS") {
                 console.log("Unable to process payment");
             } else {
-                const { paymentIntent, error } = await confirmPayment(data, {
-                    type: "Card",
-                    billingDetails: billingDetails,
-                });
+                // const { paymentIntent, error } = await confirmPayment(data, {
+                //     type: "Card",
+                //     billingDetails: billingDetails,
+                // });
                 if (error) {
                     alert(`Payment Confirmation Error: ${error.message}`);
                 } else if (paymentIntent) {
@@ -146,7 +149,8 @@ const Checkout = ({ navigation, route }) => {
 
     // Get the cart
     const handleGetCart = (email) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        const url = `http://${SERVER_URL}/api/getInCart?email=` + email;
         axios
             .get(url)
             .then((response) => {
@@ -201,7 +205,7 @@ const Checkout = ({ navigation, route }) => {
                     onChange={value => setEmail(value.nativeEvent.text)}
                     style={styles.input}
                 />
-                <CardField
+                {/* <CardField
                     postalCodeEnabled={true}
                     placeholder={{
                         number: "4242 4242 4242 4242",
@@ -211,8 +215,8 @@ const Checkout = ({ navigation, route }) => {
                     onCardChange={cardDetails => {
                         setCardDetails(cardDetails);
                     }}
-                />
-                <StyledButton onPress={() => handlePayPress(price*100)} disabled={loading} >
+                /> */}
+                <StyledButton onPress={() => handlePayPress(price*100)} disabled={false} >
                     <ButtonText>Pay</ButtonText>
                 </StyledButton>
             </View>

@@ -9,6 +9,7 @@ import {
     StyledContainer2,
     PageTitle
 } from '../components/styles';
+import SERVER_URL from '../server-url';
 
 LogBox.ignoreLogs([
     'Encountered two children with the same key',
@@ -22,7 +23,8 @@ const PreviousAppointments = ({ navigation, route }) => {
 
 
     const handleGetListing = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousBookings?petowner=" + listingowner;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousBookings?petowner=" + listingowner;
+        const url = `http://${SERVER_URL}/api/getPreviousBookings?petowner=` + listingowner;
         axios
             .get(url)
             .then((response) => {

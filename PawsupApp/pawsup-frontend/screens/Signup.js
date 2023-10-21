@@ -39,6 +39,7 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const Signup = ({ navigation }) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -69,7 +70,8 @@ const Signup = ({ navigation }) => {
     */
     const handleSignup = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/signup";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/signup";
+        const url = `http://${SERVER_URL}/api/signup`;
 
         axios
             .post(url, credentials)

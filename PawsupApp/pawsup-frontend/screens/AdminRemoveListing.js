@@ -29,7 +29,7 @@ import {
     PageTitle
 } from '../components/styles';
 import { Platform, Text, View, ActivityIndicator, ImageBackground, TouchableOpacity, Alert } from 'react-native';
-
+import SERVER_URL from '../server-url';
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 // Colours
@@ -45,7 +45,8 @@ const AdminRemoveListing = ({ navigation, route }) => {
 
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/deleteListing?listingowner=" + credentials.title;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/deleteListing?listingowner=" + credentials.title;
+        const url = `http://${SERVER_URL}/api/deleteListing?listingowner=` + credentials.title;
         axios
             .delete(url)
             .then((response) => {

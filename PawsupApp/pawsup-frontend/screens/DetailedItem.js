@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
 import { StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity,Alert } from 'react-native';
+import SERVER_URL from "../server-url";
 
 const {
     width: SCREEN_WIDTH,
@@ -16,7 +17,8 @@ const DetailedItem = ({ navigation, route }) => {
     const [firstRender, setFirstRender] = useState(false);
 
     const handleGetItem = (itemname) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getItem?name=" + itemname;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getItem?name=" + itemname;
+        const url = `http://${SERVER_URL}/api/getItem?name=` + itemname;
 
         axios
             .get(url)

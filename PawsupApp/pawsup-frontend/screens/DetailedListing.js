@@ -4,6 +4,7 @@ import { BackgroundStyle } from './../components/styles';
 import axios from 'axios';
 import { AirbnbRating } from 'react-native-ratings';
 import { View,StyleSheet, Image, Dimensions, ImageBackground, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import SERVER_URL from "../server-url";
 const {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
@@ -16,7 +17,8 @@ const DetailedListing = ({ navigation, route }) => {
     const [firstRender, setFirstRender] = useState(false);
 
     const handleGetListing = (listingowner) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getListing?listingowner=" + listingowner;
+        const url = `http://${SERVER_URL}/api/getListing?listingowner=` + listingowner;
 
         axios
             .get(url)

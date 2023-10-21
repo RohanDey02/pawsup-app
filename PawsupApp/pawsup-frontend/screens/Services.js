@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Modal, SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent, Touchable} from 'react-native';
 import Entry from '../components/Entry';
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
+import SERVER_URL from '../server-url';
 
 
 const CAT_IMG = 'https://www.pethealthnetwork.com/sites/default/files/urine-testing-in-cats185922494.png';
@@ -27,7 +28,8 @@ const Services = ({ navigation, route }) => {
     const [selectedSortMethod, setSelectedSortMethod] = useState("");
 
     const handleSort = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/sortListings" + req;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/sortListings" + req;
+        const url = `http://${SERVER_URL}/api/sortListings` + req;
         axios
             .get(url)
             .then((response) => {
@@ -108,7 +110,7 @@ const Services = ({ navigation, route }) => {
     };
 
     const addToData = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
+        const url = `http://${SERVER_URL}/api/getListing`;
         axios.get(url, {params: req}).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
@@ -136,7 +138,8 @@ const Services = ({ navigation, route }) => {
 
     const addToData2 = (req) => {
         // don't ask why this exists
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getListing";
+        const url = `http://${SERVER_URL}/api/getListing`;
         axios.get(url, {params: req}).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
@@ -165,7 +168,8 @@ const Services = ({ navigation, route }) => {
     };
 
     const getAllListings = () => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings?minprice=0&maxprice=1000000";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings?minprice=0&maxprice=1000000";
+        const url = `http://${SERVER_URL}/api/filterPriceListings?minprice=0&maxprice=1000000`;
         axios.get(url).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
@@ -186,7 +190,8 @@ const Services = ({ navigation, route }) => {
     };
 
     const handleFilterPrice = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings" + req;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceListings" + req;
+        const url = `http://${SERVER_URL}/api/filterPriceListings` + req;
 
         axios
             .get(url)
@@ -213,7 +218,8 @@ const Services = ({ navigation, route }) => {
     };
 
     const handleFilterAvailability = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings" + req;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/filterAvailabilityListings" + req;
+        const url = `http://${SERVER_URL}/api/filterAvailabilityListings` + req;
 
         axios
             .get(url)

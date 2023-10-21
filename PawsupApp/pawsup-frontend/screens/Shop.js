@@ -4,6 +4,7 @@ import {Picker} from '@react-native-picker/picker';
 import { SafeAreaView, TouchableOpacity, ImageBackground, ToastAndroid, View, FlatList, StyleSheet, Text, StatusBar, Image, Dimensions, ViewPagerAndroidComponent} from 'react-native';
 import Item from '../components/Item';
 import { BackgroundStyle, StyledContainer2, PageTitle, } from './../components/styles';
+import SERVER_URL from '../server-url';
 
 
 const FILTER_IMG = require('./../assets/icons/filter.png');
@@ -20,7 +21,8 @@ const Services = ({ navigation, route }) => {
     const [firstRender, setFirstRender] = useState(false);
 
     const getAllItems = () => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getAllItems";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getAllItems";
+        const url = `http://${SERVER_URL}/api/getAllItems`;
         axios.get(url).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
@@ -50,7 +52,8 @@ const Services = ({ navigation, route }) => {
     }
     
     const addToData = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getItem";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getItem";
+        const url = `http://${SERVER_URL}/api/getItem`;
         axios.get(url, {params: req}).then((response) => {
             const result = response.data;
             const { status, message, data } = result;
@@ -76,7 +79,8 @@ const Services = ({ navigation, route }) => {
     }
 
     const handleFilterPrice = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceItemListings" + req;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/filterPriceItemListings" + req;
+        const url = `http://${SERVER_URL}/api/filterPriceItemListings` + req;
 
         axios
             .get(url)
@@ -105,7 +109,8 @@ const Services = ({ navigation, route }) => {
     }
 
     const handleFilterPetType = (req) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/filterPettypeItemListings" + req;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/filterPettypeItemListings" + req;
+        const url = `http://${SERVER_URL}/api/filterPettypeItemListings` + req;
 
         axios
             .get(url)

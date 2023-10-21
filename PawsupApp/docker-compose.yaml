@@ -1,0 +1,30 @@
+version: "4.0"
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend-database
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+    ports:
+      - 8080:8080
+    environment:
+      - MONGODB_URI=mongodb://root:123456@mongodb:27017
+  frontend:
+    container_name: frontend
+    build:
+      context: ./pawsup-frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - 3000:19000
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - "27017:27017"

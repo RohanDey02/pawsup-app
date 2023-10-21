@@ -34,6 +34,7 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
@@ -75,7 +76,8 @@ const BookAppointment = ({ navigation, route }) => {
 
     const handleBook = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/checkBookings";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/checkBookings";
+        const url = `http://${SERVER_URL}/api/checkBookings`;
         var itemValues={ listingowner: route.params.listingemail, startdate: credentials.startdate, enddate: credentials.enddate };
         axios
             .put(url, itemValues)

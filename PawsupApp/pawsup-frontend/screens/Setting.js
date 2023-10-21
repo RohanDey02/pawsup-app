@@ -29,6 +29,7 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const Setting = ({ navigation, route }) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -42,7 +43,8 @@ const Setting = ({ navigation, route }) => {
     */
     const handleUpdate = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/update";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/update";
+        const url = `http://${SERVER_URL}/api/update`;
 
         var itemValues = {email: route.params.email, password: credentials.password, pettype: credentials.pettype}
 

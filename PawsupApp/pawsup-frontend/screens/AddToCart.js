@@ -26,6 +26,8 @@ import { View, ActivityIndicator, ImageBackground, LogBox } from 'react-native';
 // Colours
 const { brand, darkLight, primary } = Colours;
 
+import SERVER_URL from '../server-url';
+
 // API Client
 import axios from 'axios';
 
@@ -39,7 +41,8 @@ const AddToCart = ({ navigation, route }) => {
 
     const handleAddToCart = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/addToCart";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/addToCart";
+        const url = `http://${SERVER_URL}/api/addToCart`;
         var quant = parseInt(credentials.quantity);
         var itemValues={ email: route.params.routeParams.email, item: route.params.itemname, quantity: quant };
         axios

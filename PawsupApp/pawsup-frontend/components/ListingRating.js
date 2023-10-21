@@ -3,12 +3,14 @@ import { View, Image, StyleSheet, Text, Dimensions, Touchable, TouchableOpacity,
 const NUMCOLS = 1;
 const WIDTH = Dimensions.get('window').width - 40;
 import {  AirbnbRating } from 'react-native-ratings';
+import SERVER_URL from '../server-url';
 import axios from 'axios';
 const ListingRating = ({ item, onPress }) => {
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
   const handleRating = (listingowner, rating) => {
-    const url = "https://protected-shelf-96328.herokuapp.com/api/addListingRating";   
+    // const url = "https://protected-shelf-96328.herokuapp.com/api/addListingRating";   
+    const url = `http://${SERVER_URL}/api/addListingRating`;   
     var credentials = { listingowner: listingowner, rating: rating };
     axios
         .put(url, credentials)

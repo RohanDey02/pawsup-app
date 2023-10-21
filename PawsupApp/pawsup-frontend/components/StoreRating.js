@@ -4,12 +4,14 @@ const NUMCOLS = 1;
 import axios from 'axios';
 const WIDTH = Dimensions.get('window').width - 40;
 import {  AirbnbRating } from 'react-native-ratings';
+import SERVER_URL from '../server-url';
 
 const StoreRating = ({ item, onPress }) => {
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
   const handleRating = (item, rating) => {
-    const url = "https://protected-shelf-96328.herokuapp.com/api/addItemRating";   
+    // const url = "https://protected-shelf-96328.herokuapp.com/api/addItemRating";   
+    const url = `http://${SERVER_URL}/api/addItemRating`;   
     var credentials = { item: item, rating: rating };
     axios
         .put(url, credentials)

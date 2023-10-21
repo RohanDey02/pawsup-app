@@ -10,6 +10,7 @@ import {
     StyledButtonAppointmentPage
 } from '../components/styles';
 import StoreRating from '../components/StoreRating';
+import SERVER_URL from '../server-url';
 
 const PreviousStorePurchase = ({ navigation, route }) => {
     const nav = route.params;
@@ -21,7 +22,8 @@ const PreviousStorePurchase = ({ navigation, route }) => {
 
 
     const handleGetCart = (email) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousOrders?email=" + email;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getPreviousOrders?email=" + email;
+        const url = `https://${SERVER_URL}/api/getPreviousOrders?email=` + email;
         axios
             .get(url)
             .then((response) => {

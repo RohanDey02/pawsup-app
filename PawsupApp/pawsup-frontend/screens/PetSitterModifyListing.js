@@ -37,6 +37,7 @@ const { brand, darkLight, primary } = Colours;
 
 // API Client
 import axios from 'axios';
+import SERVER_URL from "../server-url";
 
 const PetSitterModifyListing = ({ navigation, route }) => {
     const [message, setMessage] = useState();
@@ -78,7 +79,8 @@ const PetSitterModifyListing = ({ navigation, route }) => {
     */
     const handleModify = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/modifyListing";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/modifyListing";
+        const url = `https://${SERVER_URL}/api/modifyListing`;
         var modifyValues={ listingowner: credentials.listingowner, title: credentials.title, description: credentials.description, location: credentials.location, features: credentials.features,  price: credentials.price};
         var blockValues={ listingowner: credentials.listingowner, reason: credentials.reason, startdate: startDate, enddate: endDate, cost: 0};
         axios
@@ -107,7 +109,8 @@ const PetSitterModifyListing = ({ navigation, route }) => {
 
     const handleBlock = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/makeBooking";
+        const url = `https://${SERVER_URL}/api/makeBooking`;
 
         axios
             .put(url, credentials)

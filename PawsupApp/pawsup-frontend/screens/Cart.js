@@ -9,6 +9,7 @@ import {
     ButtonText,
     StyledButtonAppointmentPage
 } from '../components/styles';
+import SERVER_URL from '../server-url';
 
 const Cart = ({ navigation, route }) => {
     const SPACING = 20;
@@ -24,7 +25,8 @@ const Cart = ({ navigation, route }) => {
 
 
     const handleGetCart = (email) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/getInCart?email=" + email;
+        const url = `http://${SERVER_URL}/api/getInCart?email=` + email;
         axios
             .get(url)
             .then((response) => {
@@ -56,7 +58,8 @@ const Cart = ({ navigation, route }) => {
      * dates must be in YYYY/MM/DD format
     */
     const handleCancel = (email,item) => {
-        const url = "https://protected-shelf-96328.herokuapp.com/api/removeFromCart";
+        // const url = "https://protected-shelf-96328.herokuapp.com/api/removeFromCart";
+        const url = `http://${SERVER_URL}/api/removeFromCart`;
         var credentials = { email: email, item: item, quantity:'1'};
         axios
             .put(url, credentials)
