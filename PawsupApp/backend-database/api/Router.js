@@ -16,7 +16,7 @@ const bcrypt = require('bcrypt');
 // Stripe Implementation
 const Stripe = require("stripe");
 const PUBLISHABLE_KEY = "pk_test_51JuLH0JReyjnby8oC8maNyfaVdFojSjYkPSXKnYjkC6FpeSYq8F28oAW6X4FzafORx4kUustkwvdB6kegnLh1RLL00AKUD17mC";
-const SECRET_KEY = "sk_test_51JuLH0JReyjnby8onCnmPTLP2HvdcALvtJURYWrgvzFNe4qiH6eexZOJWaYS1qAKvGXbsDIOSb9R99VLDwHyzQbL005EEugsXH";
+const SECRET_KEY = "";
 const stripe = Stripe(SECRET_KEY, { apiVersion: "2020-08-27" });
 
 // USER:
