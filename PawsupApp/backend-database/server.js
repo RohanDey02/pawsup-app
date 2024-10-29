@@ -23,13 +23,21 @@ const port = process.env.PORT || 8080;
 const cors = require("cors");
 app.use(cors());
 
-const Router = require("./api/Router");
+const bookingRouter = require("./routers/BookingRouter");
+const listingRouter = require("./routers/ListingRouter");
+const paymentsRouter = require("./routers/PaymentsRouter");
+const storeRouter = require("./routers/StoreRouter");
+const userRouter = require("./routers/UserRouter");
 
 // For accepting post form data
 const bodyParser = require("express").json;
 app.use(bodyParser());
 
-app.use("/api", Router);
+app.use("/api/v1/bookings", bookingRouter);
+app.use("/api/v1/listings", listingRouter);
+app.use("/api/v1/payments", paymentsRouter);
+app.use("/api/v1/store", storeRouter);
+app.use("/api/v1/users", userRouter);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
